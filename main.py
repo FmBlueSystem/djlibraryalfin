@@ -7,6 +7,7 @@ from core.metadata_reader import read_metadata
 from core.database import init_db
 from core.library_scanner import scan_directory
 from ui.tracklist import Tracklist
+from ui.waveform_display import WaveformDisplay
 
 class App(tk.Tk):
     def __init__(self):
@@ -35,18 +36,42 @@ class App(tk.Tk):
 
     def create_main_widgets(self):
         """Crea los widgets principales de la aplicación."""
-        main_frame = ttk.Frame(self)
-        main_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        # Usar un PanedWindow para que el usuario pueda redimensionar las secciones
+        main_pane = ttk.PanedWindow(self, orient=tk.VERTICAL)
+        main_pane.pack(fill="both", expand=True, padx=10, pady=10)
 
-        self.tracklist = Tracklist(main_frame)
+        # Frame superior para el tracklist
+        tracklist_frame = ttk.Frame(main_pane, height=600)
+        main_pane.add(tracklist_frame, weight=3)
+
+        self.tracklist = Tracklist(tracklist_frame, self.update_waveform) # Pasamos la referencia a la función de callback
         self.tracklist.pack(side="left", fill="both", expand=True)
 
-        scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=self.tracklist.yview)
+        scrollbar = ttk.Scrollbar(tracklist_frame, orient="vertical", command=self.tracklist.yview)
         self.tracklist.configure(yscrollcommand=scrollbar.set)
         scrollbar.pack(side="right", fill="y")
         
+        # Frame inferior para la forma de onda
+        waveform_frame = ttk.Frame(main_pane, height=200)
+        main_pane.add(waveform_frame, weight=1)
+
+        self.waveform_display = WaveformDisplay(waveform_frame)
+        self.waveform_display.pack(fill="both", expand=True)
+
         # Cargar datos al inicio
         self.tracklist.load_data()
+
+    def update_waveform(self, file_path):
+        """Callback que se llama al seleccionar una pista para actualizar la forma de onda."""
+        # Esto debería correr en un hilo para no bloquear la UI al generar la forma de onda
+        from core.waveform_generator import generate_waveform_data
+        
+        def generator_thread():
+            data = generate_waveform_data(file_path)
+            # Pasamos los datos al widget de forma segura para la UI de Tkinter
+            self.waveform_display.set_data(data)
+
+        threading.Thread(target=generator_thread, daemon=True).start()
 
     def create_status_bar(self):
         """Crea una barra de estado en la parte inferior de la ventana."""
