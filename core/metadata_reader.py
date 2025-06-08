@@ -53,15 +53,20 @@ def read_metadata(file_path):
             metadata["album"] = tags.get('\xa9alb', [None])[0] or "N/A"
             metadata["genre"] = tags.get('\xa9gen', [None])[0] or "N/A"
             metadata["year"] = tags.get('\xa9day', [None])[0] or "N/A"
-            track_info = tags.get('trkn', [(0,0)])[0]
+            track_info = tags.get('trkn', [(0, 0)])[0]
             metadata["track_number"] = str(track_info[0]) if track_info else "N/A"
             metadata["comment"] = tags.get('\xa9com', [None])[0] or "N/A"
-            
+
+            # Captura directa del tag estándar de tempo (tmpo)
+            if 'tmpo' in tags:
+                metadata["bpm"] = str(tags['tmpo'][0])
+
             # Búsqueda mejorada de tags personalizados
             for key in tags:
-                if 'initialkey' in key.lower():
+                key_lower = key.lower()
+                if 'initialkey' in key_lower:
                     metadata["key"] = tags[key][0]
-                elif 'bpm' in key.lower() or 'tempo' in key.lower():
+                elif key_lower == 'tmpo' or 'bpm' in key_lower or 'tempo' in key_lower:
                     val_str = str(tags[key][0])
                     numeric_part = ''.join(filter(str.isdigit, val_str.split(' ')[0]))
                     if numeric_part:
