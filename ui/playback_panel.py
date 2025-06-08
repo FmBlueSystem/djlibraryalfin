@@ -20,6 +20,8 @@ class PlaybackPanel(ttk.Frame):
         pause_callback: Optional[Callable[[], None]] = None,
         stop_callback: Optional[Callable[[], None]] = None,
         seek_callback: Optional[Callable[[float], None]] = None,
+        prev_callback: Optional[Callable[[], None]] = None,
+        next_callback: Optional[Callable[[], None]] = None,
         **kwargs: Any,
     ):
         super().__init__(master, **kwargs)
@@ -27,6 +29,8 @@ class PlaybackPanel(ttk.Frame):
         self.pause_callback = pause_callback
         self.stop_callback = stop_callback
         self.seek_callback = seek_callback
+        self.prev_callback = prev_callback
+        self.next_callback = next_callback
 
         self._create_widgets()
         self.is_playing = False
@@ -39,13 +43,25 @@ class PlaybackPanel(ttk.Frame):
         button_frame = ttk.Frame(self)
         button_frame.pack(pady=5)
 
+        self.prev_button = ttk.Button(
+            button_frame, text="⏮ Prev", command=self.prev_callback
+        )
+        self.prev_button.pack(side="left", padx=5)
+
         self.play_pause_button = ttk.Button(
             button_frame, text="▶ Play", command=self._toggle_play_pause
         )
         self.play_pause_button.pack(side="left", padx=5)
 
-        self.stop_button = ttk.Button(button_frame, text="■ Stop", command=self.stop_callback)
+        self.stop_button = ttk.Button(
+            button_frame, text="■ Stop", command=self.stop_callback
+        )
         self.stop_button.pack(side="left", padx=5)
+
+        self.next_button = ttk.Button(
+            button_frame, text="Next ⏭", command=self.next_callback
+        )
+        self.next_button.pack(side="left", padx=5)
 
         # --- Contenedor de la barra de progreso ---
         progress_frame = ttk.Frame(self)
@@ -61,7 +77,6 @@ class PlaybackPanel(ttk.Frame):
         self.progress_slider.bind("<ButtonPress-1>", self._on_seek_start)
         self.progress_slider.bind("<ButtonRelease-1>", self._on_seek_end)
 
-
         self.total_time_label = ttk.Label(progress_frame, text="--:--")
         self.total_time_label.pack(side="left")
 
@@ -76,7 +91,7 @@ class PlaybackPanel(ttk.Frame):
         """Llamado cuando el slider se mueve."""
         if self.seek_callback and self.is_seeking:
             value = float(value_str)
-            self.seek_callback(value / 100) # Enviar como porcentaje
+            self.seek_callback(value / 100)  # Enviar como porcentaje
 
     def _toggle_play_pause(self) -> None:
         """Alterna entre reproducir y pausar."""
@@ -91,16 +106,16 @@ class PlaybackPanel(ttk.Frame):
         """Actualiza el estado del botón Play/Pause."""
         self.is_playing = is_playing
         self.play_pause_button.config(text="❚❚ Pause" if is_playing else "▶ Play")
-    
+
     def update_progress(self, current_seconds: float, duration_seconds: float) -> None:
         """Actualiza la barra de progreso y las etiquetas de tiempo."""
         self.duration_seconds = duration_seconds
         self.current_time_label.config(text=_format_time(current_seconds))
         self.total_time_label.config(text=_format_time(duration_seconds))
-        
+
         if not self.is_seeking:
             if duration_seconds > 0:
                 progress_percent = (current_seconds / duration_seconds) * 100
                 self.progress_slider.set(progress_percent)
             else:
-                self.progress_slider.set(0) 
+                self.progress_slider.set(0)

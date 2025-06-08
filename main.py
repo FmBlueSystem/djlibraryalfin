@@ -3,7 +3,7 @@ from tkinter import ttk, filedialog, Menu
 import threading
 import queue
 import os
-from typing import Any, Optional
+from typing import Optional
 
 from core.database import init_db
 from core.library_scanner import scan_directory
@@ -73,10 +73,12 @@ class App(tk.Tk):
         # --- Frame intermedio para controles de reproducción ---
         self.playback_panel = PlaybackPanel(
             main_pane,
-            play_callback=self.audio_player.play,
+            play_callback=self._play_or_resume_track,
             pause_callback=self.audio_player.pause,
             stop_callback=self.stop_track,
             seek_callback=self._seek_track,
+            prev_callback=self.play_previous_track,
+            next_callback=self.play_next_track,
         )
         main_pane.add(self.playback_panel, weight=1)
 
@@ -100,7 +102,9 @@ class App(tk.Tk):
 
     def on_track_selected(self, file_path: str) -> None:
         """Callback que se ejecuta cuando una pista es seleccionada en el Tracklist."""
-        self.status_var.set(f"Generando forma de onda para {os.path.basename(file_path)}...")
+        self.status_var.set(
+            f"Generando forma de onda para {os.path.basename(file_path)}..."
+        )
         # Limpiar la forma de onda anterior mientras se genera la nueva
         self.waveform_display.set_data([])
 
@@ -154,6 +158,20 @@ class App(tk.Tk):
             self.tracklist.set_playing_track(file_path)
             self.playback_panel.update_state(is_playing=True)
 
+    def _play_or_resume_track(self) -> None:
+        """Reproduce la pista actual o la seleccionada."""
+        if self.audio_player.audio:
+            self.audio_player.play()
+            if self.current_track_path:
+                self.tracklist.set_playing_track(self.current_track_path)
+            self.playback_panel.update_state(is_playing=True)
+            return
+
+        # Si no hay audio cargado, intentar con la pista seleccionada
+        file_path = self.current_track_path or self.tracklist.get_current_file_path()
+        if file_path:
+            self.play_track(file_path)
+
     def stop_track(self) -> None:
         """Detiene la reproducción y limpia el estado."""
         self.audio_player.stop()
@@ -162,6 +180,18 @@ class App(tk.Tk):
         self.playback_panel.update_state(is_playing=False)
         self.playback_panel.update_progress(0, 0)
         self.waveform_display.set_data([])
+
+    def play_next_track(self) -> None:
+        """Reproduce la pista siguiente en la lista."""
+        file_path = self.tracklist.select_next()
+        if file_path:
+            self.play_track(file_path)
+
+    def play_previous_track(self) -> None:
+        """Reproduce la pista anterior en la lista."""
+        file_path = self.tracklist.select_previous()
+        if file_path:
+            self.play_track(file_path)
 
     def _seek_track(self, percentage: float) -> None:
         """Busca una posición en la pista basada en un porcentaje."""
@@ -172,15 +202,15 @@ class App(tk.Tk):
 
     def _update_playback_ui(self, current_ms: int, total_ms: int) -> None:
         """Callback del player para actualizar la UI. Se ejecuta en el hilo principal."""
-        
+
         def task():
             self.playback_panel.update_progress(current_ms / 1000.0, total_ms / 1000.0)
-            
+
             # Si la reproducción terminó, actualizar estado
             if current_ms >= total_ms and total_ms > 0:
                 self.playback_panel.update_state(is_playing=False)
                 self.tracklist.set_playing_track(None)
-        
+
         # Agendar la ejecución en el hilo principal de Tkinter
         self.after(0, task)
 

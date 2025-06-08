@@ -3,7 +3,6 @@ from tkinter import ttk
 from typing import Any, Callable, Dict, List, Optional
 
 from core.database import get_all_tracks, update_track_field
-from core.metadata_writer import write_metadata_tag
 from core.metadata_reader import read_metadata
 
 
@@ -20,7 +19,9 @@ class Tracklist(ttk.Treeview):
 
         self.track_select_callback = track_select_callback
         self.track_play_callback = track_play_callback
-        self.item_to_filepath: Dict[str, str] = {}  # Diccionario para mapear item_id a file_path
+        self.item_to_filepath: Dict[str, str] = (
+            {}
+        )  # Diccionario para mapear item_id a file_path
         self.currently_playing_item: Optional[str] = None
         self.column_definitions: Dict[str, Dict[str, Any]] = {
             "title": {"text": "Título", "width": 250},
@@ -47,7 +48,8 @@ class Tracklist(ttk.Treeview):
             self.column(col, width=props["width"], minwidth=50, stretch=tk.YES)
 
         # Configurar un tag para resaltar la fila en reproducción
-        self.tag_configure("playing", background="#2C3E50", foreground="white")
+        # Color distintivo para resaltar la canción en reproducción
+        self.tag_configure("playing", background="#007ACC", foreground="white")
 
         self.bind("<Double-1>", self.on_double_click)
         self.bind("<<TreeviewSelect>>", self.on_track_select)
@@ -59,6 +61,48 @@ class Tracklist(ttk.Treeview):
             label="Re-escanear metadatos del archivo",
             command=self.rescan_selected_track,
         )
+
+    # Navegación ------------------------------------------------------------
+    def get_current_file_path(self) -> Optional[str]:
+        """Devuelve la ruta del archivo del elemento enfocado."""
+        item_id = self.focus()
+        return self.item_to_filepath.get(item_id) if item_id else None
+
+    def select_next(self) -> Optional[str]:
+        """Selecciona la siguiente fila y devuelve su ruta."""
+        items = list(self.get_children())
+        if not items:
+            return None
+
+        current = self.focus()
+        if current in items:
+            idx = items.index(current)
+            next_idx = min(idx + 1, len(items) - 1)
+        else:
+            next_idx = 0
+
+        next_item = items[next_idx]
+        self.selection_set(next_item)
+        self.focus(next_item)
+        return self.item_to_filepath.get(next_item)
+
+    def select_previous(self) -> Optional[str]:
+        """Selecciona la fila anterior y devuelve su ruta."""
+        items = list(self.get_children())
+        if not items:
+            return None
+
+        current = self.focus()
+        if current in items:
+            idx = items.index(current)
+            prev_idx = max(idx - 1, 0)
+        else:
+            prev_idx = len(items) - 1
+
+        prev_item = items[prev_idx]
+        self.selection_set(prev_item)
+        self.focus(prev_item)
+        return self.item_to_filepath.get(prev_item)
 
     def on_track_select(self, event: tk.Event) -> None:
         """Se llama cuando un usuario selecciona una pista en la lista."""
