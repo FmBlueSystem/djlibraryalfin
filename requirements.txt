@@ -1,3 +1,9 @@
 mutagen
 Pillow
 python-dotenv
+pydub
+simpleaudio
+
+# Herramientas de desarrollo
+black
+ruff
