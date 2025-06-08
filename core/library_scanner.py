@@ -1,23 +1,23 @@
 import os
-from queue import Queue
-from typing import Optional, List
+from typing import List, Dict, Any
 from core.metadata_reader import read_metadata
-from core.database import add_track
+from core.database import DatabaseManager
 
 SUPPORTED_EXTENSIONS: List[str] = [".mp3", ".flac", ".m4a", ".wav"]
 
+class LibraryScanner:
+    def __init__(self, directory_path: str, db_manager: DatabaseManager):
+        self.directory_path = directory_path
+        self.db_manager = db_manager
 
-def scan_directory(directory_path: str, queue: Optional[Queue] = None) -> None:
-    """
-    Escanea un directorio recursivamente en busca de archivos de audio,
-    lee sus metadatos y los añade a la base de datos.
-    Si se proporciona una cola (queue), se notificará al finalizar.
-    """
-    try:
-        print(f"Iniciando escaneo en: {directory_path}")
+    def scan(self) -> None:
+        """
+        Escanea el directorio recursivamente, lee metadatos y los guarda en la DB.
+        """
+        print(f"Iniciando escaneo en: {self.directory_path}")
 
         found_files: List[str] = []
-        for root, _, files in os.walk(directory_path):
+        for root, _, files in os.walk(self.directory_path):
             for file in files:
                 # Ignorar archivos ocultos de macOS
                 if file.startswith("._"):
@@ -41,30 +41,8 @@ def scan_directory(directory_path: str, queue: Optional[Queue] = None) -> None:
                 _, extension = os.path.splitext(file_path)
                 metadata["file_type"] = extension.replace(".", "").upper()
 
-                add_track(metadata)
+                self.db_manager.add_track(metadata)
             else:
                 print("  -> No se pudieron leer los metadatos. Omitiendo.")
 
         print("Escaneo completado.")
-    finally:
-        if queue:
-            queue.put("scan_complete")
-
-
-# Para pruebas directas
-if __name__ == "__main__":
-    # ATENCIÓN: Cambia esta ruta a una carpeta con música en tu sistema para probar.
-    test_music_folder = os.path.expanduser(
-        "~/Music/test_library"
-    )  # Ejemplo para macOS/Linux
-
-    # Primero, asegúrate de que la DB esté inicializada
-    from core.database import init_db
-
-    init_db()
-
-    if os.path.isdir(test_music_folder):
-        scan_directory(test_music_folder)
-    else:
-        print(f"El directorio de prueba no existe: {test_music_folder}")
-        print("Por favor, edita la variable 'test_music_folder' en library_scanner.py")

@@ -3,196 +3,180 @@ from tkinter import ttk, filedialog, Menu
 import threading
 import queue
 import os
-from typing import Any, Optional
+from typing import Any, Optional, Callable
 
-from core.database import init_db
-from core.library_scanner import scan_directory
-from core.waveform_generator import generate_waveform_data
+from core.database import init_db, DatabaseManager
+from core.library_scanner import LibraryScanner
 from core.audio_player import AudioPlayer
 from ui.tracklist import Tracklist
-from ui.waveform_display import WaveformDisplay
+from ui.suggestion_panel import SuggestionPanel
 from ui.playback_panel import PlaybackPanel
 
 
-class App(tk.Tk):
+class Application(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title("DjAlfin - Biblioteca de Audio Inteligente")
-        self.geometry("1200x800")
+        self.title("DjAlfin - Asistente de DJ Inteligente")
+        self.geometry("1200x700")
 
-        self.scan_queue: "queue.Queue[str]" = queue.Queue()
-        self.current_track_path: Optional[str] = None
-        self.audio_player = AudioPlayer(update_callback=self._update_playback_ui)
-
-        # Declaración de widgets para que el type checker los conozca
-        self.tracklist: Tracklist
-        self.waveform_display: WaveformDisplay
-        self.playback_panel: PlaybackPanel
-        self.status_var: tk.StringVar
+        # Configuración inicial
+        self.db_manager = DatabaseManager()
+        self.audio_player = AudioPlayer(self.update_playback_progress)
+        self.is_paused = False
+        self.current_playing_path: Optional[str] = None
+        self.current_playing_index: Optional[int] = None
 
         self.create_menu()
-        self.create_main_widgets()
-        self.create_status_bar()
-
-        self.process_scan_queue()
+        self.create_widgets()
+        
+        self.load_tracks()
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def create_menu(self) -> None:
-        """Crea la barra de menú superior de la aplicación."""
         menubar = Menu(self)
         self.config(menu=menubar)
-
         file_menu = Menu(menubar, tearoff=0)
-        file_menu.add_command(label="Escanear Biblioteca...", command=self.scan_library)
+        file_menu.add_command(label="Escanear Biblioteca", command=self.scan_library)
         file_menu.add_separator()
-        file_menu.add_command(label="Salir", command=self.quit)
+        file_menu.add_command(label="Salir", command=self.on_closing)
         menubar.add_cascade(label="Archivo", menu=file_menu)
 
-    def create_main_widgets(self) -> None:
-        """Crea los widgets principales de la aplicación."""
-        # PanedWindow para dividir la lista de la forma de onda
-        main_pane = ttk.PanedWindow(self, orient=tk.VERTICAL)
+    def create_widgets(self) -> None:
+        # --- Contenedor principal (divide izquierda/derecha) ---
+        main_pane = ttk.PanedWindow(self, orient=tk.HORIZONTAL)
         main_pane.pack(fill="both", expand=True, padx=10, pady=10)
 
-        # --- Frame superior para la lista de pistas ---
-        tracklist_frame = ttk.Frame(main_pane)
-        main_pane.add(tracklist_frame, weight=5)  # Darle más peso a la lista
+        # --- Panel izquierdo (lista de canciones) ---
+        left_pane = ttk.Frame(main_pane)
+        self.tracklist = Tracklist(left_pane, self.play_selected_track)
+        self.tracklist.pack(fill="both", expand=True)
+        main_pane.add(left_pane, weight=2)
 
-        self.tracklist = Tracklist(
-            tracklist_frame,
-            track_select_callback=self.on_track_selected,
-            track_play_callback=self.play_track,
-        )
-        self.tracklist.pack(side="left", fill="both", expand=True)
-
-        scrollbar = ttk.Scrollbar(
-            tracklist_frame, orient="vertical", command=self.tracklist.yview
-        )
-        self.tracklist.configure(yscrollcommand=scrollbar.set)
-        scrollbar.pack(side="right", fill="y")
-
-        # --- Frame intermedio para controles de reproducción ---
+        # --- Panel derecho (sugerencias) ---
+        right_pane = ttk.Frame(main_pane)
+        self.suggestion_panel = SuggestionPanel(right_pane)
+        self.suggestion_panel.pack(fill="both", expand=True)
+        main_pane.add(right_pane, weight=1)
+        
+        # --- Panel de controles de reproducción (debajo de todo) ---
         self.playback_panel = PlaybackPanel(
-            main_pane,
-            play_callback=self.audio_player.play,
-            pause_callback=self.audio_player.pause,
-            stop_callback=self.stop_track,
-            seek_callback=self._seek_track,
+            self,
+            play_command=self.play_selected_track,
+            pause_command=self.pause_audio,
+            stop_command=self.stop_audio,
+            seek_command=self.seek_audio,
+            prev_command=self.play_previous_track,
+            next_command=self.play_next_track,
         )
-        main_pane.add(self.playback_panel, weight=1)
+        self.playback_panel.pack(fill="x", side="bottom", pady=(0, 10), padx=10)
 
-        # --- Frame inferior para la forma de onda ---
-        waveform_frame = ttk.Frame(main_pane)
-        self.waveform_display = WaveformDisplay(waveform_frame, height=100)
-        self.waveform_display.pack(fill="both", expand=True)
-        main_pane.add(waveform_frame, weight=2)
 
-        # Cargar datos al inicio
-        self.tracklist.load_data()
-
-    def create_status_bar(self) -> None:
-        """Crea una barra de estado en la parte inferior de la ventana."""
-        self.status_var = tk.StringVar()
-        self.status_var.set("Listo")
-        status_bar = ttk.Label(
-            self, textvariable=self.status_var, relief=tk.SUNKEN, anchor="w"
-        )
-        status_bar.pack(side="bottom", fill="x")
-
-    def on_track_selected(self, file_path: str) -> None:
-        """Callback que se ejecuta cuando una pista es seleccionada en el Tracklist."""
-        self.status_var.set(f"Generando forma de onda para {os.path.basename(file_path)}...")
-        # Limpiar la forma de onda anterior mientras se genera la nueva
-        self.waveform_display.set_data([])
-
-        # Generar en un hilo separado
-        threading.Thread(
-            target=self._generate_and_display_waveform, args=(file_path,), daemon=True
-        ).start()
-
-    def _generate_and_display_waveform(self, file_path: str) -> None:
-        """Genera los datos y agenda el dibujado en el hilo principal."""
-        waveform_data = generate_waveform_data(file_path)
-
-        # Agendar la actualización de la UI en el hilo principal
-        self.after(0, self.waveform_display.set_data, waveform_data)
-        self.after(0, self.status_var.set, "Listo.")
+    def load_tracks(self) -> None:
+        self.tracklist.load_tracks_from_db(self.db_manager.get_all_tracks())
 
     def scan_library(self) -> None:
-        """Abre un diálogo para seleccionar un directorio y lo escanea."""
-        directory_path = filedialog.askdirectory(
-            title="Selecciona la carpeta de tu música"
-        )
-        if not directory_path:
-            self.status_var.set("Escaneo cancelado.")
+        path = filedialog.askdirectory()
+        if path:
+            scanner = LibraryScanner(path, self.db_manager)
+            # Idealmente, esto correría en un hilo y actualizaría el UI
+            scanner.scan()
+            self.load_tracks()
+
+    def on_closing(self) -> None:
+        self.audio_player.stop_audio()
+        self.destroy()
+
+    def play_selected_track(self, event: Optional[tk.Event] = None) -> None:
+        selected_path = self.tracklist.get_selected_track_path()
+        if not selected_path:
+            # Si no hay selección, intentar reanudar si está en pausa
+            if self.is_paused:
+                 self.audio_player.resume_audio()
+                 self.is_paused = False
+                 self.playback_panel.update_state(is_playing=True)
             return
 
-        self.status_var.set(f"Escaneando {directory_path}...")
+        if self.current_playing_path != selected_path:
+            self.current_playing_path = selected_path
+            self.audio_player.play_audio(selected_path)
+            self.is_paused = False
+        elif self.is_paused:
+            self.audio_player.resume_audio()
+            self.is_paused = False
+        
+        self.playback_panel.update_state(is_playing=True)
+        self.current_playing_index = self.get_current_track_index()
+        self.tracklist.highlight_playing_track(self.current_playing_index)
 
-        # Ejecutar el escaneo en un hilo separado para no bloquear la UI
-        threading.Thread(
-            target=scan_directory, args=(directory_path, self.scan_queue), daemon=True
-        ).start()
 
-    def process_scan_queue(self) -> None:
-        """Procesa los mensajes de la cola del escáner y actualiza la UI."""
+    def get_current_track_index(self) -> Optional[int]:
+        selected_item = self.tracklist.tracklist_tree.selection()
+        if not selected_item:
+            return self.current_playing_index # Devolver el ultimo conocido si no hay seleccion
+        
         try:
-            message = self.scan_queue.get_nowait()
-            if message == "scan_complete":
-                self.status_var.set("Escaneo completado. Actualizando lista...")
-                self.tracklist.load_data()
-                self.status_var.set("Listo.")
-        except queue.Empty:
-            pass
-        finally:
-            self.after(100, self.process_scan_queue)
+            return self.tracklist.tracklist_tree.index(selected_item[0])
+        except Exception:
+            # Si el item seleccionado ya no existe, por ejemplo
+            return None
 
-    def play_track(self, file_path: str) -> None:
-        """Carga y reproduce una pista."""
-        self.current_track_path = file_path
-        if self.audio_player.load(file_path):
-            self.audio_player.play()
-            self.tracklist.set_playing_track(file_path)
-            self.playback_panel.update_state(is_playing=True)
+    def pause_audio(self) -> None:
+        if self.audio_player.is_playing():
+            self.audio_player.pause_audio()
+            self.is_paused = True
+            self.playback_panel.update_state(is_playing=False)
+            # Mantenemos el highlight cuando está en pausa
 
-    def stop_track(self) -> None:
-        """Detiene la reproducción y limpia el estado."""
-        self.audio_player.stop()
-        self.tracklist.set_playing_track(None)
-        self.current_track_path = None
+    def stop_audio(self) -> None:
+        self.audio_player.stop_audio()
+        self.current_playing_path = None
+        self.current_playing_index = None
+        self.is_paused = False
         self.playback_panel.update_state(is_playing=False)
         self.playback_panel.update_progress(0, 0)
-        self.waveform_display.set_data([])
+        self.tracklist.highlight_playing_track(None)
 
-    def _seek_track(self, percentage: float) -> None:
-        """Busca una posición en la pista basada en un porcentaje."""
-        duration_ms = self.audio_player.get_duration_ms()
-        if duration_ms > 0:
-            position_ms = int(duration_ms * percentage)
-            self.audio_player.seek(position_ms)
-
-    def _update_playback_ui(self, current_ms: int, total_ms: int) -> None:
-        """Callback del player para actualizar la UI. Se ejecuta en el hilo principal."""
-        
-        def task():
-            self.playback_panel.update_progress(current_ms / 1000.0, total_ms / 1000.0)
+    def seek_audio(self, position_percent: float) -> None:
+        if self.current_playing_path:
+            self.audio_player.seek_audio(position_percent)
             
-            # Si la reproducción terminó, actualizar estado
-            if current_ms >= total_ms and total_ms > 0:
-                self.playback_panel.update_state(is_playing=False)
-                self.tracklist.set_playing_track(None)
+    def play_next_track(self) -> None:
+        if self.current_playing_index is None:
+            return
+
+        total_tracks = len(self.tracklist.tracklist_tree.get_children())
+        if total_tracks == 0:
+            return
+
+        next_index = (self.current_playing_index + 1) % total_tracks
         
-        # Agendar la ejecución en el hilo principal de Tkinter
-        self.after(0, task)
+        self.tracklist.select_track_by_index(next_index)
+        self.play_selected_track()
 
+    def play_previous_track(self) -> None:
+        if self.current_playing_index is None:
+            return
 
-def main() -> None:
-    # La inicialización de la base de datos no necesita un path,
-    # la función get_db_path() lo resuelve internamente.
-    init_db()
+        total_tracks = len(self.tracklist.tracklist_tree.get_children())
+        if total_tracks == 0:
+            return
 
-    app = App()
+        prev_index = (self.current_playing_index - 1 + total_tracks) % total_tracks
+
+        self.tracklist.select_track_by_index(prev_index)
+        self.play_selected_track()
+
+    def update_playback_progress(self, current_seconds: float, duration_seconds: float) -> None:
+        """Callback para actualizar la UI de reproducción."""
+        self.playback_panel.update_progress(current_seconds, duration_seconds)
+
+        # Lógica para auto-play a la siguiente canción
+        if current_seconds >= duration_seconds and duration_seconds > 0:
+            self.play_next_track()
+
+def main():
+    app = Application()
     app.mainloop()
-
 
 if __name__ == "__main__":
     main()

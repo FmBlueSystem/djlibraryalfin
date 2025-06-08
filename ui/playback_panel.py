@@ -16,17 +16,21 @@ class PlaybackPanel(ttk.Frame):
         self,
         master: tk.Widget,
         *,
-        play_callback: Optional[Callable[[], None]] = None,
-        pause_callback: Optional[Callable[[], None]] = None,
-        stop_callback: Optional[Callable[[], None]] = None,
-        seek_callback: Optional[Callable[[float], None]] = None,
+        play_command: Callable,
+        pause_command: Callable,
+        stop_command: Callable,
+        seek_command: Callable[[float], None],
+        prev_command: Callable,
+        next_command: Callable,
         **kwargs: Any,
     ):
         super().__init__(master, **kwargs)
-        self.play_callback = play_callback
-        self.pause_callback = pause_callback
-        self.stop_callback = stop_callback
-        self.seek_callback = seek_callback
+        self.play_command = play_command
+        self.pause_command = pause_command
+        self.stop_command = stop_command
+        self.seek_command = seek_command
+        self.prev_command = prev_command
+        self.next_command = next_command
 
         self._create_widgets()
         self.is_playing = False
@@ -39,13 +43,19 @@ class PlaybackPanel(ttk.Frame):
         button_frame = ttk.Frame(self)
         button_frame.pack(pady=5)
 
+        self.prev_button = ttk.Button(button_frame, text="⏮ Prev", command=self.prev_command)
+        self.prev_button.pack(side="left", padx=5)
+        
         self.play_pause_button = ttk.Button(
             button_frame, text="▶ Play", command=self._toggle_play_pause
         )
         self.play_pause_button.pack(side="left", padx=5)
 
-        self.stop_button = ttk.Button(button_frame, text="■ Stop", command=self.stop_callback)
+        self.stop_button = ttk.Button(button_frame, text="■ Stop", command=self.stop_command)
         self.stop_button.pack(side="left", padx=5)
+
+        self.next_button = ttk.Button(button_frame, text="Next ⏭", command=self.next_command)
+        self.next_button.pack(side="left", padx=5)
 
         # --- Contenedor de la barra de progreso ---
         progress_frame = ttk.Frame(self)
@@ -74,18 +84,18 @@ class PlaybackPanel(ttk.Frame):
 
     def _on_seek(self, value_str: str) -> None:
         """Llamado cuando el slider se mueve."""
-        if self.seek_callback and self.is_seeking:
+        if self.seek_command and self.is_seeking:
             value = float(value_str)
-            self.seek_callback(value / 100) # Enviar como porcentaje
+            self.seek_command(value / 100) # Enviar como porcentaje
 
     def _toggle_play_pause(self) -> None:
         """Alterna entre reproducir y pausar."""
         if self.is_playing:
-            if self.pause_callback:
-                self.pause_callback()
+            if self.pause_command:
+                self.pause_command()
         else:
-            if self.play_callback:
-                self.play_callback()
+            if self.play_command:
+                self.play_command()
 
     def update_state(self, is_playing: bool) -> None:
         """Actualiza el estado del botón Play/Pause."""
