@@ -35,7 +35,8 @@ class Tracklist(ttk.Treeview):
             self.column(col, width=props["width"], minwidth=50, stretch=tk.YES)
 
         self.bind("<Double-1>", self.on_double_click)
-        self.bind("<Button-3>", self.show_context_menu) # Clic derecho
+        self.bind("<Button-3>", self.show_context_menu) # Clic derecho (estándar)
+        self.bind("<Button-2>", self.show_context_menu) # Clic derecho (común en macOS)
         self.bind("<<TreeviewSelect>>", self.on_track_select)
 
         self.context_menu = tk.Menu(self, tearoff=0)
