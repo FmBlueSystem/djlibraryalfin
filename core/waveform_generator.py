@@ -1,6 +1,7 @@
 from pydub import AudioSegment
 from typing import List
 
+
 def generate_waveform_data(file_path: str, num_points: int = 400) -> List[float]:
     """
     Genera una lista de puntos de datos para la forma de onda de un archivo de audio.
@@ -45,7 +46,9 @@ def generate_waveform_data(file_path: str, num_points: int = 400) -> List[float]
         # Normalizar los puntos de 0.0 a 1.0
         max_rms = max(waveform_points) if waveform_points else 1.0
         if max_rms == 0:
-            max_rms = 1.0  # Evitar división por cero en un archivo completamente silencioso
+            max_rms = (
+                1.0  # Evitar división por cero en un archivo completamente silencioso
+            )
 
         normalized_points: List[float] = [point / max_rms for point in waveform_points]
 
@@ -53,4 +56,4 @@ def generate_waveform_data(file_path: str, num_points: int = 400) -> List[float]
 
     except Exception as e:
         print(f"Error al generar la forma de onda para {file_path}: {e}")
-        return [] 
+        return []

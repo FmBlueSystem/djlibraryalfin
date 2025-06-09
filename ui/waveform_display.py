@@ -1,6 +1,7 @@
 import tkinter as tk
 from typing import List, Any
 
+
 class WaveformDisplay(tk.Canvas):
     def __init__(self, master: tk.Widget, **kwargs: Any) -> None:
         # Un color de fondo oscuro es típico para las formas de onda
@@ -35,14 +36,14 @@ class WaveformDisplay(tk.Canvas):
 
         # El ancho de cada barra de la forma de onda
         bar_width = canvas_width / len(self.waveform_data)
-        
+
         y_center = canvas_height / 2
         # La altura máxima de la barra es la mitad de la altura del canvas, con margen
         max_bar_height = (canvas_height / 2) * 0.95
 
         for i, point in enumerate(self.waveform_data):
             x0 = i * bar_width
-            
+
             # La altura de la barra es proporcional al punto de datos
             bar_height = point * max_bar_height
 
@@ -52,4 +53,4 @@ class WaveformDisplay(tk.Canvas):
             y1 = y_center
             x1 = x0 + bar_width
 
-            self.create_rectangle(x0, y0, x1, y1, fill="#4682B4", outline="") 
+            self.create_rectangle(x0, y0, x1, y1, fill="#4682B4", outline="")

@@ -7,3 +7,4 @@ simpleaudio
 # Herramientas de desarrollo
 black
 ruff
+librosa

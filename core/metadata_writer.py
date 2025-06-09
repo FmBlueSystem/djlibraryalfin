@@ -25,7 +25,9 @@ def write_metadata_tag(file_path: str, field: str, value: Any) -> bool:
                 "artist": lambda v: TPE1(encoding=3, text=v),
                 "album": lambda v: TALB(encoding=3, text=v),
                 "genre": lambda v: TCON(encoding=3, text=v),
-                "comment": lambda v: COMM(encoding=3, lang="eng", desc="comment", text=v),
+                "comment": lambda v: COMM(
+                    encoding=3, lang="eng", desc="comment", text=v
+                ),
                 "bpm": lambda v: TBPM(encoding=3, text=str(v)),
                 "key": lambda v: TKEY(encoding=3, text=v),
             }

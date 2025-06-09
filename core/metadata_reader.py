@@ -14,7 +14,9 @@ def _clean_value(value: Any) -> Optional[str]:
         try:
             return value.decode("utf-8").strip()
         except UnicodeDecodeError:
-            return str(value)  # Fallback a la representación de string si la decodificación falla
+            return str(
+                value
+            )  # Fallback a la representación de string si la decodificación falla
     return str(value).strip()
 
 
@@ -39,6 +41,7 @@ def read_metadata(file_path: str) -> Optional[Dict[str, Any]]:
             "bpm": None,
             "key": None,
             "duration": 0,
+            "energy_tag": None,
         }
 
         if extension == ".mp3":
@@ -109,6 +112,34 @@ def read_metadata(file_path: str) -> Optional[Dict[str, Any]]:
         for key, value in metadata.items():
             if value is None:
                 metadata[key] = "N/A"
+
+        # --- Lógica para leer el tag de energía específico del archivo ---
+        try:
+            energy_val = None
+            ext = os.path.splitext(file_path)[1].lower()
+
+            if ext == ".mp3":
+                # Para MP3, los tags personalizados suelen estar en TXXX
+                for frame in audio.tags.getall("TXXX"):
+                    if frame.desc == "EnergyLevel":
+                        energy_val = frame.text[0]
+                        break
+            elif ext == ".m4a":
+                # Para M4A, los tags a veces están prefijados
+                if "----:com.apple.iTunes:energylevel" in audio.tags:
+                    energy_val = audio.tags["----:com.apple.iTunes:energylevel"][0]
+                # Podría haber otras variaciones, pero esta es común
+            elif ext == ".flac":
+                # Para FLAC, los tags son directos
+                if "ENERGYLEVEL" in audio:
+                    energy_val = audio["ENERGYLEVEL"][0]
+
+            if energy_val:
+                metadata["energy_tag"] = float(energy_val)
+
+        except (KeyError, IndexError, ValueError, TypeError):
+            # Si el tag no existe o no es un número, se ignora silenciosamente
+            pass
 
         return metadata
 
