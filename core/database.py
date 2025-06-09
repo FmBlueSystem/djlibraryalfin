@@ -117,7 +117,7 @@ class DatabaseManager:
                 return []
 
     def get_track_by_path(self, file_path: str) -> Optional[Dict[str, Any]]:
-        """Busca una única pista por su file_path."""
+        """Busca y devuelve una canción por su ruta de archivo."""
         with self._create_connection() as conn:
             if not conn:
                 return None

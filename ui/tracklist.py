@@ -1,8 +1,9 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from typing import Any, Callable, Dict, List, Optional
 
 from core.database import DatabaseManager
+from core.metadata_writer import write_all_metadata
 
 
 def _format_time(seconds: float) -> str:
@@ -26,6 +27,7 @@ class Tracklist(ttk.Frame):
         self.item_to_filepath: Dict[str, str] = {}
 
         self._create_widgets()
+        self._create_context_menu()
         self.load_all_tracks()
 
     def _create_widgets(self) -> None:
@@ -88,8 +90,71 @@ class Tracklist(ttk.Frame):
         self.tracklist_tree.bind("<Double-1>", self._on_double_click)
         self.tracklist_tree.tag_configure("playing", background="#4A6984")
 
+        # Vincular el menú contextual
+        self.tracklist_tree.bind("<Button-3>", self._show_context_menu)
+
         # --- Widget de Edición ---
         self.edit_widget = None
+
+    def _create_context_menu(self) -> None:
+        """Crea el menú contextual para las pistas."""
+        self.context_menu = tk.Menu(self, tearoff=0)
+        self.context_menu.add_command(
+            label="Guardar Metadatos en Archivo", command=self._save_tags_to_file
+        )
+
+    def _show_context_menu(self, event: Any) -> None:
+        """Muestra el menú contextual en la posición del cursor."""
+        # Seleccionar el item bajo el cursor antes de mostrar el menú
+        item_id = self.tracklist_tree.identify_row(event.y)
+        if item_id:
+            self.tracklist_tree.selection_set(item_id)
+            self.context_menu.post(event.x_root, event.y_root)
+
+    def _save_tags_to_file(self) -> None:
+        """Guarda los metadatos de la canción seleccionada en su archivo."""
+        selected_path = self.get_selected_track_path()
+        if not selected_path:
+            messagebox.showwarning(
+                "Ninguna Selección", "Por favor, selecciona una canción primero."
+            )
+            return
+
+        track_data = self.db_manager.get_track_by_path(selected_path)
+        if not track_data:
+            messagebox.showerror(
+                "Error", "No se pudieron encontrar los datos de la canción en la BD."
+            )
+            return
+
+        # Construir el diccionario de metadatos para escribir
+        metadata_to_write = {
+            "title": track_data.get("title"),
+            "artist": track_data.get("artist"),
+            "album": track_data.get("album"),
+            "bpm": track_data.get("bpm"),
+            "key": track_data.get("key"),
+            "energy": track_data.get(
+                "energy_tag"
+            ),  # Priorizamos el tag de energía manual
+        }
+
+        # Eliminar claves con valores nulos para no escribir basura
+        metadata_to_write = {
+            k: v for k, v in metadata_to_write.items() if v is not None
+        }
+
+        success = write_all_metadata(selected_path, metadata_to_write)
+
+        if success:
+            messagebox.showinfo(
+                "Éxito", "Metadatos guardados correctamente en el archivo."
+            )
+        else:
+            messagebox.showerror(
+                "Error",
+                "Ocurrió un error al guardar los metadatos en el archivo.",
+            )
 
     def _on_double_click(self, event: Any) -> None:
         """Maneja el doble clic: reproduce o inicia la edición."""

@@ -3,7 +3,20 @@ from mutagen.mp3 import MP3
 from mutagen.flac import FLAC
 from mutagen.mp4 import MP4
 from mutagen.id3 import TIT2, TPE1, TALB, TCON, COMM, TXXX, TBPM, TKEY
-from typing import Any
+from typing import Any, Dict
+
+
+def write_all_metadata(file_path: str, metadata: Dict[str, Any]) -> bool:
+    """
+    Escribe un diccionario completo de metadatos en un archivo de audio.
+    Reutiliza la lógica de `write_metadata_tag` para cada campo.
+    """
+    success = True
+    for field, value in metadata.items():
+        if value is not None:  # Solo escribir si hay un valor
+            if not write_metadata_tag(file_path, field, value):
+                success = False
+    return success
 
 
 def write_metadata_tag(file_path: str, field: str, value: Any) -> bool:
