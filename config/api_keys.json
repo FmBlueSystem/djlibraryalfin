@@ -1,0 +1,21 @@
+{
+    "spotify": {
+        "client_id": "8e5333cb38084470990d70a659336463",
+        "client_secret": "aeb7675f344d4c83986a444190b0eb6d",
+        "app_name": "MusicMetadataExplorer",
+        "configured_by": "bluesystem0cr@gmail.com",
+        "configured_date": "2025-05-22"
+    },
+    "lastfm": {
+        "api_key": "b7651b3758d74bd0f47df535a5ddf45d",
+        "api_secret": "eb38d3f09f394d652c93d948972a3285"
+    },
+    "discogs": {
+        "api_token": "pTWfxAgLTSTbXzbNFvAvqXNKawGiDVELrBLnfoNv"
+    },
+    "musicbrainz": {
+        "app_name": "GenreDetector",
+        "version": "0.2.0",
+        "email": ""
+    }
+}

@@ -1,0 +1,18 @@
+[spotify]
+# Por favor, obtén tus propias credenciales desde el Spotify Developer Dashboard:
+# https://developer.spotify.com/dashboard
+#
+# 1. Crea una aplicación.
+# 2. Copia tu Client ID y Client Secret aquí.
+# 3. Renombra este archivo a "config.ini"
+
+client_id = TU_CLIENT_ID_AQUI
+client_secret = TU_CLIENT_SECRET_AQUI
+
+[musicbrainz]
+# Esta configuración es para identificarse correctamente ante la API de MusicBrainz.
+# No es estrictamente necesaria para que la búsqueda funcione, pero es una buena práctica.
+# https://musicbrainz.org/doc/Development/XML_Web_Service/Rate_Limiting#Provide_a_good_User-Agent_header
+app_name = DjAlfin
+app_version = 0.1
+contact_email = tu_email@ejemplo.com 

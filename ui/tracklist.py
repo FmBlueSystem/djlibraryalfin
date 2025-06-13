@@ -88,7 +88,12 @@ class Tracklist(ttk.Frame):
 
         # --- Eventos ---
         self.tracklist_tree.bind("<Double-1>", self._on_double_click)
-        self.tracklist_tree.tag_configure("playing", background="#4A6984")
+
+        # --- Configurar estilos de tags ---
+        self.tracklist_tree.tag_configure("playing",
+                                         background="#4A6984",
+                                         foreground="#FFFFFF",
+                                         font=("Helvetica", 9, "bold"))
 
         # Vincular el menú contextual
         self.tracklist_tree.bind("<Button-3>", self._show_context_menu)
@@ -230,7 +235,7 @@ class Tracklist(ttk.Frame):
             self.edit_widget.destroy()
             self.edit_widget = None
 
-    def _on_search(self, *args: Any) -> None:
+    def _on_search(self, *_args: Any) -> None:
         """Callback que se ejecuta cuando el texto de búsqueda cambia."""
         # Cancelar cualquier edición en curso antes de buscar
         self._cancel_edit()
@@ -283,6 +288,24 @@ class Tracklist(ttk.Frame):
         selected_item_id = selected_items[0]
         return self.item_to_filepath.get(selected_item_id)
 
+    def get_selected_track_info(self) -> Optional[dict]:
+        """Devuelve la información de la pista seleccionada."""
+        selected_items = self.tracklist_tree.selection()
+        if not selected_items:
+            return None
+
+        selected_item_id = selected_items[0]
+        values = self.tracklist_tree.item(selected_item_id, "values")
+
+        if len(values) >= 4:
+            return {
+                'title': values[0],
+                'artist': values[1],
+                'album': values[2],
+                'duration': values[3]
+            }
+        return None
+
     def highlight_playing_track(self, index: Optional[int]) -> None:
         # Eliminar el tag 'playing' de cualquier item que lo tenga
         for item_id in self.tracklist_tree.get_children():
@@ -316,3 +339,53 @@ class Tracklist(ttk.Frame):
             if track_path == file_path:
                 return index
         return None
+
+    def select_previous_track(self) -> None:
+        """Selecciona la pista anterior en la lista."""
+        current_selection = self.tracklist_tree.selection()
+        if not current_selection:
+            # Si no hay selección, seleccionar la primera pista
+            all_items = self.tracklist_tree.get_children()
+            if all_items:
+                self.tracklist_tree.selection_set(all_items[0])
+                self.tracklist_tree.focus(all_items[0])
+                self.tracklist_tree.see(all_items[0])
+            return
+
+        current_item = current_selection[0]
+        all_items = self.tracklist_tree.get_children()
+
+        try:
+            current_index = all_items.index(current_item)
+            if current_index > 0:
+                prev_item = all_items[current_index - 1]
+                self.tracklist_tree.selection_set(prev_item)
+                self.tracklist_tree.focus(prev_item)
+                self.tracklist_tree.see(prev_item)
+        except ValueError:
+            pass
+
+    def select_next_track(self) -> None:
+        """Selecciona la siguiente pista en la lista."""
+        current_selection = self.tracklist_tree.selection()
+        if not current_selection:
+            # Si no hay selección, seleccionar la primera pista
+            all_items = self.tracklist_tree.get_children()
+            if all_items:
+                self.tracklist_tree.selection_set(all_items[0])
+                self.tracklist_tree.focus(all_items[0])
+                self.tracklist_tree.see(all_items[0])
+            return
+
+        current_item = current_selection[0]
+        all_items = self.tracklist_tree.get_children()
+
+        try:
+            current_index = all_items.index(current_item)
+            if current_index < len(all_items) - 1:
+                next_item = all_items[current_index + 1]
+                self.tracklist_tree.selection_set(next_item)
+                self.tracklist_tree.focus(next_item)
+                self.tracklist_tree.see(next_item)
+        except ValueError:
+            pass
