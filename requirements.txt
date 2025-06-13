@@ -1,4 +1,6 @@
 mutagen
+requests
+musicbrainzngs
 Pillow
 python-dotenv
 pydub
