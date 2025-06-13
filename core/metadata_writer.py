@@ -2,7 +2,18 @@ import os
 from mutagen.mp3 import MP3
 from mutagen.flac import FLAC
 from mutagen.mp4 import MP4
-from mutagen.id3 import TIT2, TPE1, TALB, TCON, COMM, TXXX, TBPM, TKEY
+from mutagen.id3 import (
+    ID3,
+    ID3NoHeaderError,
+    TIT2,
+    TPE1,
+    TALB,
+    TCON,
+    COMM,
+    TXXX,
+    TBPM,
+    TKEY,
+)
 from typing import Any, Dict
 
 
@@ -31,25 +42,30 @@ def write_metadata_tag(file_path: str, field: str, value: Any) -> bool:
         audio: Any = None
 
         if extension == ".mp3":
-            audio = MP3(file_path)
+            try:
+                audio = MP3(file_path, ID3=ID3)
+            except ID3NoHeaderError:
+                audio = MP3(file_path)
+                audio.add_tags()
+
             # Mapeo de campos a clases de frames ID3
             tag_map = {
-                "title": lambda v: TIT2(encoding=3, text=v),
-                "artist": lambda v: TPE1(encoding=3, text=v),
-                "album": lambda v: TALB(encoding=3, text=v),
-                "genre": lambda v: TCON(encoding=3, text=v),
+                "title": lambda v: TIT2(encoding=3, text=str(v)),
+                "artist": lambda v: TPE1(encoding=3, text=str(v)),
+                "album": lambda v: TALB(encoding=3, text=str(v)),
+                "genre": lambda v: TCON(encoding=3, text=str(v)),
                 "comment": lambda v: COMM(
-                    encoding=3, lang="eng", desc="comment", text=v
+                    encoding=3, lang="eng", desc="comment", text=str(v)
                 ),
                 "bpm": lambda v: TBPM(encoding=3, text=str(v)),
-                "key": lambda v: TKEY(encoding=3, text=v),
+                "key": lambda v: TKEY(encoding=3, text=str(v)),
             }
+
             if field in tag_map:
                 frame = tag_map[field](value)
-                audio[frame.__class__.__name__] = frame
+                audio.tags.add(frame)
             else:
-                # Fallback para campos no estándar
-                audio.add(TXXX(encoding=3, desc=field, text=str(value)))
+                audio.tags.add(TXXX(encoding=3, desc=field, text=str(value)))
 
         elif extension == ".flac":
             audio = FLAC(file_path)
@@ -83,7 +99,10 @@ def write_metadata_tag(file_path: str, field: str, value: Any) -> bool:
                     audio[tag_key] = [str(value)]
 
         if audio:
-            audio.save()
+            if extension == ".mp3":
+                audio.save(v2_version=3)
+            else:
+                audio.save()
             print(
                 f"Metadato '{field}' actualizado a '{value}' en {os.path.basename(file_path)}"
             )
