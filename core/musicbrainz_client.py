@@ -89,7 +89,8 @@ class MusicBrainzClient:
             if "release-list" in best_match and best_match["release-list"]:
                 first_release = best_match["release-list"][0]
                 if "date" in first_release and first_release["date"]:
-                    enriched_data["year"] = first_release["date"].split("-")[0]
+                    date_str = str(first_release["date"])
+                    enriched_data["year"] = int(date_str.split("-")[0])
 
             # Extraer Sello discográfico
             if "release-list" in best_match and best_match["release-list"]:

@@ -234,7 +234,7 @@ class DatabaseManager:
 
     def search_tracks(self, search_term: str) -> List[Dict[str, Any]]:
         """
-        Busca pistas cuyo título, artista o álbum contengan el término de búsqueda.
+        Busca pistas cuyo título, artista, álbum o género contengan el término de búsqueda.
         La búsqueda no distingue entre mayúsculas y minúsculas.
         """
         if not search_term:
@@ -245,11 +245,12 @@ class DatabaseManager:
             WHERE LOWER(title) LIKE ?
                OR LOWER(artist) LIKE ?
                OR LOWER(album) LIKE ?
+               OR LOWER(genre) LIKE ?
             ORDER BY artist, album, track_number
         """
         # El término de búsqueda se formatea para buscar subcadenas
         like_term = f"%{search_term.lower()}%"
-        params = (like_term, like_term, like_term)
+        params = (like_term, like_term, like_term, like_term)
 
         with self._create_connection() as conn:
             if not conn:

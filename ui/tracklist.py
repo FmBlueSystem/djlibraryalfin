@@ -53,6 +53,7 @@ class Tracklist(ttk.Frame):
                 "title",
                 "artist",
                 "album",
+                "genre",
                 "duration",
                 "bpm",
                 "key",
@@ -68,6 +69,7 @@ class Tracklist(ttk.Frame):
             "title": ("Título", 250, True),
             "artist": ("Artista", 180, True),
             "album": ("Álbum", 180, True),
+            "genre": ("Género", 120, True),
             "duration": ("Duración", 80, False),
             "bpm": ("BPM", 70, False),
             "key": ("Camelot", 80, False),
@@ -85,6 +87,7 @@ class Tracklist(ttk.Frame):
         self.tracklist_tree.column("key", anchor="center")
         self.tracklist_tree.column("energy", anchor="center")
         self.tracklist_tree.column("energy_tag", anchor="center")
+        self.tracklist_tree.column("genre", anchor="w")
 
         # --- Eventos ---
         self.tracklist_tree.bind("<Double-1>", self._on_double_click)
@@ -270,6 +273,7 @@ class Tracklist(ttk.Frame):
                 track.get("title", "Desconocido"),
                 track.get("artist", "Desconocido"),
                 track.get("album", "Desconocido"),
+                track.get("genre", "Desconocido"),
                 duration_str,
                 bpm_str,
                 key_str,

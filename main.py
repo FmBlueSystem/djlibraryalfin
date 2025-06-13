@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, Menu, filedialog
+from tkinter import ttk, Menu, filedialog, messagebox
 import threading
 from typing import Optional
 
@@ -10,6 +10,7 @@ from ui.tracklist import Tracklist
 from ui.playback_panel import PlaybackPanel
 from ui.suggestion_panel import SuggestionPanel
 from ui.smart_playlist_panel import SmartPlaylistPanel
+from ui.metadata_panel import MetadataPanel
 
 
 # === CONSTANTES DE TEMA MIXED IN KEY PRO ===
@@ -278,16 +279,11 @@ class Application(tk.Tk):
 
 
     def create_menu(self) -> None:
-        menubar = Menu(
-            self,
-            tearoff=0,
-            bg="#2a2a2a",
-            fg="#ffffff",
-            activebackground="#00d4ff",
-            activeforeground="#000000",
-            borderwidth=0,
-        )
+        """Crea la barra de menú principal."""
+        menubar = Menu(self, bg="#2a2a2a", fg="#ffffff", borderwidth=0)
         self.config(menu=menubar)
+
+        # Menú de Archivo
         file_menu = Menu(
             menubar,
             tearoff=0,
@@ -319,6 +315,19 @@ class Application(tk.Tk):
         playback_menu.add_command(label="Anterior (Ctrl+←)", command=self.play_previous_track)
         playback_menu.add_command(label="Siguiente (Ctrl+→)", command=self.play_next_track)
         menubar.add_cascade(label="Reproducción", menu=playback_menu)
+
+        # Menú de Herramientas
+        tools_menu = Menu(
+            menubar,
+            tearoff=0,
+            bg="#2a2a2a",
+            fg="#ffffff",
+            activebackground="#00d4ff",
+            activeforeground="#000000",
+            borderwidth=0,
+        )
+        tools_menu.add_command(label="🔍 Buscar Metadatos Faltantes", command=self.open_metadata_enrichment)
+        menubar.add_cascade(label="Herramientas", menu=tools_menu)
 
         # Menú de Ayuda
         help_menu = Menu(
@@ -370,7 +379,7 @@ class Application(tk.Tk):
         self.tracklist.pack(fill="both", expand=True)
         main_pane.add(left_pane, weight=3)
 
-        # --- Panel derecho (pestañas para sugerencias y smart playlists) ---
+        # --- Panel derecho (pestañas para sugerencias, smart playlists y metadatos) ---
         right_pane = ttk.Frame(main_pane)
 
         # Notebook para pestañas
@@ -396,6 +405,15 @@ class Application(tk.Tk):
         )
         self.smart_playlist_panel.pack(fill="both", expand=True)
         right_notebook.add(smart_playlists_frame, text="🎵 Smart Playlists")
+
+        # Pestaña de metadatos
+        metadata_frame = ttk.Frame(right_notebook)
+        self.metadata_panel = MetadataPanel(
+            metadata_frame,
+            db_path=self.db_manager.db_path
+        )
+        self.metadata_panel.pack(fill="both", expand=True)
+        right_notebook.add(metadata_frame, text="🔍 Metadatos")
 
         main_pane.add(right_pane, weight=1)
 
@@ -449,6 +467,9 @@ class Application(tk.Tk):
             threading.Thread(
                 target=self.audio_player.play_audio, args=(selected_path,), daemon=True
             ).start()
+
+            # Record playback start in smart playlist manager
+            self.smart_playlist_manager.record_playback(selected_path)
         elif self.audio_player.is_paused():
             self.audio_player.resume_audio()
 
@@ -533,6 +554,27 @@ class Application(tk.Tk):
         if index_to_select is not None:
             self.tracklist.select_track_by_index(index_to_select)
             self.play_selected_track()
+        else:
+            # If track not found in main list, play directly and record
+            self.current_playing_path = file_path
+            # Get track info from database
+            track_info = self.db_manager.get_track_by_path(file_path)
+            if track_info:
+                self.playback_panel.update_track_info(
+                    track_info.get('title', 'Desconocido'),
+                    track_info.get('artist', 'Desconocido')
+                )
+
+            # Play the track
+            threading.Thread(
+                target=self.audio_player.play_audio, args=(file_path,), daemon=True
+            ).start()
+
+            # Record playback
+            self.smart_playlist_manager.record_playback(file_path)
+
+            self.playback_panel.set_playing_state(True)
+            self.suggestion_panel.update_suggestions(file_path)
 
     def toggle_play_pause(self, event: Optional[tk.Event] = None) -> None:
         """Alterna entre reproducir y pausar la pista actual."""
@@ -583,6 +625,16 @@ Características:
         """
         messagebox.showinfo("Acerca de DjAlfin", about_text)
 
+    def open_metadata_enrichment(self) -> None:
+        """Abre el diálogo de enriquecimiento de metadatos."""
+        if hasattr(self, 'metadata_panel'):
+            self.metadata_panel.open_enrichment_dialog()
+        else:
+            messagebox.showwarning(
+                "Panel no disponible",
+                "El panel de metadatos no está disponible en este momento."
+            )
+
     def on_closing(self, event: Optional[tk.Event] = None) -> None:
         """Maneja el cierre de la aplicación."""
         _ = event  # Parámetro requerido por el binding pero no utilizado
@@ -592,6 +644,17 @@ Características:
 
     def on_audio_finished(self) -> None:
         """Callback cuando termina la reproducción de audio."""
+        # Record that the track was completed
+        if self.current_playing_path:
+            # Get track duration to record completion
+            track_info = self.tracklist.get_selected_track_info()
+            duration = track_info.get('duration', 0) if track_info else 0
+            self.smart_playlist_manager.record_playback(
+                self.current_playing_path,
+                duration_played=duration,
+                completed=True
+            )
+
         # Auto-play: reproducir la siguiente pista automáticamente
         self.play_next_track()
 
