@@ -5,8 +5,9 @@ from core.metadata_writer import write_metadata_tag
 from core.metadata_reader import read_metadata
 
 class Tracklist(ttk.Treeview):
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, waveform_callback, **kwargs):
         super().__init__(master, **kwargs)
+        self.waveform_callback = waveform_callback
         
         self.item_to_filepath = {} # Diccionario para mapear item_id a file_path
         self.column_definitions = {
@@ -34,7 +35,9 @@ class Tracklist(ttk.Treeview):
             self.column(col, width=props["width"], minwidth=50, stretch=tk.YES)
 
         self.bind("<Double-1>", self.on_double_click)
-        self.bind("<Button-3>", self.show_context_menu) # Clic derecho
+        self.bind("<Button-3>", self.show_context_menu) # Clic derecho (estándar)
+        self.bind("<Button-2>", self.show_context_menu) # Clic derecho (común en macOS)
+        self.bind("<<TreeviewSelect>>", self.on_track_select)
 
         self.context_menu = tk.Menu(self, tearoff=0)
         self.context_menu.add_command(label="Re-escanear metadatos del archivo", command=self.rescan_selected_track)
@@ -47,6 +50,16 @@ class Tracklist(ttk.Treeview):
             self.selection_set(item_id)
             self.focus(item_id)
             self.context_menu.post(event.x_root, event.y_root)
+
+    def on_track_select(self, event):
+        """Se llama cuando se selecciona una pista. Llama al callback para actualizar la forma de onda."""
+        selected_item = self.focus()
+        if not selected_item:
+            return
+
+        file_path = self.item_to_filepath.get(selected_item)
+        if file_path and self.waveform_callback:
+            self.waveform_callback(file_path)
 
     def rescan_selected_track(self):
         """Re-escanea los metadatos de la pista seleccionada y actualiza la DB y la UI."""

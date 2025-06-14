@@ -64,11 +64,17 @@ def read_metadata(file_path):
             # Búsqueda mejorada de tags personalizados
             for key in tags:
                 key_lower = key.lower()
+                # El valor puede ser bytes o string, nos aseguramos de que sea string
+                value = tags[key][0]
+                if isinstance(value, bytes):
+                    value = value.decode('utf-8', 'ignore')
+                else:
+                    value = str(value)
+
                 if 'initialkey' in key_lower:
-                    metadata["key"] = tags[key][0]
+                    metadata["key"] = value
                 elif key_lower == 'tmpo' or 'bpm' in key_lower or 'tempo' in key_lower:
-                    val_str = str(tags[key][0])
-                    numeric_part = ''.join(filter(str.isdigit, val_str.split(' ')[0]))
+                    numeric_part = ''.join(filter(str.isdigit, value.split(' ')[0]))
                     if numeric_part:
                         metadata["bpm"] = numeric_part
 
@@ -81,6 +87,14 @@ def read_metadata(file_path):
 
         if audio:
             metadata["duration"] = round(audio.info.length, 2)
+
+        # --- NORMALIZACIÓN FINAL ---
+        # Asegurarse de que todos los valores de texto sean strings decodificados
+        for key, value in metadata.items():
+            if isinstance(value, bytes):
+                metadata[key] = value.decode('utf-8', 'ignore')
+            elif value is not None and not isinstance(value, (str, int, float)):
+                 metadata[key] = str(value)
 
         return metadata
 
