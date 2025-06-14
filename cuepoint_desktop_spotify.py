@@ -19,6 +19,9 @@ from typing import List, Optional, Dict, Any
 # Importar integración con Spotify
 from spotify_integration import SpotifyIntegration, SpotifyTrack, AudioFeatures
 
+# Importar lector de metadatos embebidos
+from basic_metadata_reader import BasicMetadataReader, EmbeddedCuePoint
+
 @dataclass
 class CuePoint:
     position: float
@@ -140,6 +143,9 @@ class DjAlfinDesktopSpotify:
         # Integración con Spotify
         self.spotify = SpotifyIntegration()
         self.spotify_connected = False
+
+        # Lector de metadatos embebidos
+        self.metadata_reader = BasicMetadataReader()
         
         # Colores profesionales
         self.dj_colors = {
@@ -420,6 +426,15 @@ class DjAlfinDesktopSpotify:
                  bg='#1db954', fg='white', font=('Arial', 9, 'bold')).pack(side='left', padx=2, fill='x', expand=True)
         tk.Button(btn_frame1, text="📊 Analysis", command=self.show_spotify_analysis,
                  bg='#fd7e14', fg='white', font=('Arial', 9, 'bold')).pack(side='left', padx=2, fill='x', expand=True)
+
+        # Botón para leer cue points embebidos
+        btn_frame2 = tk.Frame(spotify_frame, bg='#21262d')
+        btn_frame2.pack(fill='x', padx=5, pady=5)
+
+        tk.Button(btn_frame2, text="🎵 Read Embedded", command=self.read_embedded_cues,
+                 bg='#6f42c1', fg='white', font=('Arial', 9, 'bold')).pack(side='left', padx=2, fill='x', expand=True)
+        tk.Button(btn_frame2, text="🔄 Auto-Load", command=self.auto_load_all_cues,
+                 bg='#238636', fg='white', font=('Arial', 9, 'bold')).pack(side='left', padx=2, fill='x', expand=True)
         
         # Información de Spotify
         self.spotify_info_label = tk.Label(
@@ -603,6 +618,9 @@ class DjAlfinDesktopSpotify:
             if not self.current_file.spotify_metadata and self.spotify_connected:
                 self.enhance_current_file_with_spotify()
 
+            # Auto-cargar cue points embebidos
+            self.auto_load_embedded_cues()
+
             self.show_notification(f"📁 Loaded: {self.current_file.artist} - {self.current_file.title}")
         else:
             messagebox.showwarning("Warning", "Please select a file first")
@@ -783,6 +801,194 @@ class DjAlfinDesktopSpotify:
             fg='white',
             font=('Arial', 12, 'bold')
         ).pack(pady=20)
+
+    def read_embedded_cues(self):
+        """Leer cue points embebidos del archivo actual."""
+        if not self.current_file:
+            messagebox.showwarning("Warning", "No file loaded")
+            return
+
+        self.show_notification("🔍 Reading embedded cue points...")
+
+        def read_thread():
+            try:
+                metadata = self.metadata_reader.scan_file(self.current_file.path)
+                embedded_cues = metadata.get('cue_points', [])
+
+                if embedded_cues:
+                    # Convertir EmbeddedCuePoint a CuePoint
+                    for embedded_cue in embedded_cues:
+                        # Buscar próximo hot cue disponible
+                        hotcue_index = 0
+                        for i in range(1, 9):
+                            if not any(cue.hotcue_index == i for cue in self.cue_points):
+                                hotcue_index = i
+                                break
+
+                        cue_point = CuePoint(
+                            position=embedded_cue.position,
+                            type=embedded_cue.type,
+                            color=embedded_cue.color,
+                            name=embedded_cue.name,
+                            hotcue_index=hotcue_index,
+                            created_at=embedded_cue.created_at,
+                            energy_level=embedded_cue.energy_level,
+                            source=f"embedded_{embedded_cue.software}"
+                        )
+
+                        self.cue_points.append(cue_point)
+
+                    self.root.after(0, self.update_cue_list)
+                    self.root.after(0, self.update_hotcue_buttons)
+                    self.root.after(0, lambda: self.show_notification(f"🎵 Loaded {len(embedded_cues)} embedded cue points from {embedded_cues[0].software}"))
+                else:
+                    self.root.after(0, lambda: self.show_notification("❌ No embedded cue points found"))
+
+            except Exception as e:
+                self.root.after(0, lambda: self.show_notification(f"❌ Error reading embedded cues: {str(e)}"))
+
+        threading.Thread(target=read_thread, daemon=True).start()
+
+    def auto_load_all_cues(self):
+        """Cargar automáticamente cue points de todas las fuentes."""
+        if not self.current_file:
+            messagebox.showwarning("Warning", "No file loaded")
+            return
+
+        self.show_notification("🔄 Auto-loading cue points from all sources...")
+
+        def auto_load_thread():
+            try:
+                # 1. Leer cue points embebidos
+                metadata = self.metadata_reader.scan_file(self.current_file.path)
+                embedded_cues = metadata.get('cue_points', [])
+
+                # 2. Leer cue points de archivos JSON
+                self.root.after(0, self.load_cues_for_current_file)
+
+                # 3. Agregar cue points embebidos si no hay conflictos
+                if embedded_cues:
+                    for embedded_cue in embedded_cues:
+                        # Verificar si ya existe un cue point en posición similar
+                        exists = any(abs(cue.position - embedded_cue.position) < 2.0 for cue in self.cue_points)
+
+                        if not exists:
+                            # Buscar próximo hot cue disponible
+                            hotcue_index = 0
+                            for i in range(1, 9):
+                                if not any(cue.hotcue_index == i for cue in self.cue_points):
+                                    hotcue_index = i
+                                    break
+
+                            cue_point = CuePoint(
+                                position=embedded_cue.position,
+                                type=embedded_cue.type,
+                                color=embedded_cue.color,
+                                name=embedded_cue.name,
+                                hotcue_index=hotcue_index,
+                                created_at=embedded_cue.created_at,
+                                energy_level=embedded_cue.energy_level,
+                                source=f"embedded_{embedded_cue.software}"
+                            )
+
+                            self.cue_points.append(cue_point)
+
+                # 4. Sugerir cue points de Spotify si está conectado
+                if self.spotify_connected and self.current_file.spotify_metadata and 'spotify_id' in self.current_file.spotify_metadata:
+                    spotify_id = self.current_file.spotify_metadata['spotify_id']
+                    suggested_cues = self.spotify.suggest_cue_points_from_analysis(spotify_id)
+
+                    for cue_data in suggested_cues:
+                        # Verificar si ya existe
+                        exists = any(abs(cue.position - cue_data['position']) < 2.0 for cue in self.cue_points)
+
+                        if not exists:
+                            hotcue_index = 0
+                            for i in range(1, 9):
+                                if not any(cue.hotcue_index == i for cue in self.cue_points):
+                                    hotcue_index = i
+                                    break
+
+                            cue_point = CuePoint(
+                                position=cue_data['position'],
+                                type="cue",
+                                color=cue_data['color'],
+                                name=cue_data['name'],
+                                hotcue_index=hotcue_index,
+                                created_at=time.time(),
+                                energy_level=cue_data['energy_level'],
+                                source="spotify_analysis"
+                            )
+
+                            self.cue_points.append(cue_point)
+
+                self.root.after(0, self.update_cue_list)
+                self.root.after(0, self.update_hotcue_buttons)
+
+                total_cues = len(self.cue_points)
+                embedded_count = len([c for c in self.cue_points if c.source.startswith('embedded')])
+                spotify_count = len([c for c in self.cue_points if c.source == 'spotify_analysis'])
+                json_count = len([c for c in self.cue_points if c.source == 'manual'])
+
+                message = f"🔄 Auto-loaded {total_cues} total cue points"
+                if embedded_count > 0:
+                    message += f" ({embedded_count} embedded"
+                if spotify_count > 0:
+                    message += f", {spotify_count} Spotify"
+                if json_count > 0:
+                    message += f", {json_count} saved"
+                if embedded_count > 0 or spotify_count > 0 or json_count > 0:
+                    message += ")"
+
+                self.root.after(0, lambda: self.show_notification(message))
+
+            except Exception as e:
+                self.root.after(0, lambda: self.show_notification(f"❌ Error in auto-load: {str(e)}"))
+
+        threading.Thread(target=auto_load_thread, daemon=True).start()
+
+    def auto_load_embedded_cues(self):
+        """Auto-cargar cue points embebidos al cargar archivo."""
+        if not self.current_file:
+            return
+
+        def load_thread():
+            try:
+                metadata = self.metadata_reader.scan_file(self.current_file.path)
+                embedded_cues = metadata.get('cue_points', [])
+
+                if embedded_cues:
+                    print(f"🎵 Found {len(embedded_cues)} embedded cue points from {embedded_cues[0].software}")
+
+                    # Agregar solo si no hay cue points existentes
+                    if not self.cue_points:
+                        for embedded_cue in embedded_cues:
+                            hotcue_index = len(self.cue_points) + 1 if len(self.cue_points) < 8 else 0
+
+                            cue_point = CuePoint(
+                                position=embedded_cue.position,
+                                type=embedded_cue.type,
+                                color=embedded_cue.color,
+                                name=embedded_cue.name,
+                                hotcue_index=hotcue_index,
+                                created_at=embedded_cue.created_at,
+                                energy_level=embedded_cue.energy_level,
+                                source=f"embedded_{embedded_cue.software}"
+                            )
+
+                            self.cue_points.append(cue_point)
+
+                        self.root.after(0, self.update_cue_list)
+                        self.root.after(0, self.update_hotcue_buttons)
+
+                        # Mostrar notificación discreta
+                        software = embedded_cues[0].software.title()
+                        self.root.after(0, lambda: print(f"✅ Auto-loaded {len(embedded_cues)} {software} cue points"))
+
+            except Exception as e:
+                print(f"❌ Error auto-loading embedded cues: {e}")
+
+        threading.Thread(target=load_thread, daemon=True).start()
 
     def update_position_controls(self):
         if self.current_file:
