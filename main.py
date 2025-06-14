@@ -30,11 +30,12 @@ class MainApplication(tk.Tk):
             on_end_callback=self._play_next_track
         )
 
-        self.style = ttk.Style(self)
-        for element, config in theme.STYLE_CONFIG.items():
-            self.style.configure(element, **config.get('configure', {}))
-            if 'map' in config:
-                self.style.map(element, **config.get('map', {}))
+        # --- PRUEBA: Desactivar la carga de temas ---
+        # self.style = ttk.Style(self)
+        # for element, config in theme.STYLE_CONFIG.items():
+        #     self.style.configure(element, **config.get('configure', {}))
+        #     if 'map' in config:
+        #         self.style.map(element, **config.get('map', {}))
 
         self._create_widgets()
         self._load_initial_data()
@@ -48,18 +49,24 @@ class MainApplication(tk.Tk):
         main_frame.grid_columnconfigure(0, weight=3)
         main_frame.grid_columnconfigure(1, weight=2)
 
-        self.tracklist = Tracklist(main_frame)
-        self.tracklist.grid(row=0, column=0, sticky="nsew", padx=(0, 5))
-        self.tracklist.tree.bind("<Double-1>", self._on_track_double_click)
-        self.tracklist.tree.bind("<<TreeviewSelect>>", self._on_track_select)
+        # # --- PRUEBA DE COMPONENTES ---
+        # # Descomenta uno a uno para encontrar al culpable.
+        
+        # # SOSPECHOSO 1: Tracklist
+        # self.tracklist = Tracklist(main_frame)
+        # self.tracklist.grid(row=0, column=0, sticky="nsew", padx=(0, 5))
+        # self.tracklist.tree.bind("<Double-1>", self._on_track_double_click)
+        # self.tracklist.tree.bind("<<TreeviewSelect>>", self._on_track_select)
 
-        self.metadata_panel = MetadataPanel(main_frame)
-        self.metadata_panel.grid(row=0, column=1, sticky="nsew", padx=(5, 0))
-        self.metadata_panel.set_save_callback(self._save_metadata)
+        # # SOSPECHOSO 2: MetadataPanel
+        # self.metadata_panel = MetadataPanel(main_frame)
+        # self.metadata_panel.grid(row=0, column=1, sticky="nsew", padx=(5, 0))
+        # self.metadata_panel.set_save_callback(self._save_metadata)
 
-        self.playback_panel = PlaybackPanel(self)
-        self.playback_panel.pack(fill="x", side="bottom", pady=(5, 0))
-        self.playback_panel.set_player(self.audio_player)
+        # # SOSPECHOSO 3: PlaybackPanel
+        # self.playback_panel = PlaybackPanel(self)
+        # self.playback_panel.pack(fill="x", side="bottom", pady=(5, 0))
+        # self.playback_panel.set_player(self.audio_player)
         
         self.status_bar = StatusBar(self)
         self.status_bar.pack(fill="x", side="bottom")
@@ -79,12 +86,14 @@ class MainApplication(tk.Tk):
         return menubar
 
     def _load_initial_data(self):
-        tracks = db.get_all_tracks()
-        self.tracklist.populate(tracks)
-        self.status_bar.set_status(f"{len(tracks)} pistas en la librería.")
+        # tracks = db.get_all_tracks()
+        # self.tracklist.populate(tracks)
+        # self.status_bar.set_status(f"{len(tracks)} pistas en la librería.")
+        self.status_bar.set_status("Componentes principales desactivados para prueba.")
 
     def _on_track_select(self, event):
-        track_data = self.tracklist.get_selected_track_data()
+        pass # Desactivado para la prueba
+        # track_data = self.tracklist.get_selected_track_data()
         if track_data:
             self.metadata_panel.display_track(track_data)
             
