@@ -155,6 +155,10 @@ class Tracklist(ttk.Frame):
         values = self.tree.item(prev_item, "values")
         return {col: values[i] for i, col in enumerate(self.columns)}
 
+    def get_track_count(self):
+        """Devuelve el número total de pistas en el Treeview."""
+        return len(self.tree.get_children())
+
     def select_track_by_id(self, track_id):
         """Selecciona una pista en el Treeview por su ID."""
         for item in self.tree.get_children():
