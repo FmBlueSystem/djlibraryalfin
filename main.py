@@ -25,22 +25,31 @@ class MainApplication(tk.Tk):
         self.title("DjAlfin Pro")
         self.geometry(self.app_config.get('window_geometry', '1200x800'))
 
-        self.audio_player = AudioPlayer(
-            update_callback=self._update_playback_progress,
-            on_end_callback=self._play_next_track
-        )
-
-        # --- PRUEBA: Desactivar la carga de temas ---
-        # self.style = ttk.Style(self)
-        # for element, config in theme.STYLE_CONFIG.items():
-        #     self.style.configure(element, **config.get('configure', {}))
-        #     if 'map' in config:
-        #         self.style.map(element, **config.get('map', {}))
+        self.audio_player = None # Inicialización perezosa
+        
+        self.style = ttk.Style(self)
+        for element, config in theme.STYLE_CONFIG.items():
+            self.style.configure(element, **config.get('configure', {}))
+            if 'map' in config:
+                self.style.map(element, **config.get('map', {}))
 
         self._create_widgets()
         self._load_initial_data()
         
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
+
+    def _get_or_create_player(self):
+        """Inicializa el AudioPlayer la primera vez que se necesita."""
+        if self.audio_player is None:
+            print("Creando instancia de AudioPlayer por primera vez...")
+            self.audio_player = AudioPlayer(
+                update_callback=self._update_playback_progress,
+                on_end_callback=self._play_next_track
+            )
+            # Si el playback_panel ya existe, asignarle el nuevo player
+            if hasattr(self, 'playback_panel'):
+                self.playback_panel.set_player(self.audio_player)
+        return self.audio_player
 
     def _create_widgets(self):
         main_frame = ttk.Frame(self, style="TFrame")
@@ -49,25 +58,25 @@ class MainApplication(tk.Tk):
         main_frame.grid_columnconfigure(0, weight=3)
         main_frame.grid_columnconfigure(1, weight=2)
 
-        # # --- PRUEBA DE COMPONENTES ---
-        # # Descomenta uno a uno para encontrar al culpable.
-        
-        # # SOSPECHOSO 1: Tracklist
-        # self.tracklist = Tracklist(main_frame)
-        # self.tracklist.grid(row=0, column=0, sticky="nsew", padx=(0, 5))
-        # self.tracklist.tree.bind("<Double-1>", self._on_track_double_click)
-        # self.tracklist.tree.bind("<<TreeviewSelect>>", self._on_track_select)
+        self.tracklist = Tracklist(main_frame)
+        self.tracklist.grid(row=0, column=0, sticky="nsew", padx=(0, 5))
+        self.tracklist.tree.bind("<Double-1>", self._on_track_double_click)
+        self.tracklist.tree.bind("<<TreeviewSelect>>", self._on_track_select)
 
-        # # SOSPECHOSO 2: MetadataPanel
-        # self.metadata_panel = MetadataPanel(main_frame)
-        # self.metadata_panel.grid(row=0, column=1, sticky="nsew", padx=(5, 0))
-        # self.metadata_panel.set_save_callback(self._save_metadata)
+        self.metadata_panel = MetadataPanel(main_frame)
+        self.metadata_panel.grid(row=0, column=1, sticky="nsew", padx=(5, 0))
+        self.metadata_panel.set_save_callback(self._save_metadata)
 
-        # # SOSPECHOSO 3: PlaybackPanel
-        # self.playback_panel = PlaybackPanel(self)
-        # self.playback_panel.pack(fill="x", side="bottom", pady=(5, 0))
-        # self.playback_panel.set_player(self.audio_player)
-        
+        self.playback_panel = PlaybackPanel(self)
+        self.playback_panel.pack(fill="x", side="bottom", pady=(5, 0))
+        self.playback_panel.set_commands(
+            play_pause_cmd=self._handle_play_pause,
+            stop_cmd=self._handle_stop,
+            next_cmd=self._play_next_track,
+            prev_cmd=self._play_prev_track,
+            seek_cmd=self._handle_seek
+        )
+
         self.status_bar = StatusBar(self)
         self.status_bar.pack(fill="x", side="bottom")
 
@@ -86,24 +95,45 @@ class MainApplication(tk.Tk):
         return menubar
 
     def _load_initial_data(self):
-        # tracks = db.get_all_tracks()
-        # self.tracklist.populate(tracks)
-        # self.status_bar.set_status(f"{len(tracks)} pistas en la librería.")
-        self.status_bar.set_status("Componentes principales desactivados para prueba.")
+        tracks = db.get_all_tracks()
+        self.tracklist.populate(tracks)
+        self.status_bar.set_status(f"{len(tracks)} pistas en la librería.")
 
     def _on_track_select(self, event):
-        pass # Desactivado para la prueba
-        # track_data = self.tracklist.get_selected_track_data()
+        track_data = self.tracklist.get_selected_track_data()
         if track_data:
             self.metadata_panel.display_track(track_data)
             
     def _on_track_double_click(self, event):
         track_data = self.tracklist.get_selected_track_data()
         if track_data and 'file_path' in track_data:
-            self.audio_player.play(track_data['file_path'])
+            player = self._get_or_create_player()
+            player.play(track_data['file_path'])
             self.playback_panel.set_track_info(track_data)
             self.playback_panel.set_play_pause_state(True)
     
+    def _handle_play_pause(self):
+        player = self._get_or_create_player()
+        if player.is_playing and not player.is_paused:
+            player.pause()
+            self.playback_panel.set_play_pause_state(False)
+        else:
+            if not player.is_playing:
+                self._on_track_double_click(None)
+            else:
+                player.resume()
+            self.playback_panel.set_play_pause_state(True)
+    
+    def _handle_stop(self):
+        if self.audio_player:
+            self.audio_player.stop()
+            self.playback_panel.set_play_pause_state(False)
+
+    def _handle_seek(self, event):
+        if self.audio_player:
+            seek_percentage = self.playback_panel.playback_position_var.get()
+            self.audio_player.seek(seek_percentage)
+
     def _save_metadata(self, track_id, new_metadata):
         file_path = db.get_track_path(track_id)
         if not file_path:
@@ -127,9 +157,14 @@ class MainApplication(tk.Tk):
     def _play_next_track(self):
         next_track_data = self.tracklist.get_next_track_data()
         if next_track_data:
+            player = self._get_or_create_player()
             self.tracklist.select_track_by_id(next_track_data['id'])
-            self.audio_player.play(next_track_data['file_path'])
+            player.play(next_track_data['file_path'])
             self.playback_panel.set_track_info(next_track_data)
+            self.playback_panel.set_play_pause_state(True)
+    
+    def _play_prev_track(self):
+        print("Funcionalidad de pista anterior no implementada.")
 
     def show_library_path_dialog(self):
         folder_selected = filedialog.askdirectory()
@@ -159,7 +194,8 @@ class MainApplication(tk.Tk):
     def _on_closing(self):
         self.app_config.set('window_geometry', self.geometry())
         self.app_config.save()
-        self.audio_player.stop()
+        if self.audio_player:
+            self.audio_player.stop()
         self.destroy()
 
 if __name__ == "__main__":

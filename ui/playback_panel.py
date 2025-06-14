@@ -31,11 +31,13 @@ class PlaybackPanel(ttk.Frame):
         self.next_button.config(command=self.player.stop) # Simple stop for now
         self.progress_slider.bind("<ButtonRelease-1>", self._on_seek)
 
-    def set_commands(self, play_pause_cmd, next_cmd, prev_cmd):
+    def set_commands(self, play_pause_cmd, stop_cmd, next_cmd, prev_cmd, seek_cmd):
         """Conecta los comandos de control a funciones externas."""
         self.play_pause_button.config(command=play_pause_cmd)
-        self.next_button.config(command=next_cmd)
         self.prev_button.config(command=prev_cmd)
+        self.next_button.config(command=next_cmd)
+        # El comando stop no tiene botón, pero podría usarse en el futuro
+        self.progress_slider.bind("<ButtonRelease-1>", seek_cmd)
 
     def _create_widgets(self):
         """Crea los widgets del panel de reproducción."""
