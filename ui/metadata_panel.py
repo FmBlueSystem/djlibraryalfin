@@ -195,11 +195,14 @@ class MetadataPanel(ttk.Frame):
             self.enrich_button.config(state="normal")
             return
 
+        JUNK_VALUES = {'', 'N/A', 'None', None}
+
         if enriched_data:
             print(f"[DEBUG] Populating fields with: {enriched_data}")
             for key, widget in self.track_data_widgets.items():
                 if isinstance(widget, ttk.Entry):
-                    if not widget.get() and key in enriched_data:
+                    current_value = widget.get()
+                    if key in enriched_data and current_value in JUNK_VALUES:
                         print(f"[DEBUG]   -> Updating Entry for '{key}'")
                         widget.delete(0, tk.END)
                         widget.insert(0, str(enriched_data[key]))
