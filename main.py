@@ -1,13 +1,15 @@
 import tkinter as tk
-from tkinter import ttk, filedialog, Menu
+from tkinter import ttk, filedialog, Menu, messagebox
 import threading
 import queue
+import platform
 
 from core.metadata_reader import read_metadata
 from core.database import init_db
 from core.library_scanner import scan_directory
 from ui.tracklist import Tracklist
 from ui.waveform_display import WaveformDisplay
+from ui.theme_manager import theme_manager
 
 class App(tk.Tk):
     def __init__(self):
