@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import tkinter as tk
+from tkinter import ttk
 import os
 import shutil
 import time
@@ -14,10 +15,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from main import MainApplication
 from core import database as db
+from core.metadata_reader import read_metadata
 
 class TestEnrichmentWorkflow(unittest.TestCase):
     TEST_DB_PATH = "config/test_library.db"
-    ORIGINAL_AUDIO_DIR = os.path.expanduser("~/Music")
+    ORIGINAL_AUDIO_DIR = "/Volumes/KINGSTON/Audio"
     TEST_AUDIO_DIR = "tests/temp_audio"
     
     # Esta variable se establecerá dinámicamente en setUpClass
@@ -34,14 +36,14 @@ class TestEnrichmentWorkflow(unittest.TestCase):
             os.remove(cls.TEST_DB_PATH)
         db.init_db()
 
-        # Crear un directorio de audio de prueba
+        # Crear un directorio de audio de prueba, limpiando restos anteriores si los hubiera
         if os.path.exists(cls.TEST_AUDIO_DIR):
-            shutil.rmtree(cls.TEST_AUDIO_DIR)
+            shutil.rmtree(cls.TEST_AUDIO_DIR, ignore_errors=True)
         os.makedirs(cls.TEST_AUDIO_DIR)
 
         # Buscar un archivo de audio real (cualquier formato compatible) para usarlo en la prueba
         supported_extensions = ['.mp3', '.flac', '.m4a']
-        search_dirs = [os.path.expanduser("~/Music"), cls.ORIGINAL_AUDIO_DIR] # Lista de directorios a buscar
+        search_dirs = [cls.ORIGINAL_AUDIO_DIR] # Apuntar solo a la carpeta correcta
         source_file_path = None
         
         for directory in search_dirs:
@@ -58,7 +60,7 @@ class TestEnrichmentWorkflow(unittest.TestCase):
                 break
 
         if not source_file_path:
-            raise FileNotFoundError(f"No se encontró un archivo compatible {supported_extensions} en {search_dirs} para la prueba.")
+            raise FileNotFoundError(f"No se encontró un archivo compatible {supported_extensions} en '{cls.ORIGINAL_AUDIO_DIR}' para la prueba.")
 
         # Copiar y limpiar metadatos del archivo de prueba
         test_file_name = f"test_song{cls.file_extension}"
@@ -68,30 +70,33 @@ class TestEnrichmentWorkflow(unittest.TestCase):
         # Limpiar el género y el año del archivo para asegurar que el enriquecimiento sea necesario
         if cls.file_extension == '.mp3':
             cls.file_handler = MP3(cls.test_file_path)
-            cls.file_handler['TCON'] = None
-            cls.file_handler['TDRC'] = None
+            if 'TCON' in cls.file_handler: del cls.file_handler['TCON']
+            if 'TDRC' in cls.file_handler: del cls.file_handler['TDRC']
         elif cls.file_extension == '.flac':
             cls.file_handler = FLAC(cls.test_file_path)
-            cls.file_handler['genre'] = []
-            cls.file_handler['date'] = []
+            if 'genre' in cls.file_handler: del cls.file_handler['genre']
+            if 'date' in cls.file_handler: del cls.file_handler['date']
         elif cls.file_extension == '.m4a':
             cls.file_handler = MP4(cls.test_file_path)
-            cls.file_handler['\xa9gen'] = []
-            cls.file_handler['\xa9day'] = []
+            if '\xa9gen' in cls.file_handler: del cls.file_handler['\xa9gen']
+            if '\xa9day' in cls.file_handler: del cls.file_handler['\xa9day']
         
         cls.file_handler.save()
 
+        # Usar los metadatos leídos del propio archivo para la DB
+        metadata = read_metadata(cls.test_file_path)
+
         # Añadir la pista a la DB de prueba
-        db.add_track_to_db({
+        db.add_track({
             "file_path": cls.test_file_path,
-            "artist": "Test Artist",
-            "title": "Test Title",
-            "album": "Test Album",
+            "artist": metadata.get('artist', 'Unknown Artist'),
+            "title": metadata.get('title', 'Unknown Title'),
+            "album": metadata.get('album', 'Unknown Album'),
             "genre": "",
             "year": "",
-            "duration": 180,
-            "bpm": "120",
-            "key": "C"
+            "duration": metadata.get('duration', 180),
+            "bpm": metadata.get('bpm', '120'),
+            "key": metadata.get('key', 'C')
         })
 
 
@@ -100,7 +105,8 @@ class TestEnrichmentWorkflow(unittest.TestCase):
         """ Se ejecuta una vez después de todas las pruebas de la clase. """
         # Limpiar el directorio de audio de prueba y la base de datos
         if os.path.exists(cls.TEST_AUDIO_DIR):
-            shutil.rmtree(cls.TEST_AUDIO_DIR)
+            # Usar ignore_errors=True para evitar problemas con archivos ._ de macOS
+            shutil.rmtree(cls.TEST_AUDIO_DIR, ignore_errors=True)
         if os.path.exists(cls.TEST_DB_PATH):
             os.remove(cls.TEST_DB_PATH)
 
@@ -133,7 +139,12 @@ class TestEnrichmentWorkflow(unittest.TestCase):
 
         # El panel puede no tener datos si la selección falla, añadimos un assert
         self.assertIsNotNone(self.app.metadata_panel.current_track_data, "El panel de metadatos no se cargó con datos de la pista.")
-        self.assertEqual(self.app.metadata_panel.current_track_data['title'], 'Test Title')
+        
+        # Leemos el título del archivo real para la comparación
+        real_metadata = read_metadata(self.test_file_path)
+        expected_title = real_metadata.get('title', 'Unknown Title')
+        
+        self.assertEqual(self.app.metadata_panel.current_track_data['title'], expected_title)
         
         # 3. Simular clic en "Editar"
         self.app.metadata_panel.edit_button.invoke()

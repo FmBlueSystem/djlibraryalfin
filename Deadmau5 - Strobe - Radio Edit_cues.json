@@ -1,0 +1,96 @@
+{
+  "version": "2.1",
+  "file_info": {
+    "artist": "Deadmau5",
+    "title": "Strobe - Radio Edit",
+    "duration": 214.2,
+    "format": "MP3",
+    "bitrate": "320 kbps",
+    "spotify_metadata": {
+      "spotify_id": "4uLU6hMCjMI75M1A2tKUQC",
+      "spotify_name": "Strobe - Radio Edit",
+      "spotify_artist": "deadmau5",
+      "spotify_album": "Strobe",
+      "spotify_bpm": 128,
+      "spotify_key": "F# minor",
+      "spotify_energy": 7,
+      "spotify_danceability": 6,
+      "spotify_popularity": 52
+    }
+  },
+  "cue_points": [
+    {
+      "position": 8.5,
+      "type": "cue",
+      "color": "#FF6600",
+      "name": "Intro",
+      "hotcue_index": 1,
+      "created_at": 1749904502.115396,
+      "energy_level": 4,
+      "source": "spotify_analysis"
+    },
+    {
+      "position": 32.1,
+      "type": "cue",
+      "color": "#FFFF00",
+      "name": "Build Up",
+      "hotcue_index": 2,
+      "created_at": 1749904502.115398,
+      "energy_level": 6,
+      "source": "spotify_analysis"
+    },
+    {
+      "position": 64.8,
+      "type": "cue",
+      "color": "#FF0000",
+      "name": "Drop 1",
+      "hotcue_index": 3,
+      "created_at": 1749904502.115399,
+      "energy_level": 8,
+      "source": "spotify_analysis"
+    },
+    {
+      "position": 96.3,
+      "type": "cue",
+      "color": "#0066FF",
+      "name": "Breakdown",
+      "hotcue_index": 4,
+      "created_at": 1749904502.115399,
+      "energy_level": 4,
+      "source": "spotify_analysis"
+    },
+    {
+      "position": 128.7,
+      "type": "cue",
+      "color": "#FF0000",
+      "name": "Main Drop",
+      "hotcue_index": 5,
+      "created_at": 1749904502.115399,
+      "energy_level": 9,
+      "source": "spotify_analysis"
+    },
+    {
+      "position": 160.2,
+      "type": "cue",
+      "color": "#00FFFF",
+      "name": "Bridge",
+      "hotcue_index": 6,
+      "created_at": 1749904502.115399,
+      "energy_level": 6,
+      "source": "spotify_analysis"
+    },
+    {
+      "position": 192.4,
+      "type": "cue",
+      "color": "#9900FF",
+      "name": "Outro",
+      "hotcue_index": 7,
+      "created_at": 1749904502.1153998,
+      "energy_level": 5,
+      "source": "spotify_analysis"
+    }
+  ],
+  "spotify_enhanced": true,
+  "created_at": 1749904502.115459,
+  "demo_file": true
+}

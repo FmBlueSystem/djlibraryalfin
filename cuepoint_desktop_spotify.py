@@ -1051,34 +1051,99 @@ class DjAlfinDesktopSpotify:
                 messagebox.showerror("Error", f"Error loading file: {e}")
 
     def load_cues_for_current_file(self):
+        """Cargar cue points automáticamente para el archivo actual con búsqueda mejorada."""
         if not self.current_file:
             return
 
-        base_name = f"{self.current_file.artist} - {self.current_file.title}"
-        cue_file = f"{base_name}_cues.json"
+        # Limpiar nombres para búsqueda
+        artist_clean = self.clean_filename(self.current_file.artist)
+        title_clean = self.clean_filename(self.current_file.title)
 
-        if os.path.exists(cue_file):
-            try:
-                with open(cue_file, 'r') as f:
-                    data = json.load(f)
+        # Múltiples patrones de búsqueda
+        search_patterns = [
+            f"{self.current_file.artist} - {self.current_file.title}_cues.json",
+            f"{artist_clean} - {title_clean}_cues.json",
+            f"{self.current_file.artist} - {self.current_file.title.split('(')[0].strip()}_cues.json",
+            f"{artist_clean} - {title_clean.split('(')[0].strip()}_cues.json"
+        ]
 
-                self.cue_points = []
-                for cue_data in data.get('cue_points', []):
-                    if 'energy_level' not in cue_data:
-                        cue_data['energy_level'] = 5
-                    if 'source' not in cue_data:
-                        cue_data['source'] = 'manual'
+        # Buscar en múltiples ubicaciones
+        search_paths = [
+            ".",  # Directorio actual
+            "/Volumes/KINGSTON/DjAlfin",  # Directorio del proyecto
+            os.path.dirname(self.current_file.path) if self.current_file.path else "."  # Directorio del archivo
+        ]
 
-                    cue = CuePoint(**cue_data)
-                    self.cue_points.append(cue)
+        print(f"🔍 Searching cue points for: {self.current_file.artist} - {self.current_file.title}")
 
-                self.update_cue_list()
-                self.update_hotcue_buttons()
+        cue_file_found = None
 
-                self.show_notification(f"📁 Auto-loaded {len(self.cue_points)} cue points")
+        # Buscar archivo de cue points
+        for search_path in search_paths:
+            if not os.path.exists(search_path):
+                continue
 
-            except Exception as e:
-                print(f"Error auto-loading cues: {e}")
+            for pattern in search_patterns:
+                full_path = os.path.join(search_path, pattern)
+                print(f"   Checking: {full_path}")
+
+                if os.path.exists(full_path):
+                    cue_file_found = full_path
+                    print(f"✅ Found cue file: {full_path}")
+                    break
+
+            if cue_file_found:
+                break
+
+        if not cue_file_found:
+            print(f"❌ No cue points found for: {self.current_file.artist} - {self.current_file.title}")
+            return
+
+        # Cargar archivo de cue points
+        try:
+            with open(cue_file_found, 'r') as f:
+                data = json.load(f)
+
+            self.cue_points = []
+            cue_points_data = data.get('cue_points', [])
+
+            for cue_data in cue_points_data:
+                # Asegurar compatibilidad con versiones anteriores
+                if 'energy_level' not in cue_data:
+                    cue_data['energy_level'] = 5
+                if 'source' not in cue_data:
+                    cue_data['source'] = 'manual'
+
+                cue = CuePoint(**cue_data)
+                self.cue_points.append(cue)
+
+            self.update_cue_list()
+            self.update_hotcue_buttons()
+
+            # Verificar si es archivo con datos de Spotify
+            spotify_enhanced = data.get('spotify_enhanced', False)
+            demo_file = data.get('demo_file', False)
+
+            message = f"📁 Auto-loaded {len(self.cue_points)} cue points"
+            if spotify_enhanced:
+                message += " (🎵 Spotify enhanced)"
+            if demo_file:
+                message += " (🎯 Demo file)"
+
+            self.show_notification(message)
+            print(f"✅ Loaded {len(self.cue_points)} cue points from {os.path.basename(cue_file_found)}")
+
+        except Exception as e:
+            print(f"❌ Error auto-loading cues from {cue_file_found}: {e}")
+            self.show_notification(f"❌ Error loading cue points: {str(e)}")
+
+    def clean_filename(self, name):
+        """Limpiar nombre de archivo para búsqueda."""
+        # Remover caracteres problemáticos
+        cleaned = name.replace("_PN", "").replace("_", " ")
+        # Remover espacios extra
+        cleaned = " ".join(cleaned.split())
+        return cleaned.strip()
 
     def show_notification(self, message):
         notification = tk.Toplevel(self.root)

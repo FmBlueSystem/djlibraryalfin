@@ -1,0 +1,95 @@
+{
+  "version": "2.1",
+  "file_info": {
+    "artist": "Coldplay",
+    "title": "A Sky Full Of Stars (DJ Beats)",
+    "duration": 268.0,
+    "format": "MP3",
+    "bitrate": "320 kbps"
+  },
+  "cue_points": [
+    {
+      "position": 8.2,
+      "type": "cue",
+      "color": "#FF6600",
+      "name": "Intro",
+      "hotcue_index": 1,
+      "created_at": 1749904502.08111,
+      "energy_level": 4,
+      "source": "manual"
+    },
+    {
+      "position": 32.5,
+      "type": "cue",
+      "color": "#FFFF00",
+      "name": "Verse 1",
+      "hotcue_index": 2,
+      "created_at": 1749904502.08111,
+      "energy_level": 5,
+      "source": "manual"
+    },
+    {
+      "position": 64.8,
+      "type": "cue",
+      "color": "#FF0000",
+      "name": "Chorus 1",
+      "hotcue_index": 3,
+      "created_at": 1749904502.081111,
+      "energy_level": 8,
+      "source": "manual"
+    },
+    {
+      "position": 96.3,
+      "type": "cue",
+      "color": "#00FFFF",
+      "name": "Verse 2",
+      "hotcue_index": 4,
+      "created_at": 1749904502.081111,
+      "energy_level": 6,
+      "source": "manual"
+    },
+    {
+      "position": 128.7,
+      "type": "cue",
+      "color": "#FF0000",
+      "name": "Chorus 2",
+      "hotcue_index": 5,
+      "created_at": 1749904502.081111,
+      "energy_level": 9,
+      "source": "manual"
+    },
+    {
+      "position": 192.4,
+      "type": "cue",
+      "color": "#0066FF",
+      "name": "Bridge",
+      "hotcue_index": 6,
+      "created_at": 1749904502.0811121,
+      "energy_level": 7,
+      "source": "manual"
+    },
+    {
+      "position": 224.1,
+      "type": "cue",
+      "color": "#FF0000",
+      "name": "Final Chorus",
+      "hotcue_index": 7,
+      "created_at": 1749904502.0811121,
+      "energy_level": 10,
+      "source": "manual"
+    },
+    {
+      "position": 250.8,
+      "type": "cue",
+      "color": "#9900FF",
+      "name": "Outro",
+      "hotcue_index": 8,
+      "created_at": 1749904502.0811121,
+      "energy_level": 4,
+      "source": "manual"
+    }
+  ],
+  "spotify_enhanced": false,
+  "created_at": 1749904502.091007,
+  "demo_file": true
+}

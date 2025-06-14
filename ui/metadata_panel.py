@@ -94,10 +94,13 @@ class MetadataPanel(ttk.Frame):
 
     def _toggle_edit_mode(self):
         """Cambia entre el modo de visualización y el modo de edición."""
+        print(f"[DEBUG] Toggling edit mode. Current is_editing: {self.is_editing}")
         self.is_editing = not self.is_editing
+        print(f"[DEBUG] New is_editing state: {self.is_editing}")
 
         if self.is_editing:
             # --- Entrar en modo edición ---
+            print("[DEBUG] Entering edit mode.")
             self.edit_button.grid_remove()
             self.save_button.grid(row=0, column=0, padx=5, sticky="ew")
             self.cancel_button.grid(row=0, column=1, padx=5, sticky="ew")
@@ -113,6 +116,7 @@ class MetadataPanel(ttk.Frame):
                 self.track_data_widgets[key] = entry
         else:
             # --- Salir del modo edición (vista) ---
+            print("[DEBUG] Exiting edit mode.")
             self.save_button.grid_remove()
             self.cancel_button.grid_remove()
             self.edit_button.grid()
@@ -128,26 +132,35 @@ class MetadataPanel(ttk.Frame):
     
     def _save_changes(self):
         """Recopila los datos de los campos de entrada y llama al callback para guardarlos."""
+        print("[DEBUG] _save_changes called.")
         if not self.current_track_data:
+            print("[DEBUG] No current_track_data. Aborting save.")
             return
 
         new_metadata = {}
+        print("[DEBUG] Collecting data from Entry widgets...")
         for key, widget in self.track_data_widgets.items():
             if isinstance(widget, ttk.Entry):
                 new_value = widget.get()
-                # Comparar con el valor original para ver si hubo cambios
-                if str(new_value) != str(self.current_track_data.get(key, "")):
+                original_value = self.current_track_data.get(key, "")
+                print(f"[DEBUG]   - Entry '{key}': value='{new_value}', original='{original_value}'")
+                if str(new_value) != str(original_value):
                     new_metadata[key] = new_value
+                    print(f"[DEBUG]     -> Change detected for '{key}'. Staged for save.")
         
-        if new_metadata: # Solo guardar si hubo cambios
+        print(f"[DEBUG] Metadata staged for save: {new_metadata}")
+        if new_metadata:
             track_id = self.current_track_data.get('id')
             if self.on_save_callback:
+                print(f"[DEBUG] on_save_callback found. Calling for track ID {track_id}.")
                 self.on_save_callback(track_id, new_metadata)
+            else:
+                print("[DEBUG] ERROR: on_save_callback is not set!")
             
-            # Actualizar el diccionario de datos interno para reflejar los cambios
             self.current_track_data.update(new_metadata)
+        else:
+            print("[DEBUG] No changes detected in fields. Skipping save.")
         
-        # Salir siempre del modo edición, haya habido cambios o no
         self._toggle_edit_mode()
 
     def enrich_metadata(self):
@@ -159,23 +172,16 @@ class MetadataPanel(ttk.Frame):
 
         artist = self.current_track_data.get('artist')
         title = self.current_track_data.get('title')
-
-        if not artist or not title:
-            # Esta comprobación es una salvaguarda. El botón ya debería estar deshabilitado.
-            print("Error: No se puede enriquecer sin artista y título.")
-            return
-            
-        print(f"Iniciando enriquecimiento para: {artist} - {title}")
+        
+        print(f"[DEBUG] enrich_metadata called for: {artist} - {title}")
         self.enrich_button.config(state="disabled")
 
         def _enrich_and_update():
-            # Esta función se ejecuta en un hilo nuevo
+            print("[DEBUG] Enrichment thread started.")
             enriched_data = metadata_enricher.enrich_metadata(self.current_track_data)
-            
-            # Para actualizar la UI, volvemos al hilo principal
+            print(f"[DEBUG] Enrichment thread finished. Data found: {enriched_data}")
             self.after(0, self.update_fields_with_enriched_data, enriched_data)
 
-        # Crear y empezar el hilo
         threading.Thread(target=_enrich_and_update, daemon=True).start()
 
     def update_fields_with_enriched_data(self, enriched_data):
@@ -183,19 +189,22 @@ class MetadataPanel(ttk.Frame):
         Callback que se ejecuta cuando el enriquecedor termina.
         Rellena los campos de entrada (Entry) con los datos encontrados.
         """
-        print("Enriquecimiento completado. Actualizando campos de edición.")
-        
+        print(f"[DEBUG] update_fields_with_enriched_data called. is_editing: {self.is_editing}")
+        if not self.is_editing:
+            print("[DEBUG] Not in edit mode. Aborting UI update.")
+            self.enrich_button.config(state="normal")
+            return
+
         if enriched_data:
+            print(f"[DEBUG] Populating fields with: {enriched_data}")
             for key, widget in self.track_data_widgets.items():
-                # Asegurarse de que el widget es un campo de texto editable
                 if isinstance(widget, ttk.Entry):
-                    # Solo rellenar si el campo está vacío y tenemos un dato para él
                     if not widget.get() and key in enriched_data:
+                        print(f"[DEBUG]   -> Updating Entry for '{key}'")
                         widget.delete(0, tk.END)
                         widget.insert(0, str(enriched_data[key]))
         else:
-            print("No se encontraron datos de enriquecimiento.")
+            print("[DEBUG] No enriched data found to populate.")
 
-        # Rehabilitar los botones
         self.enrich_button.config(state="normal")
         self.save_button.config(state="normal") 
