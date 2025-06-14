@@ -156,6 +156,57 @@ def update_track_field(file_path, field, value):
     finally:
         conn.close()
 
+def get_track_path(track_id):
+    """
+    Recupera la ruta de archivo de una pista dado su ID.
+
+    Args:
+        track_id (int): El ID de la pista.
+
+    Returns:
+        str: La ruta del archivo de la pista, o None si no se encuentra.
+    """
+    conn = create_connection()
+    if not conn:
+        return None
+
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT file_path FROM tracks WHERE id = ?", (track_id,))
+        row = cursor.fetchone()
+        return row[0] if row else None
+    except sqlite3.Error as e:
+        print(f"Error al obtener la ruta de la pista {track_id}: {e}")
+        return None
+    finally:
+        conn.close()
+
+def get_track_by_path(file_path):
+    """
+    Recupera una pista de la base de datos usando su ruta de archivo.
+    
+    Args:
+        file_path (str): La ruta completa del archivo de la pista.
+
+    Returns:
+        dict: Un diccionario con los datos de la pista si se encuentra, de lo contrario None.
+    """
+    conn = create_connection()
+    if not conn:
+        return None
+
+    try:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM tracks WHERE file_path = ?", (file_path,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
+    except sqlite3.Error as e:
+        print(f"Error al buscar la pista por ruta {file_path}: {e}")
+        return None
+    finally:
+        conn.close()
+
 # Para probar la inicialización directamente
 if __name__ == '__main__':
     init_db() 

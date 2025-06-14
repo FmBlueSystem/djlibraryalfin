@@ -3,159 +3,178 @@ from tkinter import ttk
 from core.database import get_all_tracks, update_track_field
 from core.metadata_writer import write_metadata_tag
 from core.metadata_reader import read_metadata
+from ui import theme
 
-class Tracklist(ttk.Treeview):
+class Tracklist(ttk.Frame):
+    """
+    Un widget Frame que contiene un Treeview para mostrar la lista de pistas
+    y maneja la interacción del usuario como la edición y el menú contextual.
+    """
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         
-        self.item_to_filepath = {} # Diccionario para mapear item_id a file_path
-        self.column_definitions = {
-            "title": {"text": "Título", "width": 250},
-            "artist": {"text": "Artista", "width": 150},
-            "album": {"text": "Álbum", "width": 150},
-            "duration": {"text": "Duración", "width": 80},
-            "bpm": {"text": "BPM", "width": 60},
-            "key": {"text": "Tonalidad", "width": 80},
-            "genre": {"text": "Género", "width": 100},
-            "file_type": {"text": "Tipo", "width": 50}
+        self.tree = ttk.Treeview(self, style="Treeview")
+        self._setup_widgets()
+        # La carga de datos se hará desde MainApplication
+
+    def _setup_widgets(self):
+        """Configura las columnas, el layout y los bindings del Treeview."""
+        self.columns = {
+            "id": ("ID", 30), "title": ("Título", 250), "artist": ("Artista", 200),
+            "album": ("Álbum", 200), "genre": ("Género", 120), "year": ("Año", 60),
+            "duration": ("Tiempo", 70), "bpm": ("BPM", 50), "key": ("Tono", 50), 
+            "file_path": ("Ruta", 0) # Oculta
         }
+        
+        self.tree["columns"] = list(self.columns.keys())
+        self.tree["displaycolumns"] = [col for col in self.columns if col != 'file_path' and col != 'id']
+        self.tree["show"] = "headings"
 
-        self.configure_columns()
-        self.load_data()
+        for col, (text, width) in self.columns.items():
+            self.tree.heading(col, text=text, anchor=tk.W)
+            self.tree.column(col, width=width, anchor=tk.W, stretch=tk.NO)
 
-    def configure_columns(self):
-        """Configura las columnas del Treeview."""
-        columns = list(self.column_definitions.keys())
-        self["columns"] = columns
-        self["show"] = "headings"  # Ocultar la primera columna fantasma
+        self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        for col, props in self.column_definitions.items():
-            self.heading(col, text=props["text"])
-            self.column(col, width=props["width"], minwidth=50, stretch=tk.YES)
+        scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.tree.yview, style="Vertical.TScrollbar")
+        self.tree.configure(yscrollcommand=scrollbar.set)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.bind("<Double-1>", self.on_double_click)
-        self.bind("<Button-3>", self.show_context_menu) # Clic derecho
+    def bind_on_select(self, callback):
+        """Vincula un callback al evento de selección de una fila."""
+        def _callback_wrapper(event):
+            data = self.get_selected_track_data()
+            if data:
+                callback(data)
+        self.tree.bind("<<TreeviewSelect>>", _callback_wrapper)
 
-        self.context_menu = tk.Menu(self, tearoff=0)
-        self.context_menu.add_command(label="Re-escanear metadatos del archivo", command=self.rescan_selected_track)
-
-    def show_context_menu(self, event):
-        """Muestra el menú contextual en la posición del cursor."""
-        # Seleccionar el item bajo el cursor
-        item_id = self.identify_row(event.y)
-        if item_id:
-            self.selection_set(item_id)
-            self.focus(item_id)
-            self.context_menu.post(event.x_root, event.y_root)
-
-    def rescan_selected_track(self):
-        """Re-escanea los metadatos de la pista seleccionada y actualiza la DB y la UI."""
-        selected_item = self.focus()
-        if not selected_item:
-            return
-
-        file_path = self.item_to_filepath.get(selected_item)
-        if not file_path:
-            print(f"Error: No se encontró la ruta para el item {selected_item}")
-            return
-
-        print(f"Re-escaneando metadatos para: {file_path}")
-        new_metadata = read_metadata(file_path)
-
-        if new_metadata:
-            # Actualizar cada campo en la base de datos
-            for field, value in new_metadata.items():
-                # Solo actualizamos los campos que están en nuestra tabla
-                if field in self.column_definitions or field == "comment": # Incluir comentario aunque no se vea
-                    update_track_field(file_path, field, value)
-            
-            # Recargar la fila en el Treeview
-            self.load_data() # Manera más simple de asegurar la consistencia visual
-            print("Metadatos actualizados y vista refrescada.")
-        else:
-            print("No se pudieron leer los nuevos metadatos.")
+    def bind_on_double_click(self, callback):
+        """Vincula un callback al evento de doble clic en una fila."""
+        def _callback_wrapper(event):
+            # Comprobar que el doble clic fue en una celda para evitar activar en el encabezado
+            region = self.tree.identify_region(event.x, event.y)
+            if region == "cell":
+                data = self.get_selected_track_data()
+                if data:
+                    callback(data)
+        self.tree.bind("<Double-1>", _callback_wrapper)
 
     def _format_duration(self, seconds):
         """Formatea la duración de segundos a una cadena MM:SS."""
         try:
-            # Asegurarse de que los segundos sean un número válido
             seconds = float(seconds)
-            if seconds < 0:
-                return "00:00"
             minutes, sec = divmod(int(seconds), 60)
             return f"{minutes:02d}:{sec:02d}"
         except (ValueError, TypeError):
-            return "00:00" # Devolver un valor por defecto si la conversión falla
+            return "00:00"
 
-    def on_double_click(self, event):
-        """Manejador para el evento de doble clic, permite editar una celda."""
-        region = self.identify_region(event.x, event.y)
-        if region != "cell":
-            return
-
-        column_id = self.identify_column(event.x)
-        column_index = int(column_id.replace("#", "")) - 1
-        item_id = self.focus()
-        
-        if not item_id:
-            return
-
-        # Obtener las coordenadas de la celda
-        x, y, width, height = self.bbox(item_id, column_id)
-        
-        # Obtener el valor actual
-        current_value = self.item(item_id, "values")[column_index]
-
-        # Crear un widget de entrada de texto temporal
-        entry = ttk.Entry(self.master, justify="left")
-        entry.place(x=x, y=y, width=width, height=height)
-        
-        entry.insert(0, current_value)
-        entry.select_range(0, "end")
-        entry.focus_set()
-
-        def save_edit(event):
-            new_value = entry.get()
+    def populate(self, tracks):
+        """(Re)Carga los datos desde una lista de diccionarios en el Treeview."""
+        # Limpiar vista anterior
+        for i in self.tree.get_children():
+            self.tree.delete(i)
             
-            # Obtener la ruta del archivo desde nuestro mapeo
-            file_path = self.item_to_filepath.get(item_id)
-            if not file_path:
-                print("Error: No se pudo encontrar la ruta del archivo para este item.")
-                entry.destroy()
-                return
-
-            column_name = list(self.column_definitions.keys())[column_index]
-            
-            # 1. Escribir en el archivo de audio
-            success_write = write_metadata_tag(file_path, column_name, new_value)
-            
-            # 2. Si la escritura fue exitosa, actualizar la base de datos
-            if success_write:
-                update_track_field(file_path, column_name, new_value)
-                # 3. Actualizar el valor en el Treeview
-                self.set(item_id, column_id, new_value)
-            
-            entry.destroy()
-
-        entry.bind("<Return>", save_edit)
-        entry.bind("<FocusOut>", lambda e: entry.destroy())
-        entry.bind("<Escape>", lambda e: entry.destroy())
-
-    def load_data(self):
-        """Limpia la tabla y la recarga con datos de la base de datos."""
-        # Limpiar datos existentes
-        for i in self.get_children():
-            self.delete(i)
-        
-        self.item_to_filepath.clear() # Limpiar el mapeo
-            
-        # Cargar nuevos datos
-        tracks = get_all_tracks()
-        # Guardar las claves de las columnas en el orden correcto para referencia futura
-        self.column_definitions_keys = list(self.column_definitions.keys())
         for track in tracks:
-            # Formatear la duración antes de mostrarla
-            track['duration'] = self._format_duration(track.get('duration'))
-            values = [track.get(col, "N/A") for col in self.column_definitions_keys]
-            item_id = self.insert("", "end", values=values)
-            self.item_to_filepath[item_id] = track.get('file_path') 
+            values = [
+                track.get('id', ''),
+                track.get('title', 'N/A'),
+                track.get('artist', 'N/A'),
+                track.get('album', 'N/A'),
+                track.get('genre', 'N/A'),
+                track.get('year', ''),
+                self._format_duration(track.get('duration')),
+                track.get('bpm', ''),
+                track.get('key', ''),
+                track.get('file_path', '')
+            ]
+            self.tree.insert("", "end", values=values, iid=track.get('id'))
+    
+    def refresh_track(self, track_id, new_data):
+        """Actualiza una fila específica en el Treeview con nuevos datos."""
+        item_id = str(track_id)
+        
+        # Formatear los valores en el orden correcto de las columnas
+        values_dict = {col: new_data.get(col, '') for col in self.columns}
+        values_dict['duration'] = self._format_duration(new_data.get('duration'))
+        
+        # Convertir a lista en el orden correcto
+        final_values = [values_dict.get(col_id, '') for col_id in self.columns]
+        
+        self.tree.item(item_id, values=final_values)
+
+    def get_selected_track_id(self):
+        """Devuelve el ID de la pista seleccionada, o None si no hay selección."""
+        selected_item = self.tree.focus()
+        if selected_item:
+            return self.tree.item(selected_item, "values")[0]
+        return None
+
+    def get_selected_track_data(self):
+        """Devuelve un diccionario con los datos de la pista seleccionada."""
+        selected_item = self.tree.focus()
+        if not selected_item:
+            return None
+        
+        values = self.tree.item(selected_item, "values")
+        # Asegurarse de que el ID es un entero para la búsqueda
+        track_id = int(values[0])
+        track_data = self.get_track_data_by_id(track_id)
+        return track_data
+
+    def get_track_data_by_id(self, track_id):
+        """Busca los datos de una pista en el treeview por su ID."""
+        try:
+            item_values = self.tree.item(str(track_id), "values")
+            return {col: item_values[i] for i, col in enumerate(self.columns)}
+        except tk.TclError:
+            return None # El item no existe
+
+    def get_next_track_data(self):
+        """Devuelve los datos de la siguiente pista en la lista."""
+        selected_item = self.tree.focus()
+        if not selected_item:
+            return None
+        
+        next_item = self.tree.next(selected_item)
+        if not next_item:
+            return None # No hay siguiente
+            
+        values = self.tree.item(next_item, "values")
+        return {col: values[i] for i, col in enumerate(self.columns)}
+
+    def get_previous_track_data(self):
+        """Devuelve los datos de la pista anterior en la lista."""
+        selected_item = self.tree.focus()
+        if not selected_item:
+            return None
+            
+        prev_item = self.tree.prev(selected_item)
+        if not prev_item:
+            return None # No hay anterior
+
+        values = self.tree.item(prev_item, "values")
+        return {col: values[i] for i, col in enumerate(self.columns)}
+
+    def select_track_by_id(self, track_id):
+        """Selecciona una pista en el Treeview por su ID."""
+        for item in self.tree.get_children():
+            if self.tree.item(item, "values")[0] == track_id:
+                self.tree.selection_set(item)
+                self.tree.see(item)
+                break
+
+    def add_track(self, track_data):
+        """Añade una única pista al final de la lista."""
+        values = [
+            track_data.get('id', ''),
+            track_data.get('title', 'N/A'),
+            track_data.get('artist', 'N/A'),
+            track_data.get('album', 'N/A'),
+            track_data.get('genre', 'N/A'),
+            track_data.get('year', ''),
+            self._format_duration(track_data.get('duration')),
+            track_data.get('bpm', ''),
+            track_data.get('key', ''),
+            track_data.get('file_path', '')
+        ]
+        self.tree.insert("", "end", values=values)
