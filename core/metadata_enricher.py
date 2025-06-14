@@ -52,19 +52,30 @@ class TrackMetadata:
     
     def is_complete(self) -> bool:
         """Verifica si los metadatos están completos."""
+        # Lista de valores considerados problemáticos/inválidos
+        invalid_values = {'N/A', 'N A', 'NA', 'Unknown', 'unknown', 'UNKNOWN', '', None}
+        
         essential_fields = [self.title, self.artist, self.album, self.genre]
-        return all(field is not None and field.strip() != "" for field in essential_fields)
+        return all(
+            field is not None and
+            field.strip() not in invalid_values and
+            field.strip() != ""
+            for field in essential_fields
+        )
     
     def missing_fields(self) -> List[str]:
-        """Retorna lista de campos faltantes."""
+        """Retorna lista de campos faltantes o problemáticos."""
+        # Lista de valores considerados problemáticos/inválidos
+        invalid_values = {'N/A', 'N A', 'NA', 'Unknown', 'unknown', 'UNKNOWN', '', None}
+        
         missing = []
-        if not self.title or self.title.strip() == "":
+        if not self.title or self.title.strip() in invalid_values:
             missing.append("title")
-        if not self.artist or self.artist.strip() == "":
+        if not self.artist or self.artist.strip() in invalid_values:
             missing.append("artist")
-        if not self.album or self.album.strip() == "":
+        if not self.album or self.album.strip() in invalid_values:
             missing.append("album")
-        if not self.genre or self.genre.strip() == "":
+        if not self.genre or self.genre.strip() in invalid_values:
             missing.append("genre")
         if not self.year:
             missing.append("year")
@@ -460,6 +471,19 @@ class MetadataEnricher:
         updates = []
         values = []
         
+        # Campos básicos
+        if metadata.get('title'):
+            updates.append("title = ?")
+            values.append(metadata['title'])
+            
+        if metadata.get('artist'):
+            updates.append("artist = ?")
+            values.append(metadata['artist'])
+            
+        if metadata.get('album'):
+            updates.append("album = ?")
+            values.append(metadata['album'])
+        
         if metadata.get('genre'):
             updates.append("genre = ?")
             values.append(metadata['genre'])
@@ -485,6 +509,12 @@ class MetadataEnricher:
             query = f"UPDATE tracks SET {', '.join(updates)} WHERE file_path = ?"
             cursor.execute(query, values)
             conn.commit()
+            
+            # Log los campos que se actualizaron
+            updated_fields = [update.split(" = ")[0] for update in updates]
+            for field, value in zip(updated_fields, values[:-1]):
+                print(f"Metadato '{field}' actualizado a '{value}' en {os.path.basename(file_path)}")
+            
             self.logger.info(f"Base de datos actualizada para: {os.path.basename(file_path)}")
         
         conn.close()

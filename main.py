@@ -6,6 +6,7 @@ from typing import Optional
 from core.database import DatabaseManager
 from core.audio_player import AudioPlayer
 from core.smart_playlist_manager import SmartPlaylistManager
+from core.library_scanner import LibraryScanner
 from ui.tracklist import Tracklist
 from ui.playback_panel import PlaybackPanel
 from ui.suggestion_panel import SuggestionPanel

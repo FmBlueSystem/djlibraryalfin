@@ -1,4 +1,5 @@
 import os
+import re
 from typing import Dict, List, Any
 import librosa
 import numpy as np
@@ -95,6 +96,126 @@ def analyze_audio_features(file_path: str) -> Dict[str, Any]:
     return features
 
 
+def auto_fix_metadata(metadata: Dict[str, Any], file_path: str) -> Dict[str, Any]:
+    """
+    Aplica correcciones automáticas a metadatos problemáticos
+    """
+    invalid_values = {'N/A', 'N A', 'NA', 'Unknown', 'unknown', 'UNKNOWN', '', None}
+    
+    # Mapeo de géneros por artista
+    artist_genre_map = {
+        'spice girls': 'Pop',
+        'coldplay': 'Alternative Rock',
+        'the chainsmokers': 'Electronic',
+        'stephane deschezeaux': 'Electronic',
+        'alice cooper': 'Rock',
+        'status quo': 'Rock',
+        'oasis': 'Rock',
+        'rolling stones': 'Rock',
+        'blue oyster cult': 'Rock',
+        'rihanna': 'R&B',
+        'drake': 'Hip Hop',
+        'whitney houston': 'R&B',
+        'dolly parton': 'Country',
+        'mavericks': 'Country Rock',
+        'apache indian': 'Reggae',
+        'sean paul': 'Reggae',
+    }
+    
+    # Patrones de título que sugieren géneros
+    title_genre_patterns = {
+        'club mix': 'Electronic',
+        'remix': 'Electronic',
+        'dj beats': 'Electronic',
+        'original mix': 'Electronic',
+        'extended': 'Electronic',
+        'radio edit': 'Pop',
+    }
+    
+    # Extraer información del nombre del archivo si es necesario
+    filename = os.path.basename(file_path)
+    filename_without_ext = os.path.splitext(filename)[0]
+    
+    # Patrones comunes: "Artist - Title"
+    patterns = [
+        r'^(.+?)\s*-\s*(.+)$',  # Artist - Title
+        r'^(.+?)_(.+)$',        # Artist_Title
+    ]
+    
+    extracted_artist = None
+    extracted_title = None
+    
+    for pattern in patterns:
+        match = re.match(pattern, filename_without_ext)
+        if match:
+            extracted_artist = match.group(1).strip()
+            extracted_title = match.group(2).strip()
+            break
+    
+    # Limpiar nombres extraídos
+    if extracted_artist:
+        extracted_artist = re.sub(r'_PN$', '', extracted_artist)
+        extracted_artist = re.sub(r'\(.*\)$', '', extracted_artist).strip()
+    
+    if extracted_title:
+        extracted_title = re.sub(r'_PN$', '', extracted_title)
+        extracted_title = re.sub(r'\(.*\)$', '', extracted_title).strip()
+    
+    # Corregir artista
+    if metadata.get('artist') in invalid_values and extracted_artist:
+        metadata['artist'] = extracted_artist
+        print(f"  🎤 Artista corregido: {extracted_artist}")
+    
+    # Corregir título
+    if metadata.get('title') in invalid_values and extracted_title:
+        metadata['title'] = extracted_title
+        print(f"  🎵 Título corregido: {extracted_title}")
+    
+    # Corregir álbum
+    if metadata.get('album') in invalid_values:
+        metadata['album'] = 'Unknown Album'
+        print(f"  💿 Álbum corregido: Unknown Album")
+    
+    # Corregir género
+    if metadata.get('genre') in invalid_values:
+        new_genre = 'Pop'  # Género por defecto
+        
+        # Buscar por artista
+        if metadata.get('artist'):
+            artist_lower = metadata['artist'].lower()
+            for artist_key, genre in artist_genre_map.items():
+                if artist_key in artist_lower:
+                    new_genre = genre
+                    break
+        
+        # Si no se encontró, buscar por patrones en el título
+        if new_genre == 'Pop' and metadata.get('title'):
+            title_lower = metadata['title'].lower()
+            filename_lower = filename.lower()
+            
+            for pattern, genre in title_genre_patterns.items():
+                if pattern in title_lower or pattern in filename_lower:
+                    new_genre = 'Electronic'
+                    break
+        
+        # Inferencia por año
+        if new_genre == 'Pop' and metadata.get('year'):
+            year = metadata['year']
+            if year < 1980:
+                new_genre = 'Rock'
+            elif year < 1990:
+                new_genre = 'Pop'
+            elif year < 2000:
+                new_genre = 'Pop'
+            else:
+                new_genre = 'Electronic'
+        
+        metadata['genre'] = new_genre
+        print(f"  🎼 Género corregido: {new_genre}")
+    
+    return metadata
+
+
 class LibraryScanner:
     def __init__(self, directory_path: str, db_manager: DatabaseManager):
         self.directory_path = directory_path
@@ -127,11 +248,14 @@ class LibraryScanner:
             metadata = read_metadata(file_path)
 
             if metadata:
-                # 2. Analizar características de audio (BPM, etc.)
+                # 2. Aplicar correcciones automáticas a metadatos problemáticos
+                metadata = auto_fix_metadata(metadata, file_path)
+                
+                # 3. Analizar características de audio (BPM, etc.)
                 audio_features = analyze_audio_features(file_path)
                 metadata.update(audio_features)
 
-                # 3. Añadir info adicional y guardar en DB
+                # 4. Añadir info adicional y guardar en DB
                 metadata["file_path"] = file_path
                 _, extension = os.path.splitext(file_path)
                 metadata["file_type"] = extension.replace(".", "").upper()
