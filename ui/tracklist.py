@@ -116,8 +116,17 @@ class Tracklist(ttk.Frame):
             return None
         
         values = self.tree.item(selected_item, "values")
-        # Asegurarse de que el ID es un entero para la búsqueda
-        track_id = int(values[0])
+        if not values or not values[0]:
+            print(f"Advertencia: Se seleccionó un item inválido en el Treeview (ID vacío).")
+            return None
+
+        try:
+            # Asegurarse de que el ID es un entero para la búsqueda
+            track_id = int(values[0])
+        except (ValueError, IndexError):
+            print(f"Advertencia: El item seleccionado tiene un ID inválido: {values}")
+            return None
+            
         track_data = self.get_track_data_by_id(track_id)
         return track_data
 

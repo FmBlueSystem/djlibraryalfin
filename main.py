@@ -195,7 +195,7 @@ class MainApplication(tk.Tk):
         self.app_config.set('window_geometry', self.geometry())
         self.app_config.save()
         if self.audio_player:
-            self.audio_player.stop()
+            self.audio_player.shutdown()
         self.destroy()
 
 if __name__ == "__main__":

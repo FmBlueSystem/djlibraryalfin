@@ -94,6 +94,14 @@ class AudioPlayer:
         self.paused_position = 0
         print("Reproducción detenida.")
 
+    def shutdown(self):
+        """Detiene toda la actividad de audio y se asegura de que los hilos terminen."""
+        print("Cerrando el reproductor de audio de forma segura...")
+        self.stop()
+        if self._monitor_thread and self._monitor_thread.is_alive():
+            self._monitor_thread.join(timeout=1) # Esperar hasta 1 segundo
+        print("Reproductor de audio cerrado.")
+
     def seek(self, percentage):
         if not self.audio: return
         

@@ -151,6 +151,22 @@ class MetadataPanel(ttk.Frame):
         print(f"[DEBUG] Metadata staged for save: {new_metadata}")
         if new_metadata:
             track_id = self.current_track_data.get('id')
+            file_path = self.current_track_data.get('file_path')
+
+            # 1. Escribir los nuevos metadatos en las etiquetas del archivo físico
+            if file_path:
+                try:
+                    print(f"[DEBUG] Writing tags to file: {file_path}")
+                    for key, value in new_metadata.items():
+                        write_metadata_tag(file_path, key, value)
+                    print(f"[DEBUG] Tags written successfully to file.")
+                except Exception as e:
+                    print(f"[ERROR] Failed to write tags to {file_path}: {e}")
+                    # En una app real, aquí podríamos mostrar un popup de error al usuario
+            else:
+                print(f"[WARNING] No file_path found for track ID {track_id}. Skipping tag writing.")
+
+            # 2. Actualizar la base de datos a través del callback
             if self.on_save_callback:
                 print(f"[DEBUG] on_save_callback found. Calling for track ID {track_id}.")
                 self.on_save_callback(track_id, new_metadata)
@@ -195,19 +211,17 @@ class MetadataPanel(ttk.Frame):
             self.enrich_button.config(state="normal")
             return
 
-        JUNK_VALUES = {'', 'N/A', 'None', None}
-
         if enriched_data:
             print(f"[DEBUG] Populating fields with: {enriched_data}")
             for key, widget in self.track_data_widgets.items():
                 if isinstance(widget, ttk.Entry):
-                    current_value = widget.get()
-                    if key in enriched_data and current_value in JUNK_VALUES:
+                    # Si el enriquecedor encontró un valor para esta clave, lo usamos.
+                    if key in enriched_data:
                         print(f"[DEBUG]   -> Updating Entry for '{key}'")
                         widget.delete(0, tk.END)
                         widget.insert(0, str(enriched_data[key]))
+            self.save_button.config(state="normal")
         else:
             print("[DEBUG] No enriched data found to populate.")
 
-        self.enrich_button.config(state="normal")
-        self.save_button.config(state="normal") 
+        self.enrich_button.config(state="normal") 
