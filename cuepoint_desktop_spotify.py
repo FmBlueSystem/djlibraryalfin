@@ -960,10 +960,17 @@ class DjAlfinDesktopSpotify:
                 if embedded_cues:
                     print(f"🎵 Found {len(embedded_cues)} embedded cue points from {embedded_cues[0].software}")
 
-                    # Agregar solo si no hay cue points existentes
-                    if not self.cue_points:
-                        for embedded_cue in embedded_cues:
-                            hotcue_index = len(self.cue_points) + 1 if len(self.cue_points) < 8 else 0
+                    # Agregar cue points embebidos (siempre, sin verificar si hay existentes)
+                    for embedded_cue in embedded_cues:
+                        # Verificar si ya existe un cue point en posición similar
+                        exists = any(abs(cue.position - embedded_cue.position) < 2.0 for cue in self.cue_points)
+
+                        if not exists:
+                            hotcue_index = 0
+                            for i in range(1, 9):
+                                if not any(cue.hotcue_index == i for cue in self.cue_points):
+                                    hotcue_index = i
+                                    break
 
                             cue_point = CuePoint(
                                 position=embedded_cue.position,
@@ -978,12 +985,13 @@ class DjAlfinDesktopSpotify:
 
                             self.cue_points.append(cue_point)
 
-                        self.root.after(0, self.update_cue_list)
-                        self.root.after(0, self.update_hotcue_buttons)
+                    self.root.after(0, self.update_cue_list)
+                    self.root.after(0, self.update_hotcue_buttons)
 
-                        # Mostrar notificación discreta
-                        software = embedded_cues[0].software.title()
-                        self.root.after(0, lambda: print(f"✅ Auto-loaded {len(embedded_cues)} {software} cue points"))
+                    # Mostrar notificación visible
+                    software = embedded_cues[0].software.title()
+                    added_count = len([c for c in self.cue_points if c.source.startswith('embedded')])
+                    self.root.after(0, lambda: self.show_notification(f"🎵 Auto-loaded {added_count} {software} cue points"))
 
             except Exception as e:
                 print(f"❌ Error auto-loading embedded cues: {e}")
