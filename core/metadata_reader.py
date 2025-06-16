@@ -16,7 +16,7 @@ def read_metadata(file_path):
         metadata = {
             "title": "N/A", "artist": "N/A", "album": "N/A",
             "genre": "N/A", "year": "N/A", "track_number": "N/A",
-            "comment": "N/A", "bpm": "N/A", "key": "N/A",
+            "comments": "N/A", "bpm": "N/A", "key": "N/A",
             "duration": 0
         }
 
@@ -28,7 +28,18 @@ def read_metadata(file_path):
             metadata["genre"] = audio.get('TCON', [None])[0] or "N/A"
             metadata["year"] = audio.get('TDRC', [None])[0].text if audio.get('TDRC') else "N/A"
             metadata["track_number"] = audio.get('TRCK', [None])[0] or "N/A"
-            metadata["comment"] = audio.get('COMM::XXX', [None])[0] or "N/A"
+            
+            # --- LECTURA DE COMENTARIOS MEJORADA (COMPATIBLE CON VERSIONES ANTIGUAS) ---
+            # Accede a los tags directamente y busca 'COMM'
+            if 'COMM::XXX' in audio:
+                metadata["comments"] = audio['COMM::XXX'].text[0]
+            elif 'COMM::eng' in audio:
+                 metadata["comments"] = audio['COMM::eng'].text[0]
+            elif 'COMM' in audio: # Fallback genérico
+                metadata["comments"] = audio['COMM'].text[0]
+            else:
+                metadata["comments"] = "N/A"
+
             metadata["bpm"] = audio.get('TBPM', [None])[0] or "N/A"
             metadata["key"] = audio.get('TKEY', [None])[0] or "N/A"
 
@@ -40,7 +51,7 @@ def read_metadata(file_path):
             metadata["genre"] = audio.get('genre', [None])[0] or "N/A"
             metadata["year"] = audio.get('date', [None])[0] or "N/A"
             metadata["track_number"] = audio.get('tracknumber', [None])[0] or "N/A"
-            metadata["comment"] = audio.get('description', [None])[0] or "N/A"
+            metadata["comments"] = audio.get('comment', audio.get('description', [None]))[0] or "N/A"
             metadata["bpm"] = audio.get('bpm', [None])[0] or "N/A"
             metadata["key"] = audio.get('initialkey', [None])[0] or "N/A"
 
@@ -55,7 +66,7 @@ def read_metadata(file_path):
             metadata["year"] = tags.get('\xa9day', [None])[0] or "N/A"
             track_info = tags.get('trkn', [(0, 0)])[0]
             metadata["track_number"] = str(track_info[0]) if track_info else "N/A"
-            metadata["comment"] = tags.get('\xa9com', [None])[0] or "N/A"
+            metadata["comments"] = tags.get('\xa9com', [None])[0] or "N/A"
 
             # Captura directa del tag estándar de tempo (tmpo)
             if 'tmpo' in tags:
@@ -65,7 +76,12 @@ def read_metadata(file_path):
             for key in tags:
                 key_lower = key.lower()
                 if 'initialkey' in key_lower:
-                    metadata["key"] = tags[key][0]
+                    value = tags[key][0]
+                    # El valor puede ser bytes, decodificar a string
+                    if isinstance(value, bytes):
+                        metadata["key"] = value.decode('utf-8')
+                    else:
+                        metadata["key"] = str(value)
                 elif key_lower == 'tmpo' or 'bpm' in key_lower or 'tempo' in key_lower:
                     val_str = str(tags[key][0])
                     numeric_part = ''.join(filter(str.isdigit, val_str.split(' ')[0]))

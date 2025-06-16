@@ -5,29 +5,36 @@ DB_FILE = "library.db"
 CONFIG_DIR = "config"
 
 def get_db_path():
-    """Devuelve la ruta completa a la base de datos, asegurando que el directorio de configuración exista."""
-    # Obtener la ruta del directorio raíz del proyecto
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     config_path = os.path.join(project_root, CONFIG_DIR)
-    
-    # Crear el directorio de configuración si no existe
     os.makedirs(config_path, exist_ok=True)
-    
     return os.path.join(config_path, DB_FILE)
 
 def create_connection():
-    """Crea una conexión a la base de datos SQLite."""
     conn = None
     try:
         db_path = get_db_path()
         conn = sqlite3.connect(db_path)
-        print(f"Conexión a SQLite DB en {db_path} exitosa.")
+        # print(f"Conexión a SQLite DB en {db_path} exitosa.") # Comentado para reducir verbosidad
     except sqlite3.Error as e:
-        print(e)
+        print(f"Error de conexión SQLite: {e}")
     return conn
 
+def _add_column_if_not_exists(cursor, table_name, column_name, column_type):
+    """Añade una columna a una tabla si no existe."""
+    cursor.execute(f"PRAGMA table_info({table_name})")
+    columns = [info[1] for info in cursor.fetchall()]
+    if column_name not in columns:
+        try:
+            cursor.execute(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_type}")
+            print(f"Columna '{column_name}' añadida a la tabla '{table_name}'.")
+        except sqlite3.Error as e:
+            # Esto puede pasar si la columna ya existe pero PRAGMA no la listó (raro)
+            # o si hay un error de sintaxis.
+            print(f"Advertencia: No se pudo añadir la columna '{column_name}': {e}")
+
+
 def init_db():
-    """Inicializa la base de datos, creando las tablas necesarias si no existen."""
     conn = create_connection()
     if conn is not None:
         try:
@@ -52,73 +59,113 @@ def init_db():
                     file_type TEXT
                 );
             """)
-            cursor.execute("PRAGMA table_info(tracks)")
-            columns = [info[1] for info in cursor.fetchall()]
-            if 'file_type' not in columns:
-                cursor.execute("ALTER TABLE tracks ADD COLUMN file_type TEXT")
+            
+            # Añadir nuevas columnas si no existen (manejo simple de migración)
+            _add_column_if_not_exists(cursor, "tracks", "file_type", "TEXT") # Ya estaba, pero mantenemos la lógica
+            _add_column_if_not_exists(cursor, "tracks", "album_art_url", "TEXT")
+            _add_column_if_not_exists(cursor, "tracks", "musicbrainz_recording_id", "TEXT")
+            _add_column_if_not_exists(cursor, "tracks", "musicbrainz_artist_id", "TEXT")
+            _add_column_if_not_exists(cursor, "tracks", "musicbrainz_release_id", "TEXT")
+            _add_column_if_not_exists(cursor, "tracks", "spotify_track_id", "TEXT")
+            _add_column_if_not_exists(cursor, "tracks", "spotify_artist_id", "TEXT")
+            _add_column_if_not_exists(cursor, "tracks", "spotify_album_id", "TEXT")
+            _add_column_if_not_exists(cursor, "tracks", "discogs_release_id", "TEXT")
 
             conn.commit()
-            print("Tabla 'tracks' creada o ya existente.")
+            print("Tabla 'tracks' inicializada/actualizada correctamente.")
         except sqlite3.Error as e:
-            print(f"Error al crear la tabla: {e}")
+            print(f"Error al inicializar/actualizar la tabla 'tracks': {e}")
         finally:
             conn.close()
     else:
-        print("Error: No se pudo crear la conexión a la base de datos.")
+        print("Error: No se pudo crear la conexión a la base de datos para init_db.")
 
 def add_track(track_data):
-    """Añade una nueva pista a la base de datos.
-    
-    Args:
-        track_data (dict): Un diccionario con los metadatos de la pista.
-                           Debe contener al menos 'file_path'.
-    """
     conn = create_connection()
     if not conn:
+        print("Error: No se pudo crear la conexión a la base de datos para add_track.")
         return
 
-    # Mapeo de claves del diccionario a columnas de la base de datos
-    # Se asegura de que todas las columnas existan en el diccionario, asignando None si no están.
-    sql = ''' INSERT OR IGNORE INTO tracks(file_path, title, artist, album, genre, year, duration, bpm, key, comment, date_added, last_modified_date, last_scanned_date, file_type)
-              VALUES(?,?,?,?,?,?,?,?,?,?,datetime('now'),?,?,?) '''
+    # Lista de todos los campos posibles en la tabla (incluyendo los nuevos)
+    # El orden debe coincidir con los VALUES y los SET de la cláusula ON CONFLICT
+    fields = [
+        'file_path', 'title', 'artist', 'album', 'genre', 'year', 'duration', 'bpm', 
+        'key', 'comment', 'date_added', 'last_modified_date', 'last_scanned_date', 
+        'file_type', 'album_art_url', 
+        'musicbrainz_recording_id', 'musicbrainz_artist_id', 'musicbrainz_release_id',
+        'spotify_track_id', 'spotify_artist_id', 'spotify_album_id',
+        'discogs_release_id'
+    ]
     
-    track_values = (
-        track_data.get('file_path'),
-        track_data.get('title'),
-        track_data.get('artist'),
-        track_data.get('album'),
-        track_data.get('genre'),
-        track_data.get('year'),
-        track_data.get('duration'),
-        track_data.get('bpm'),
-        track_data.get('key'),
-        track_data.get('comment'),
-        track_data.get('last_modified_date'),
-        track_data.get('last_scanned_date'),
-        track_data.get('file_type')
-    )
+    # Crear la lista de placeholders (?, ?, ...)
+    placeholders = ', '.join(['?'] * len(fields))
+    
+    # Crear la lista de asignaciones para la cláusula DO UPDATE
+    # Excluimos 'file_path' y 'date_added' de la actualización si el registro ya existe.
+    # 'date_added' solo se establece en la inserción inicial.
+    update_assignments = ', '.join([f"{field} = excluded.{field}" for field in fields if field not in ['file_path', 'date_added']])
 
+    sql = f'''
+        INSERT INTO tracks ({', '.join(fields)})
+        VALUES ({placeholders})
+        ON CONFLICT(file_path) DO UPDATE SET
+            {update_assignments},
+            last_scanned_date = datetime('now', 'localtime') -- Siempre actualizar last_scanned_date en un update
+    '''
+    
+    # Preparar los valores. Usar track_data.get(field) para manejar campos faltantes (serán None/NULL)
+    # Para 'date_added', si es una nueva inserción, se usa datetime('now').
+    # Si es un update, 'date_added' no se cambia por la cláusula ON CONFLICT.
+    # El placeholder para date_added en VALUES será datetime('now')
+    
+    track_values = []
+    for field in fields:
+        if field == 'date_added':
+            # Este valor se usa para la inserción. Si hay conflicto, no se usa.
+            # Usar datetime('now', 'localtime') para que coincida con el ON CONFLICT
+            track_values.append(datetime_now_localtime_string()) 
+        elif field == 'last_scanned_date':
+             # Asegurar que last_scanned_date se actualice también en la inserción inicial
+            track_values.append(datetime_now_localtime_string())
+        else:
+            track_values.append(track_data.get(field))
+            
     try:
         cursor = conn.cursor()
-        cursor.execute(sql, track_values)
+        cursor.execute(sql, tuple(track_values))
         conn.commit()
     except sqlite3.Error as e:
-        print(f"Error al añadir la pista {track_data.get('file_path')}: {e}")
+        print(f"Error al añadir/actualizar la pista {track_data.get('file_path')}: {e}")
+        # print(f"SQL: {sql}") # Descomentar para depuración
+        # print(f"Valores intentados: {track_values}") # Descomentar para depuración
     finally:
         conn.close()
 
+def datetime_now_localtime_string():
+    """Devuelve la fecha y hora actual en formato string UTC para SQLite, compatible con datetime('now', 'localtime')."""
+    # Esto es un poco un hack. SQLite con datetime('now', 'localtime') usa la zona horaria del sistema.
+    # Para consistencia, es mejor manejar UTC o ser muy explícito.
+    # Por ahora, para que coincida con el ON CONFLICT, simplemente llamaremos a una función que devuelva
+    # el string que SQLite espera o usamos un valor que SQLite interpretará como "ahora en localtime".
+    # La forma más simple es dejar que SQLite lo maneje en la inserción si el valor es None.
+    # Sin embargo, la query ya tiene un placeholder para date_added y last_scanned_date.
+    # Vamos a usar una función simple para obtener el string.
+    # OJO: Esto puede no ser ideal para consistencia de zona horaria a largo plazo.
+    # Sería mejor almacenar todo en UTC.
+    import datetime
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
 def get_all_tracks():
-    """Recupera todas las pistas de la base de datos."""
     conn = create_connection()
     if not conn:
         return []
-
     try:
-        conn.row_factory = sqlite3.Row  # Devuelve filas que se pueden acceder por nombre de columna
+        conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM tracks ORDER BY artist, album, track_number")
+        cursor.execute("SELECT * FROM tracks ORDER BY artist, album, track_number, title") # Añadido title al ORDER BY
         rows = cursor.fetchall()
-        return [dict(row) for row in rows] # Convertir a lista de diccionarios
+        return [dict(row) for row in rows]
     except sqlite3.Error as e:
         print(f"Error al obtener las pistas: {e}")
         return []
@@ -126,18 +173,13 @@ def get_all_tracks():
         conn.close()
 
 def update_track_field(file_path, field, value):
-    """
-    Actualiza un campo específico para una pista en la base de datos.
-    
-    Args:
-        file_path (str): La ruta del archivo de la pista a actualizar.
-        field (str): El nombre de la columna a actualizar.
-        value (any): El nuevo valor para el campo.
-    """
-    # Lista blanca de columnas que se pueden editar para seguridad.
-    allowed_fields = ["title", "artist", "album", "genre", "year", "bpm", "key", "comment"]
+    # Lista blanca de columnas que se pueden editar manualmente por el usuario.
+    # Los campos de API (IDs, album_art_url) se actualizan mediante el escáner/enriquecedor.
+    allowed_fields = [
+        "title", "artist", "album", "genre", "year", "bpm", "key", "comment", "track_number"
+    ]
     if field not in allowed_fields:
-        print(f"Error: El campo '{field}' no es editable.")
+        print(f"Error: El campo '{field}' no es editable manualmente o no existe.")
         return
 
     sql = f"UPDATE tracks SET {field} = ? WHERE file_path = ?"
@@ -145,7 +187,6 @@ def update_track_field(file_path, field, value):
     conn = create_connection()
     if not conn:
         return
-
     try:
         cursor = conn.cursor()
         cursor.execute(sql, (value, file_path))
@@ -157,19 +198,8 @@ def update_track_field(file_path, field, value):
         conn.close()
 
 def get_track_path(track_id):
-    """
-    Recupera la ruta de archivo de una pista dado su ID.
-
-    Args:
-        track_id (int): El ID de la pista.
-
-    Returns:
-        str: La ruta del archivo de la pista, o None si no se encuentra.
-    """
     conn = create_connection()
-    if not conn:
-        return None
-
+    if not conn: return None
     try:
         cursor = conn.cursor()
         cursor.execute("SELECT file_path FROM tracks WHERE id = ?", (track_id,))
@@ -182,19 +212,8 @@ def get_track_path(track_id):
         conn.close()
 
 def get_track_by_path(file_path):
-    """
-    Recupera una pista de la base de datos usando su ruta de archivo.
-    
-    Args:
-        file_path (str): La ruta completa del archivo de la pista.
-
-    Returns:
-        dict: Un diccionario con los datos de la pista si se encuentra, de lo contrario None.
-    """
     conn = create_connection()
-    if not conn:
-        return None
-
+    if not conn: return None
     try:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
@@ -207,6 +226,70 @@ def get_track_by_path(file_path):
     finally:
         conn.close()
 
-# Para probar la inicialización directamente
 if __name__ == '__main__':
-    init_db() 
+    print("Inicializando la base de datos desde __main__...")
+    init_db()
+    print("Base de datos lista.")
+
+    # Ejemplo de cómo añadir una pista (para probar la nueva estructura)
+    # conn = create_connection()
+    # if conn:
+    #     print("\nProbando añadir una pista de ejemplo...")
+    #     sample_track_data = {
+    #         'file_path': '/test/music/sample2.mp3', # Cambiado para evitar conflicto si se ejecuta varias veces
+    #         'title': 'Sample Title 2',
+    #         'artist': 'Sample Artist 2',
+    #         'album': 'Sample Album 2',
+    #         'genre': 'Test Genre; Rock',
+    #         'year': 2025,
+    #         'duration': 210.0,
+    #         'bpm': 130.0,
+    #         'key': '7m',
+    #         'comment': 'This is another test track.',
+    #         # 'date_added' y 'last_scanned_date' se manejan automáticamente
+    #         'last_modified_date': datetime_now_localtime_string(), # Usar la función para consistencia
+    #         'file_type': 'mp3',
+    #         'album_art_url': 'http://example.com/art2.jpg',
+    #         'musicbrainz_recording_id': 'mbrec-123-2',
+    #         'musicbrainz_artist_id': 'mbart-xyz-2',
+    #         'musicbrainz_release_id': 'mbrel-abc-2',
+    #         'spotify_track_id': 'spot-456-2',
+    #         'spotify_artist_id': 'spotart-def-2',
+    #         'spotify_album_id': 'spotalb-ghi-2',
+    #         'discogs_release_id': 'disc-789-2'
+    #     }
+    #     add_track(sample_track_data)
+        
+    #     print("\nRecuperando la pista de ejemplo:")
+    #     retrieved_track = get_track_by_path('/test/music/sample2.mp3')
+    #     if retrieved_track:
+    #         for key, value in retrieved_track.items():
+    #             print(f"  {key}: {value}")
+    #     else:
+    #         print("No se pudo recuperar la pista de ejemplo.")
+        
+    #     # Probar actualizarla
+    #     print("\nProbando actualizar la pista de ejemplo...")
+    #     update_data = {
+    #         'file_path': '/test/music/sample2.mp3', # Clave para el ON CONFLICT
+    #         'title': "Sample Title 2 Updated by Test",
+    #         'album_art_url': 'http://example.com/art_updated2.jpg',
+    #         'genre': 'Updated Rock; Metal'
+    #         # No es necesario pasar todos los campos, solo los que cambian + file_path
+    #     }
+    #     add_track(update_data) # add_track maneja el UPSERT
+    #     retrieved_track_updated = get_track_by_path('/test/music/sample2.mp3')
+    #     if retrieved_track_updated:
+    #         print(f"  Título actualizado: {retrieved_track_updated.get('title')}")
+    #         print(f"  URL de arte actualizada: {retrieved_track_updated.get('album_art_url')}")
+    #         print(f"  Género actualizado: {retrieved_track_updated.get('genre')}")
+    #         print(f"  Fecha escaneo: {retrieved_track_updated.get('last_scanned_date')}")
+
+
+    #     # Limpiar la pista de prueba si es necesario (ej. para ejecuciones repetidas de la prueba)
+    #     # cursor = conn.cursor()
+    #     # cursor.execute("DELETE FROM tracks WHERE file_path = ?", ('/test/music/sample2.mp3',))
+    #     # conn.commit()
+    #     # print("Pista de ejemplo eliminada.")
+
+    #     conn.close()
