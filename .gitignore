@@ -16,7 +16,8 @@ __pycache__/
 
 # Archivos de sistema operativo
 .DS_Store
+._*
 
 # Archivos de configuración de IDEs
 .vscode/
-.idea/ 
+.idea/
