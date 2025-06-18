@@ -15,7 +15,7 @@ from ui.track_list import TrackListView
 from ui.playback_panel import PlaybackPanel
 from ui.metadata_panel import MetadataPanel
 from ui.smart_playlist_editor import SmartPlaylistEditor
-from core.smart_playlist_engine import SmartPlaylistEngine
+from services import PlaylistService
 from ui.playlist_panel import PlaylistPanel
 from ui.api_config_dialog import APIConfigDialog
 
@@ -29,13 +29,13 @@ class MainWindow(QMainWindow):
         init_db()
         self.db_conn = create_connection() # Mantener una conexión para la UI
         self.audio_service = AudioService(self)
-        self.smart_playlist_engine = SmartPlaylistEngine(db_path=get_db_path())
+        self.playlist_service = PlaylistService(get_db_path())
 
         # --- Inicialización de Componentes UI ---
         self.track_list_view = TrackListView(db_connection=self.db_conn)
         self.metadata_panel = MetadataPanel()
         self.playback_panel = PlaybackPanel(self.audio_service)
-        self.playlist_panel = PlaylistPanel(engine=self.smart_playlist_engine)
+        self.playlist_panel = PlaylistPanel(service=self.playlist_service)
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
 
@@ -113,11 +113,9 @@ class MainWindow(QMainWindow):
         if selection_type == 'library':
             self.track_list_view.load_all_tracks()
         elif selection_type == 'smart_playlist':
-            rules, match_all = self.smart_playlist_engine.get_playlist_details(item_id)
+            rules, match_all = self.playlist_service.get_playlist_details(item_id)
             if rules is not None:
-                tracks_data = self.smart_playlist_engine.get_tracks_for_rules(rules, match_all)
-                # Extraer solo los IDs de las pistas
-                track_ids = [track['id'] for track in tracks_data if 'id' in track]
+                track_ids = self.playlist_service.get_tracks(rules, match_all)
                 self.track_list_view.load_tracks_by_ids(track_ids)
             else:
                 self.track_list_view.load_tracks_by_ids([])
@@ -152,7 +150,7 @@ class MainWindow(QMainWindow):
     def open_smart_playlist_editor(self):
         """Abre el diálogo del editor de Smart Playlists."""
         try:
-            spl_editor = SmartPlaylistEditor(engine=self.smart_playlist_engine, parent=self)
+            spl_editor = SmartPlaylistEditor(service=self.playlist_service, parent=self)
             if spl_editor.exec() == QDialog.Accepted:
                 print("Editor cerrado con éxito, refrescando playlists...")
                 self.playlist_panel.refresh_playlists()

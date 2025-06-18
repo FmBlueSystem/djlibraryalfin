@@ -2,6 +2,8 @@ from PySide6.QtWidgets import QTreeView, QVBoxLayout, QWidget
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtCore import Qt, Signal
 
+from services import PlaylistService
+
 class PlaylistPanel(QWidget):
     """
     Un panel para mostrar la biblioteca y las listas de reproducción.
@@ -14,9 +16,9 @@ class PlaylistPanel(QWidget):
     """
     selection_changed = Signal(str, object)
 
-    def __init__(self, engine, parent=None):
+    def __init__(self, service: PlaylistService, parent=None):
         super().__init__(parent)
-        self.engine = engine
+        self.service = service
         self.model = QStandardItemModel()
         self.model.setHorizontalHeaderLabels(['Playlists'])
 
@@ -65,7 +67,7 @@ class PlaylistPanel(QWidget):
         smart_playlists_root = QStandardItem("Smart Playlists")
         self.model.appendRow(smart_playlists_root)
 
-        playlists = self.engine.get_playlists()  # Esto devuelve [(id, name), ...]
+        playlists = self.service.list_playlists()
         if playlists:
             for playlist_id, playlist_name in playlists:
                 playlist_item = QStandardItem(playlist_name)

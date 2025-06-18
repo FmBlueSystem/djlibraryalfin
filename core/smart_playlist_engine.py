@@ -17,9 +17,56 @@ class SmartPlaylistEngine:
             "ends_with": "LIKE",
             "greater_than": ">",
             "less_than": "<",
-            "is_in_range": "BETWEEN"
+            "between": "BETWEEN",
         }
         self.numeric_fields = ["bpm", "year", "duration", "rating"]
+
+    def generate_query_from_rules(self, rules, match_all=True):
+        """Generate SQL query and parameter list from provided rules."""
+        base_query = "SELECT id FROM tracks"
+        if not rules:
+            return base_query, []
+
+        conditions = []
+        params = []
+        for rule in rules:
+            field = rule.get("field")
+            operator = rule.get("operator")
+            value = rule.get("value")
+
+            if not field or not operator or value is None:
+                continue
+
+            if operator not in self.operators:
+                continue
+
+            sql_op = self.operators[operator]
+
+            if operator == "contains":
+                conditions.append(f"{field} {sql_op} ?")
+                params.append(f"%{value}%")
+            elif operator == "not_contains":
+                conditions.append(f"{field} {sql_op} ?")
+                params.append(f"%{value}%")
+            elif operator == "starts_with":
+                conditions.append(f"{field} {sql_op} ?")
+                params.append(f"{value}%")
+            elif operator == "ends_with":
+                conditions.append(f"{field} {sql_op} ?")
+                params.append(f"%{value}")
+            elif operator == "between" and isinstance(value, (list, tuple)) and len(value) == 2:
+                conditions.append(f"{field} {sql_op} ? AND ?")
+                params.extend(value)
+            else:
+                conditions.append(f"{field} {sql_op} ?")
+                params.append(value)
+
+        if not conditions:
+            return base_query, []
+
+        separator = " AND " if match_all else " OR "
+        query = base_query + " WHERE " + separator.join(conditions)
+        return query, params
 
     def _format_value(self, field, operator, value):
         """Formatea el valor para la consulta SQL según el operador."""
@@ -33,7 +80,7 @@ class SmartPlaylistEngine:
                 return f"'%{str_value}'"
             return f"'{str_value}'"
         
-        if operator == "is_in_range":
+        if operator == "between":
             try:
                 low, high = map(float, value.split('-'))
                 return f"{low} AND {high}"
@@ -73,11 +120,8 @@ class SmartPlaylistEngine:
             # y esto simplifica la construcción de la condición.
             # Nos aseguramos de envolver los nombres de campo en ` ` para evitar conflictos con palabras clave de SQL.
             formatted_value = self._format_value(field, operator_key, value)
-            
-            if operator_key == "is_in_range":
-                 conditions.append(f"`{field}` {sql_operator} {formatted_value}")
-            else:
-                 conditions.append(f"`{field}` {sql_operator} {formatted_value}")
+
+            conditions.append(f"`{field}` {sql_operator} {formatted_value}")
 
 
         if not conditions:
@@ -91,15 +135,16 @@ class SmartPlaylistEngine:
         """
         Ejecuta la consulta generada por las reglas y devuelve las pistas coincidentes.
         """
-        query = self.get_query_from_rules(rules, match_all)
-        
+        query, params = self.generate_query_from_rules(rules, match_all)
+
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = self._create_connection()
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
-            cursor.execute(query)
+            cursor.execute(query, params)
             rows = cursor.fetchall()
-            return [dict(row) for row in rows]
+            # Cada fila solo contiene la columna id
+            return [row[0] for row in rows]
         except sqlite3.Error as e:
             print(f"Error al ejecutar la consulta de la Smart Playlist: {e}")
             print(f"Consulta problemática: {query}")

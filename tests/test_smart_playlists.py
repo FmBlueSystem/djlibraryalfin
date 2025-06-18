@@ -2,10 +2,6 @@ import pytest
 import sqlite3
 import os
 import json
-from unittest.mock import MagicMock
-from PySide6.QtWidgets import QApplication
-from pytestqt.qt_compat import qt_api
-from PySide6.QtCore import Qt
 
 # Añadir la raíz del proyecto al path para que los imports funcionen
 import sys
@@ -14,7 +10,6 @@ sys.path.append(project_root)
 
 from core.database import init_db, create_connection
 from core.smart_playlist_engine import SmartPlaylistEngine
-from ui.smart_playlist_editor import SmartPlaylistEditor
 
 
 @pytest.fixture(scope="function")
@@ -132,14 +127,6 @@ def test_get_tracks_for_rules_no_results(engine):
     track_ids = engine.get_tracks_for_rules(rules)
     assert track_ids == []
 
-# Fixture para la aplicación Qt, necesaria para cualquier prueba de UI
-@pytest.fixture(scope="session")
-def qt_app():
-    """Crea una QApplication para el conjunto de pruebas."""
-    app = QApplication.instance()
-    if app is None:
-        app = QApplication(sys.argv)
-    return app
 
 # --- Pruebas de UI con pytest-qt ---
 # NOTA: Las siguientes pruebas de UI están temporalmente comentadas debido a un
