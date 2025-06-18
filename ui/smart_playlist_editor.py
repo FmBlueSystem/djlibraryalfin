@@ -8,15 +8,14 @@ from PySide6.QtWidgets import (
     QDialog
 )
 from PySide6.QtCore import Qt
-import sqlite3
 
 # Navegar a la raíz del proyecto para asegurar que los imports funcionen
 # Asume que este script está en DjAlfin/ui/
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_root)
 
-from core.smart_playlist_engine import SmartPlaylistEngine
-from core.database import get_db_path, create_connection
+from services import PlaylistService
+from core.database import get_db_path
 
 class SmartPlaylistEditor(QDialog):
     """
@@ -25,12 +24,12 @@ class SmartPlaylistEditor(QDialog):
     Permite a los usuarios crear y editar listas de reproducción basadas en reglas
     que se aplican a los metadatos de las pistas.
     """
-    def __init__(self, engine: SmartPlaylistEngine, parent=None, playlist_id=None, seed_track_data=None):
+    def __init__(self, service: PlaylistService, parent=None, playlist_id=None, seed_track_data=None):
         """
         Inicializa el editor de listas de reproducción inteligentes.
 
         Args:
-            engine (SmartPlaylistEngine): Una instancia del motor de listas inteligentes.
+            service (PlaylistService): Capa de servicio para manejar playlists.
             parent (QWidget, optional): El widget padre. Defaults to None.
             playlist_id (int, optional): El ID de la lista a editar. Defaults to None.
             seed_track_data (dict, optional): Datos de una pista para precargar reglas.
@@ -39,10 +38,8 @@ class SmartPlaylistEditor(QDialog):
         self.setWindowTitle("Smart Playlist Editor")
         self.setGeometry(100, 100, 700, 600)
 
-        # Recibir el motor y la conexión directamente
-        self.engine = engine
-        # self.db_conn = self.engine._create_connection() # Se elimina. La conexión se gestionará por operación.
-        self._passed_db_conn = True # La conexión siempre es "externa" ahora
+        # Service layer to interact with playlists
+        self.service = service
 
         self.playlist_id = playlist_id
         
@@ -179,9 +176,9 @@ class SmartPlaylistEditor(QDialog):
         rules = self._get_rules_from_ui()
         match_all = self.match_all_radio.isChecked()
         
-        # 1. Llamar al método correcto del motor.
-        # Este método ya devuelve la lista completa de pistas (diccionarios).
-        matching_tracks = self.engine.get_tracks_for_rules(rules, match_all)
+        # Obtener IDs de pistas usando el servicio
+        track_ids = self.service.get_tracks(rules, match_all)
+        matching_tracks = self.service.fetch_track_info(track_ids)
         
         self.preview_table.setRowCount(0) # Limpiar tabla
         
@@ -253,69 +250,39 @@ class SmartPlaylistEditor(QDialog):
         match_all = self.match_all_radio.isChecked()
 
         try:
-            self.engine.save_playlist(playlist_name, rules, match_all)
+            self.service.save_playlist(playlist_name, rules, match_all)
             QMessageBox.information(self, "Success", f"Playlist '{playlist_name}' saved successfully.")
             self.accept()  # Cierra el diálogo
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Could not save the playlist: {e}")
 
     def _load_playlist_data(self):
-        """Carga los datos de una playlist existente en la UI."""
+        """Carga los datos de una playlist existente a través del servicio."""
         if not self.playlist_id:
             return
-        
-        try:
-            # Obtener una nueva conexión para esta operación
-            conn = create_connection()
-            if not conn:
-                raise sqlite3.Error("No se pudo conectar a la base de datos.")
-            
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
 
-            # Cargar datos de la playlist
-            cursor.execute("SELECT * FROM smart_playlists WHERE id = ?", (self.playlist_id,))
-            playlist_data = cursor.fetchone()
+        playlist = self.service.get_playlist_info(self.playlist_id)
+        if not playlist:
+            QMessageBox.warning(self, "Error", "Playlist not found.")
+            self.close()
+            return
 
-            if not playlist_data:
-                QMessageBox.warning(self, "Error", "Playlist not found.")
-                self.close()
-                return
+        self.name_input.setText(playlist["name"])
+        if playlist["match_all"]:
+            self.match_all_radio.setChecked(True)
+        else:
+            self.match_any_radio.setChecked(True)
 
-            self.name_input.setText(playlist_data['name'])
-            if playlist_data['match_all']:
-                self.match_all_radio.setChecked(True)
-            else:
-                self.match_any_radio.setChecked(True)
-            
-            # Deshabilitar edición si está congelada
-            if playlist_data['is_frozen']:
-                self._disable_editing()
+        # Limpiar filas de reglas existentes (excepto la cabecera)
+        while self.rules_grid_layout.rowCount() > 1:
+            self._remove_last_rule_row()
 
-            # Cargar las reglas
-            cursor.execute("SELECT * FROM smart_playlist_rules WHERE playlist_id = ?", (self.playlist_id,))
-            rules = cursor.fetchall()
-
-            # Limpiar filas de reglas existentes (excepto la cabecera)
-            while self.rules_grid_layout.count() > 4: # 4 widgets de cabecera
-                self._remove_last_rule_row()
-            
-            # Si no hay reglas, añadir una fila vacía. Si sí hay, poblar.
-            if not rules:
-                self._add_rule_row()
-            else:
-                # Eliminar la fila de ejemplo inicial si existe
-                if self.rules_grid_layout.rowCount() > 1:
-                    self._remove_last_rule_row()
-
-                for rule in rules:
-                    self._add_rule_row(rule_data=rule)
-
-        except sqlite3.Error as e:
-            QMessageBox.critical(self, "Database Error", f"Could not load playlist: {e}")
-        finally:
-            if 'conn' in locals() and conn:
-                conn.close()
+        rules = playlist.get("rules", [])
+        if not rules:
+            self._add_rule_row()
+        else:
+            for rule in rules:
+                self._add_rule_row(rule_data=rule)
 
     def _remove_last_rule_row(self):
         """Elimina la última fila de widgets de regla."""
