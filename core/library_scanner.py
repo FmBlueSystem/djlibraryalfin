@@ -87,6 +87,13 @@ class LibraryScanner(threading.Thread):
             if self._should_process_file(file_path):
                 # 1. Leer tags locales del archivo
                 track_info_local = self._read_tags_from_file(file_path)
+                
+                # FIX: Si no se leyeron metadatos esenciales (título/artista), no continuar.
+                # Un diccionario con solo 'file_path' y 'file_type' indica un fallo de lectura.
+                if len(track_info_local) <= 2:
+                    print(f"Skipping {os.path.basename(file_path)} due to failed metadata read.")
+                    return
+
                 # file_path ya está en track_info_local desde _read_tags_from_file
                 track_info_local['last_modified_date'] = os.path.getmtime(file_path)
 

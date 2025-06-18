@@ -8,3 +8,10 @@ pygame
 musicbrainzngs
 simpleaudio
 spotipy
+discogs_client
+requests
+qtawesome
+librosa
+numpy
+pytest
+pytest-qt

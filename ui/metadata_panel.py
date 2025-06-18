@@ -81,6 +81,10 @@ class MetadataPanel(QWidget):
         # Botones de acción
         buttons_layout = self.create_buttons_section()
         content_layout.addLayout(buttons_layout)
+        
+        # Nuevos botones de enriquecimiento
+        enrichment_layout = self.create_enrichment_section()
+        content_layout.addLayout(enrichment_layout)
 
         # Espaciador
         content_layout.addStretch()
@@ -301,6 +305,48 @@ class MetadataPanel(QWidget):
         
         return layout
     
+    def create_enrichment_section(self):
+        """Crea la sección de enriquecimiento de metadatos."""
+        layout = QVBoxLayout()
+        layout.setSpacing(8)
+
+        section_title = QLabel("🌐 ENRIQUECIMIENTO")
+        section_title.setProperty("class", "subtitle")
+        layout.addWidget(section_title)
+
+        # Botones de enriquecimiento
+        buttons_layout = QHBoxLayout()
+        buttons_layout.setSpacing(8)
+
+        self.enrich_spotify_button = QPushButton("🎵 Spotify")
+        self.enrich_spotify_button.setProperty("class", "enrich_button")
+        self.enrich_spotify_button.setToolTip("Enriquecer con datos de Spotify")
+        self.enrich_spotify_button.clicked.connect(self._enrich_with_spotify)
+
+        self.enrich_discogs_button = QPushButton("💿 Discogs") 
+        self.enrich_discogs_button.setProperty("class", "enrich_button")
+        self.enrich_discogs_button.setToolTip("Enriquecer con datos de Discogs")
+        self.enrich_discogs_button.clicked.connect(self._enrich_with_discogs)
+
+        self.enrich_auto_button = QPushButton("⚡ Auto")
+        self.enrich_auto_button.setProperty("class", "enrich_button_primary")
+        self.enrich_auto_button.setToolTip("Enriquecimiento automático con todas las fuentes")
+        self.enrich_auto_button.clicked.connect(self._enrich_automatic)
+
+        buttons_layout.addWidget(self.enrich_spotify_button)
+        buttons_layout.addWidget(self.enrich_discogs_button)
+        buttons_layout.addWidget(self.enrich_auto_button)
+        buttons_layout.addStretch()
+
+        layout.addLayout(buttons_layout)
+
+        # Status del enriquecimiento
+        self.enrichment_status = QLabel("Listo para enriquecer metadatos")
+        self.enrichment_status.setProperty("class", "status_label")
+        layout.addWidget(self.enrichment_status)
+
+        return layout
+    
     def apply_styles(self):
         """Aplica los estilos modernos al panel."""
         self.setProperty("class", "panel")
@@ -427,6 +473,51 @@ class MetadataPanel(QWidget):
         QTextEdit::placeholder {{
             color: {COLORS['text_placeholder']};
             font-style: italic;
+        }}
+        QLabel[class="volume_icon"] {{
+            margin: 0px;
+            padding: 0px;
+        }}
+        
+        QPushButton[class="enrich_button"] {{
+            background: {COLORS['button_secondary']};
+            color: {COLORS['text_primary']};
+            border: 1px solid {COLORS['border']};
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-family: {FONTS['title']};
+            font-size: 11px;
+            font-weight: bold;
+            min-width: 70px;
+        }}
+
+        QPushButton[class="enrich_button"]:hover {{
+            background: {COLORS['button_secondary_hover']};
+            border: 1px solid {COLORS['primary']};
+        }}
+
+        QPushButton[class="enrich_button_primary"] {{
+            background: {COLORS['primary']};
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-family: {FONTS['title']};
+            font-size: 11px;
+            font-weight: bold;
+            min-width: 70px;
+        }}
+
+        QPushButton[class="enrich_button_primary"]:hover {{
+            background: {COLORS['primary_bright']};
+        }}
+
+        QLabel[class="status_label"] {{
+            color: {COLORS['text_muted']};
+            font-family: {FONTS['main']};
+            font-size: 10px;
+            font-style: italic;
+            margin: 5px 0;
         }}
         """
         self.setStyleSheet(panel_style)
@@ -581,10 +672,154 @@ class MetadataPanel(QWidget):
         print(f"✔️ Metadatos guardados para: {self.current_track.get('title')}")
 
     def cancel_changes(self):
-        """Cancela los cambios y restaura los valores originales."""
+        """Cancela los cambios y recarga los datos originales."""
         if self.current_track:
             self.update_track_info(self.current_track)
-            print("❌ Cambios cancelados.")
+        print("Cambios cancelados en el panel de metadatos.")
+
+    def _enrich_with_spotify(self):
+        """Enriquece metadatos usando solo Spotify."""
+        if not self.current_track:
+            self.enrichment_status.setText("⚠️ No hay pista seleccionada")
+            return
+            
+        self.enrichment_status.setText("🔄 Enriqueciendo con Spotify...")
+        self.enrich_spotify_button.setEnabled(False)
+        
+        try:
+            from core import spotify_client
+            
+            artist = self.current_track.get('artist', '')
+            title = self.current_track.get('title', '')
+            
+            if not artist or not title:
+                self.enrichment_status.setText("❌ Faltan datos básicos (artista/título)")
+                return
+            
+            spotify_data = spotify_client.search_track(artist, title)
+            if spotify_data:
+                self._apply_enriched_data(spotify_data, "Spotify")
+                self.enrichment_status.setText("✅ Enriquecido con Spotify")
+            else:
+                self.enrichment_status.setText("⚠️ No encontrado en Spotify")
+                
+        except Exception as e:
+            self.enrichment_status.setText(f"❌ Error Spotify: {str(e)[:30]}...")
+            print(f"Error en enriquecimiento Spotify: {e}")
+        finally:
+            self.enrich_spotify_button.setEnabled(True)
+
+    def _enrich_with_discogs(self):
+        """Enriquece metadatos usando solo Discogs."""
+        if not self.current_track:
+            self.enrichment_status.setText("⚠️ No hay pista seleccionada")
+            return
+            
+        self.enrichment_status.setText("🔄 Enriqueciendo con Discogs...")
+        self.enrich_discogs_button.setEnabled(False)
+        
+        try:
+            from core import discogs_client
+            
+            artist = self.current_track.get('artist', '')
+            title = self.current_track.get('title', '')
+            
+            if not artist or not title:
+                self.enrichment_status.setText("❌ Faltan datos básicos (artista/título)")
+                return
+            
+            discogs_data = discogs_client.search_release(artist, title)
+            if discogs_data:
+                self._apply_enriched_data(discogs_data, "Discogs")
+                self.enrichment_status.setText("✅ Enriquecido con Discogs")
+            else:
+                self.enrichment_status.setText("⚠️ No encontrado en Discogs")
+                
+        except Exception as e:
+            self.enrichment_status.setText(f"❌ Error Discogs: {str(e)[:30]}...")
+            print(f"Error en enriquecimiento Discogs: {e}")
+        finally:
+            self.enrich_discogs_button.setEnabled(True)
+
+    def _enrich_automatic(self):
+        """Enriquecimiento automático usando todas las fuentes disponibles."""
+        if not self.current_track:
+            self.enrichment_status.setText("⚠️ No hay pista seleccionada")
+            return
+            
+        self.enrichment_status.setText("🔄 Enriquecimiento automático...")
+        self.enrich_auto_button.setEnabled(False)
+        
+        try:
+            from core.metadata_enricher import enrich_metadata
+            
+            enriched_data = enrich_metadata(self.current_track)
+            if enriched_data:
+                self._apply_enriched_data(enriched_data, "Multi-fuente")
+                self.enrichment_status.setText("✅ Enriquecimiento automático completado")
+            else:
+                self.enrichment_status.setText("⚠️ No se encontraron datos adicionales")
+                
+        except Exception as e:
+            self.enrichment_status.setText(f"❌ Error auto: {str(e)[:30]}...")
+            print(f"Error en enriquecimiento automático: {e}")
+        finally:
+            self.enrich_auto_button.setEnabled(True)
+
+    def _apply_enriched_data(self, enriched_data: dict, source: str):
+        """Aplica datos enriquecidos a los campos del panel."""
+        print(f"Aplicando datos de {source}: {enriched_data}")
+        
+        # Mapear campos de diferentes fuentes
+        field_mapping = {
+            # Spotify
+            'name': 'title',
+            'artists': 'artist',
+            'album': 'album',
+            'release_date': 'year',
+            
+            # Discogs
+            'title': 'title',
+            'year': 'year',
+            'genre': 'genre',
+            'style': 'genre',
+            
+            # Campos directos
+            'artist': 'artist',
+            'bpm': 'bpm',
+            'key': 'key'
+        }
+        
+        # Aplicar datos a los campos
+        for source_field, target_field in field_mapping.items():
+            if source_field in enriched_data:
+                value = enriched_data[source_field]
+                
+                # Procesamiento especial por tipo de campo
+                if target_field == 'artist' and isinstance(value, list):
+                    value = ', '.join([a.get('name', str(a)) for a in value])
+                elif target_field == 'year' and isinstance(value, str):
+                    value = value.split('-')[0]  # Extraer solo el año
+                elif target_field == 'genre' and isinstance(value, list):
+                    value = ', '.join(value)
+                
+                # Actualizar campo correspondiente
+                if target_field == 'title':
+                    self.title_edit.setText(str(value))
+                elif target_field == 'artist':
+                    self.artist_edit.setText(str(value))
+                elif target_field == 'album':
+                    self.album_edit.setText(str(value))
+                elif target_field == 'genre':
+                    self.genre_edit.setPlainText(str(value))
+                elif target_field == 'year':
+                    self.year_edit.setText(str(value))
+        
+        # Cargar artwork si está disponible
+        if 'album_art_url' in enriched_data or 'cover_image' in enriched_data:
+            art_url = enriched_data.get('album_art_url') or enriched_data.get('cover_image')
+            if art_url:
+                self.load_album_art(art_url)
 
 if __name__ == '__main__':
     # Bloque para probar el panel de forma aislada

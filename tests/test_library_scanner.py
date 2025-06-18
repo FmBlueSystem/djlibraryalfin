@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 import os
 import tempfile
 import shutil
@@ -15,7 +15,7 @@ class TestLibraryScanner(unittest.TestCase):
         """Elimina el directorio temporal después de las pruebas."""
         shutil.rmtree(self.test_dir)
 
-    @patch('core.library_scanner.add_track')
+    @patch('core.library_scanner.db.add_track')
     @patch('core.library_scanner.read_metadata')
     def test_scan_directory_resilience(self, mock_read_metadata, mock_add_track):
         """
@@ -44,7 +44,13 @@ class TestLibraryScanner(unittest.TestCase):
         mock_read_metadata.side_effect = read_metadata_side_effect
 
         # --- Ejecución ---
-        library_scanner.scan_directory(self.test_dir)
+        # Instanciar el escáner y ejecutarlo de forma síncrona para la prueba
+        scanner = library_scanner.LibraryScanner(
+            directory=self.test_dir,
+            on_complete_callback=MagicMock(),
+            progress_callback=MagicMock()
+        )
+        scanner.run()
 
         # --- Verificación ---
         # 1. read_metadata debe ser llamado para los dos .mp3, pero no para el .txt
@@ -58,7 +64,8 @@ class TestLibraryScanner(unittest.TestCase):
         expected_metadata = {
             'title': 'Good Song',
             'file_path': good_file_path,
-            'file_type': 'MP3'
+            'file_type': 'mp3',
+            'last_modified_date': unittest.mock.ANY
         }
         mock_add_track.assert_called_once_with(expected_metadata)
 

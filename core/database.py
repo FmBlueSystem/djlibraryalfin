@@ -33,9 +33,35 @@ def _add_column_if_not_exists(cursor, table_name, column_name, column_type):
             # o si hay un error de sintaxis.
             print(f"Advertencia: No se pudo añadir la columna '{column_name}': {e}")
 
+def create_smart_playlist_tables(cursor):
+    """Crea las tablas para las listas de reproducción inteligentes si no existen."""
+    try:
+        # Tabla para almacenar la definición de cada Smart Playlist
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS smart_playlists (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL UNIQUE,
+                match_all INTEGER NOT NULL DEFAULT 1,
+                rules TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
 
-def init_db():
-    conn = create_connection()
+        # Eliminar la tabla de reglas antigua si existe, ya que ahora se almacenan en JSON
+        cursor.execute("DROP TABLE IF EXISTS smart_playlist_rules;")
+
+        print("Tablas de listas inteligentes creadas o ya existentes.")
+        # El commit se hará desde la función que llama a esta
+    except sqlite3.Error as e:
+        print(f"Error al crear las tablas de listas inteligentes: {e}")
+
+def init_db(conn=None):
+    local_conn = False
+    if conn is None:
+        conn = create_connection()
+        local_conn = True
+    
     if conn is not None:
         try:
             cursor = conn.cursor()
@@ -70,21 +96,35 @@ def init_db():
             _add_column_if_not_exists(cursor, "tracks", "spotify_artist_id", "TEXT")
             _add_column_if_not_exists(cursor, "tracks", "spotify_album_id", "TEXT")
             _add_column_if_not_exists(cursor, "tracks", "discogs_release_id", "TEXT")
+            
+            # Campos adicionales para análisis BPM avanzado
+            _add_column_if_not_exists(cursor, "tracks", "bpm_confidence", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "beat_count", "INTEGER")
+            _add_column_if_not_exists(cursor, "tracks", "rhythm_stability", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "bpm_analyzed_date", "TEXT")
+
+            # Crear las tablas de las listas inteligentes
+            create_smart_playlist_tables(cursor)
 
             conn.commit()
             print("Tabla 'tracks' inicializada/actualizada correctamente.")
         except sqlite3.Error as e:
             print(f"Error al inicializar/actualizar la tabla 'tracks': {e}")
         finally:
-            conn.close()
+            if local_conn:
+                conn.close()
     else:
         print("Error: No se pudo crear la conexión a la base de datos para init_db.")
 
-def add_track(track_data):
-    conn = create_connection()
+def add_track(track_data, conn=None):
+    local_conn = False
+    if conn is None:
+        conn = create_connection()
+        local_conn = True
+
     if not conn:
         print("Error: No se pudo crear la conexión a la base de datos para add_track.")
-        return
+        return None
 
     # Lista de todos los campos posibles en la tabla (incluyendo los nuevos)
     # El orden debe coincidir con los VALUES y los SET de la cláusula ON CONFLICT
@@ -94,7 +134,7 @@ def add_track(track_data):
         'file_type', 'album_art_url', 
         'musicbrainz_recording_id', 'musicbrainz_artist_id', 'musicbrainz_release_id',
         'spotify_track_id', 'spotify_artist_id', 'spotify_album_id',
-        'discogs_release_id'
+        'discogs_release_id', 'bpm_confidence', 'beat_count', 'rhythm_stability', 'bpm_analyzed_date'
     ]
     
     # Crear la lista de placeholders (?, ?, ...)
@@ -130,16 +170,31 @@ def add_track(track_data):
         else:
             track_values.append(track_data.get(field))
             
+    track_id = None
     try:
         cursor = conn.cursor()
         cursor.execute(sql, tuple(track_values))
         conn.commit()
+        
+        # Después de la operación, obtener el ID de la fila afectada.
+        # Si fue un INSERT, lastrowid es el nuevo ID.
+        # Si fue un UPDATE, necesitamos obtenerlo con una consulta.
+        if cursor.lastrowid > 0:
+            track_id = cursor.lastrowid
+        else:
+            # Si fue un update, lastrowid es 0, así que consultamos el id.
+            cursor.execute("SELECT id FROM tracks WHERE file_path = ?", (track_data['file_path'],))
+            result = cursor.fetchone()
+            if result:
+                track_id = result[0]
+                
     except sqlite3.Error as e:
         print(f"Error al añadir/actualizar la pista {track_data.get('file_path')}: {e}")
-        # print(f"SQL: {sql}") # Descomentar para depuración
-        # print(f"Valores intentados: {track_values}") # Descomentar para depuración
     finally:
-        conn.close()
+        if local_conn:
+            conn.close()
+
+    return track_id
 
 def datetime_now_localtime_string():
     """Devuelve la fecha y hora actual en formato string UTC para SQLite, compatible con datetime('now', 'localtime')."""
@@ -156,8 +211,12 @@ def datetime_now_localtime_string():
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
-def get_all_tracks():
-    conn = create_connection()
+def get_all_tracks(conn=None):
+    local_conn = False
+    if conn is None:
+        conn = create_connection()
+        local_conn = True
+
     if not conn:
         return []
     try:
@@ -170,9 +229,10 @@ def get_all_tracks():
         print(f"Error al obtener las pistas: {e}")
         return []
     finally:
-        conn.close()
+        if local_conn:
+            conn.close()
 
-def update_track_field(file_path, field, value):
+def update_track_field(file_path, field, value, conn=None):
     # Lista blanca de columnas que se pueden editar manualmente por el usuario.
     # Los campos de API (IDs, album_art_url) se actualizan mediante el escáner/enriquecedor.
     allowed_fields = [
@@ -184,7 +244,11 @@ def update_track_field(file_path, field, value):
 
     sql = f"UPDATE tracks SET {field} = ? WHERE file_path = ?"
     
-    conn = create_connection()
+    local_conn = False
+    if conn is None:
+        conn = create_connection()
+        local_conn = True
+
     if not conn:
         return
     try:
@@ -195,10 +259,15 @@ def update_track_field(file_path, field, value):
     except sqlite3.Error as e:
         print(f"Error al actualizar la base de datos: {e}")
     finally:
-        conn.close()
+        if local_conn:
+            conn.close()
 
-def get_track_path(track_id):
-    conn = create_connection()
+def get_track_path(track_id, conn=None):
+    local_conn = False
+    if conn is None:
+        conn = create_connection()
+        local_conn = True
+    
     if not conn: return None
     try:
         cursor = conn.cursor()
@@ -209,10 +278,15 @@ def get_track_path(track_id):
         print(f"Error al obtener la ruta de la pista {track_id}: {e}")
         return None
     finally:
-        conn.close()
+        if local_conn:
+            conn.close()
 
-def get_track_by_path(file_path):
-    conn = create_connection()
+def get_track_by_path(file_path, conn=None):
+    local_conn = False
+    if conn is None:
+        conn = create_connection()
+        local_conn = True
+
     if not conn: return None
     try:
         conn.row_factory = sqlite3.Row
@@ -224,7 +298,8 @@ def get_track_by_path(file_path):
         print(f"Error al buscar la pista por ruta {file_path}: {e}")
         return None
     finally:
-        conn.close()
+        if local_conn:
+            conn.close()
 
 if __name__ == '__main__':
     print("Inicializando la base de datos desde __main__...")

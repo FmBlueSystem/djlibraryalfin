@@ -54,7 +54,7 @@ def fix_metadata_dialog_layout():
         
         ttk.Label(stats_frame, text="Sin BPM:", font=("Segoe UI", 8)).grid(row=1, column=2, sticky="w", pady=(5, 0))
         self.stats_labels['missing_bpm'] = ttk.Label(stats_frame, text="0", font=("Segoe UI", 8))
-        self.stats_labels['missing_bmp'].grid(row=1, column=3, sticky="w", padx=(5, 15), pady=(5, 0))
+        self.stats_labels['missing_bpm'].grid(row=1, column=3, sticky="w", padx=(5, 15), pady=(5, 0))
         
         ttk.Label(stats_frame, text="Sin key:", font=("Segoe UI", 8)).grid(row=1, column=4, sticky="w", pady=(5, 0))
         self.stats_labels['missing_key'] = ttk.Label(stats_frame, text="0", font=("Segoe UI", 8))

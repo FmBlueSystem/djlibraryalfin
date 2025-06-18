@@ -1,386 +1,183 @@
 # ui/playback_panel.py
 
-import sys
 import qtawesome as qta
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QSlider, QFrame, QApplication, QSizePolicy
+    QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QFrame, QSizePolicy
 )
-from PySide6.QtCore import Qt, Signal, QTimer
-from PySide6.QtGui import QFont, QIcon
-from ui.theme import COLORS, FONTS, GRADIENTS
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtMultimedia import QMediaPlayer
+
+from ui.theme import COLORS, FONTS
+from ui.widgets import CustomSlider, TimeLabel
+from core.audio_service import AudioService
+
 
 class PlaybackPanel(QWidget):
-    """Panel moderno de reproducción con controles profesionales."""
+    """
+    Panel con controles de reproducción, visualización de tiempo y BPM.
+    Este widget es ahora un cliente del AudioService, que contiene toda la lógica.
+    """
     
-    # Señales
-    playRequested = Signal()
-    pauseRequested = Signal()
-    stopRequested = Signal()
-    previousRequested = Signal()
-    nextRequested = Signal()
-    positionChanged = Signal(int)
-    volumeChanged = Signal(int)
-    
-    def __init__(self, parent=None):
+    # Señal emitida para notificar al exterior (ej. MainWindow) que un análisis
+    # de BPM ha finalizado y sus resultados deben ser guardados.
+    bpmAnalyzed = Signal(dict)
+
+    def __init__(self, audio_service: AudioService, parent=None):
         super().__init__(parent)
-        self.is_playing = False
-        self.current_position = 0
-        self.total_duration = 0
+        
+        if not isinstance(audio_service, AudioService):
+            raise TypeError("PlaybackPanel debe recibir una instancia de AudioService.")
+            
+        self.audio_service = audio_service
+        self.is_slider_pressed = False # Flag para evitar que la UI actualice el slider mientras el usuario lo arrastra
+
         self.setup_ui()
-        self.apply_styles()
-        
-        # Timer para actualizar la posición
-        self.update_timer = QTimer()
-        self.update_timer.timeout.connect(self.update_display)
-        self.update_timer.start(100)  # Actualizar cada 100ms
-    
+        self.connect_signals()
+
     def setup_ui(self):
-        """Configura la interfaz de usuario moderna y compacta."""
-        layout = QVBoxLayout(self)
-        layout.setSpacing(6)
-        layout.setContentsMargins(10, 8, 10, 8)
+        """Construye la interfaz de usuario del panel."""
+        self.setProperty("class", "PlaybackPanel")
         
-        # Título del panel y controles de reproducción en la misma fila
-        top_layout = QHBoxLayout()
-        title_label = QLabel("PLAYBACK")
-        title_label.setProperty("class", "title")
-        top_layout.addWidget(title_label, 1, Qt.AlignmentFlag.AlignLeft)
-        
-        self.playback_controls_layout = self.create_playback_controls()
-        top_layout.addLayout(self.playback_controls_layout)
-        layout.addLayout(top_layout)
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(15, 10, 15, 10)
+        main_layout.setSpacing(8)
 
-        # Separador visual
-        separator = QFrame()
-        separator.setFrameShape(QFrame.HLine)
-        separator.setFrameShadow(QFrame.Sunken)
-        layout.addWidget(separator)
+        # --- Fila de Progreso ---
+        progress_layout = QHBoxLayout()
+        self.current_time_label = TimeLabel("00:00")
+        self.progress_slider = CustomSlider(Qt.Orientation.Horizontal)
+        self.total_time_label = TimeLabel("00:00")
         
-        # Layout principal para información de pista y controles
-        main_content_layout = QHBoxLayout()
-        layout.addLayout(main_content_layout)
+        progress_layout.addWidget(self.current_time_label)
+        progress_layout.addWidget(self.progress_slider)
+        progress_layout.addWidget(self.total_time_label)
 
-        # Columna Izquierda: Información de la pista
-        self.track_info_layout = self.create_track_info_section()
-        main_content_layout.addLayout(self.track_info_layout, 2) # Más espacio para texto
-
-        # Columna Derecha: Controles de progreso y volumen
-        right_controls_layout = QVBoxLayout()
-        right_controls_layout.setSpacing(4)
-        main_content_layout.addLayout(right_controls_layout, 3) # Más espacio para sliders
-
-        # Barra de progreso
-        self.progress_layout = self.create_progress_section()
-        right_controls_layout.addLayout(self.progress_layout)
+        # --- Fila de Controles ---
+        controls_layout = QHBoxLayout()
+        controls_layout.setSpacing(15)
         
-        # Control de volumen
-        # self.volume_layout = self.create_volume_section()
-        # right_controls_layout.addLayout(self.volume_layout)
-        
-        # Espaciador
-        layout.addStretch(0)
-    
-    def create_track_info_section(self):
-        """Crea la sección de información de la pista actual, sin título de sección."""
-        layout = QVBoxLayout()
-        layout.setSpacing(2)
-        
-        self.track_title = QLabel("No track selected")
-        self.track_title.setProperty("class", "track_title")
-        self.track_title.setWordWrap(True)
-        layout.addWidget(self.track_title)
-        
-        self.track_artist = QLabel("Unknown Artist")
-        self.track_artist.setProperty("class", "track_artist")
-        layout.addWidget(self.track_artist)
-        
-        layout.addStretch()
-        return layout
-    
-    def create_playback_controls(self):
-        """Crea los controles principales de reproducción, más compactos."""
-        layout = QHBoxLayout()
-        layout.setSpacing(6)
-        
-        self.prev_button = QPushButton(qta.icon('fa5s.step-backward', color=COLORS['text_primary']), "")
-        self.prev_button.setProperty("class", "control_button")
-        self.prev_button.setToolTip("Previous Track")
-        self.prev_button.clicked.connect(self.previousRequested.emit)
-        
-        self.play_pause_button = QPushButton(qta.icon('fa5s.play', color=COLORS['text_primary']), "")
+        self.play_pause_button = QPushButton()
         self.play_pause_button.setProperty("class", "play_button")
-        self.play_pause_button.setToolTip("Play/Pause")
-        self.play_pause_button.clicked.connect(self.play_pause_clicked)
-        
-        self.stop_button = QPushButton(qta.icon('fa5s.stop', color=COLORS['text_primary']), "")
-        self.stop_button.setProperty("class", "control_button")
-        self.stop_button.setToolTip("Stop playback")
-        self.stop_button.clicked.connect(self.stop_clicked)
+        self.play_pause_button.setIcon(qta.icon("fa5s.play-circle", color=COLORS['text_primary']))
+        self.play_pause_button.setFixedSize(40, 40)
 
-        self.next_button = QPushButton(qta.icon('fa5s.step-forward', color=COLORS['text_primary']), "")
-        self.next_button.setProperty("class", "control_button")
-        self.next_button.setToolTip("Next Track")
-        self.next_button.clicked.connect(self.nextRequested.emit)
+        self.stop_button = QPushButton(icon=qta.icon("fa5s.stop-circle", color=COLORS['text_primary']))
+        self.stop_button.setFixedSize(40, 40)
+
+        self.bpm_value = QLabel("--- BPM")
+        self.bpm_value.setFont(FONTS["Medium"])
+        self.bpm_value.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
-        layout.addWidget(self.prev_button)
-        layout.addWidget(self.play_pause_button)
-        layout.addWidget(self.stop_button)
-        layout.addWidget(self.next_button)
+        self.analyze_bpm_button = QPushButton("Analizar")
+        self.analyze_bpm_button.setProperty("class", "bpm_button")
         
-        return layout
+        controls_layout.addStretch()
+        controls_layout.addWidget(self.stop_button)
+        controls_layout.addWidget(self.play_pause_button)
+        controls_layout.addWidget(self.bpm_value)
+        controls_layout.addWidget(self.analyze_bpm_button)
+        controls_layout.addStretch()
+
+        main_layout.addLayout(progress_layout)
+        main_layout.addLayout(controls_layout)
+
+    def connect_signals(self):
+        """Conecta los widgets de la UI al AudioService y viceversa."""
+        
+        # 1. Conectar acciones del usuario (botones, sliders) a los métodos del servicio
+        self.play_pause_button.clicked.connect(self.audio_service.play_pause)
+        self.stop_button.clicked.connect(self.audio_service.stop)
+        self.analyze_bpm_button.clicked.connect(self.audio_service.analyze_bpm)
+        
+        self.progress_slider.sliderPressed.connect(lambda: setattr(self, 'is_slider_pressed', True))
+        self.progress_slider.sliderReleased.connect(lambda: setattr(self, 'is_slider_pressed', False))
+        self.progress_slider.valueChanged.connect(self.on_slider_value_changed)
+        
+        # 2. Conectar señales del servicio a los métodos de esta clase para actualizar la UI
+        self.audio_service.playbackStateChanged.connect(self.update_play_pause_button)
+        self.audio_service.durationChanged.connect(self.update_duration)
+        self.audio_service.positionChanged.connect(self.update_position)
+        self.audio_service.bpmAnalyzed.connect(self.on_bpm_analyzed_from_service)
+        self.audio_service.trackLoaded.connect(self.reset_for_new_track)
+        self.audio_service.errorOccurred.connect(self.on_service_error)
+
+    # --- Slots que responden a las señales del AudioService ---
+
+    def update_play_pause_button(self, state: QMediaPlayer.PlaybackState):
+        """Actualiza el ícono del botón Play/Pause según el estado del reproductor."""
+        if state == QMediaPlayer.PlaybackState.PlayingState:
+            self.play_pause_button.setIcon(qta.icon("fa5s.pause-circle", color=COLORS['text_primary']))
+        else:
+            self.play_pause_button.setIcon(qta.icon("fa5s.play-circle", color=COLORS['text_primary']))
+
+    def update_duration(self, duration_ms: int):
+        """Actualiza el rango del slider y la etiqueta de tiempo total."""
+        self.progress_slider.setMaximum(duration_ms)
+        self.total_time_label.setText(self._format_time(duration_ms))
+
+    def update_position(self, position_ms: int):
+        """Actualiza la posición del slider y la etiqueta de tiempo actual."""
+        if not self.is_slider_pressed:
+            self.progress_slider.setValue(position_ms)
+        self.current_time_label.setText(self._format_time(position_ms))
     
-    def create_progress_section(self):
-        """Crea la sección de progreso de reproducción, más compacta y sin título."""
-        layout = QHBoxLayout()
-        layout.setSpacing(6)
-        
-        self.current_time_label = QLabel("00:00")
-        self.current_time_label.setProperty("class", "time_label")
-        
-        self.progress_slider = QSlider(Qt.Horizontal)
-        self.progress_slider.setProperty("class", "progress_slider")
-        # Permitir que el slider se expanda verticalmente para usar el espacio disponible
-        self.progress_slider.setSizePolicy(self.progress_slider.sizePolicy().horizontalPolicy(), QSizePolicy.Expanding)
-        self.progress_slider.setMinimum(0)
-        self.progress_slider.setMaximum(100)
+    def on_bpm_analyzed_from_service(self, result: dict):
+        """Actualiza la UI cuando el servicio termina de analizar el BPM."""
+        self.bpm_value.setText(f"{result.get('bpm', 0):.1f} BPM")
+        self.analyze_bpm_button.setText("Analizar")
+        self.analyze_bpm_button.setEnabled(True)
+        # Propagar la señal hacia el exterior (a MainWindow)
+        self.bpmAnalyzed.emit(result)
+
+    def reset_for_new_track(self, track_info: dict):
+        """Reinicia los widgets del panel cuando se carga una nueva pista."""
+        self.current_time_label.setText("00:00")
+        self.total_time_label.setText("00:00")
         self.progress_slider.setValue(0)
-        self.progress_slider.sliderPressed.connect(self.progress_pressed)
-        self.progress_slider.sliderReleased.connect(self.progress_released)
-        self.progress_slider.valueChanged.connect(self.progress_changed)
+        # Asumimos que la info de la pista puede venir de la DB
+        bpm = track_info.get('bpm', '---')
+        self.bpm_value.setText(f"{bpm} BPM")
+        self.update_play_pause_button(QMediaPlayer.PlaybackState.StoppedState)
 
-        self.total_time_label = QLabel("00:00")
-        self.total_time_label.setProperty("class", "time_label")
-        
-        layout.addWidget(self.current_time_label)
-        layout.addWidget(self.progress_slider, 1) # Slider ocupa el espacio extra
-        layout.addWidget(self.total_time_label)
-        
-        return layout
-    
-    def create_volume_section(self):
-        """Crea la sección de control de volumen, más compacta y sin título."""
-        layout = QHBoxLayout()
-        layout.setSpacing(6)
-        
-        volume_icon = QLabel("🔊")
-        volume_icon.setProperty("class", "volume_icon")
-        
-        self.volume_slider = QSlider(Qt.Horizontal)
-        self.volume_slider.setProperty("class", "volume_slider")
-        self.volume_slider.setMinimum(0)
-        self.volume_slider.setMaximum(100)
-        self.volume_slider.setValue(70)
-        self.volume_slider.valueChanged.connect(self.volume_changed_slot)
-        
-        self.volume_label = QLabel("70%")
-        self.volume_label.setProperty("class", "volume_value")
-        
-        layout.addWidget(volume_icon)
-        layout.addWidget(self.volume_slider, 1) # Slider ocupa el espacio extra
-        layout.addWidget(self.volume_label)
-        
-        return layout
-    
-    def apply_styles(self):
-        """Aplica los estilos modernos al panel."""
-        self.setProperty("class", "panel")
-        
-        # Estilo específico para este panel
-        panel_style = f"""
-        PlaybackPanel {{
-            background: qlineargradient(x1:0, y1:0, x2:1, y2:0, 
-                stop:0 {COLORS['background_panel']}, 
-                stop:1 {COLORS['background_secondary']});
-            border: 1px solid {COLORS['border']};
-            border-radius: 12px;
-        }}
-        
-        QLabel[class="title"] {{
-            color: {COLORS['text_primary']};
-            font-family: {FONTS['title']};
-            font-size: 13px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: none; /* Sin borde */
-            margin-bottom: 0px;
-        }}
-        
-        /* Se elimina QLabel[class="subtitle"] porque ya no se usan */
-        
-        QLabel[class="track_title"] {{
-            color: {COLORS['text_primary']};
-            font-family: {FONTS['title']};
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 0px;
-        }}
-        
-        QLabel[class="track_artist"] {{
-            color: {COLORS['text_secondary']};
-            font-family: {FONTS['main']};
-            font-size: 11px;
-            margin-bottom: 0px;
-        }}
-        
-        QLabel[class="time_label"] {{
-            color: {COLORS['text_primary']};
-            font-family: {FONTS['mono']};
-            font-size: 11px;
-            font-weight: bold;
-            background: transparent; /* Sin fondo */
-            padding: 2px;
-            border-radius: 0px;
-            border: none;
-        }}
-        
-        QLabel[class="volume_icon"] {{
-            font-size: 14px;
-        }}
-        
-        QLabel[class="volume_value"] {{
-            font-family: {FONTS['mono']};
-            font-size: 11px;
-            min-width: 35px;
-            text-align: right;
-        }}
-        
-        QPushButton[class="control_button"], QPushButton[class="play_button"] {{
-            font-size: 16px;
-            min-width: 36px;
-            max-width: 36px;
-            min-height: 36px;
-            max-height: 36px;
-            padding: 0;
-            margin: 0;
-            border: 1px solid {COLORS['border']};
-            background-color: {COLORS['background_secondary']};
-        }}
+    def on_service_error(self, error_message: str):
+        """Muestra un error proveniente del servicio."""
+        print(f"ERROR en AudioService: {error_message}")
+        # Aquí se podría mostrar un tooltip o una notificación en la status bar.
+        # Por ahora, restauramos el botón de análisis si estaba activo.
+        if "BPM" in error_message:
+            self.analyze_bpm_button.setText("Analizar")
+            self.analyze_bpm_button.setEnabled(True)
 
-        QPushButton[class="control_button"]:hover, QPushButton[class="play_button"]:hover {{
-            background-color: {COLORS['button_secondary_hover']};
-            border: 1px solid {COLORS['primary']};
-        }}
+    # --- Manejadores de eventos de la UI ---
 
-        QPushButton[class="play_button"] {{
-            font-size: 16px; /* Ajustado para consistencia */
-            background-color: {COLORS['primary']};
-            border: 1px solid {COLORS['primary_dark']};
-        }}
-        
-        QPushButton[class="play_button"]:hover {{
-            background-color: {COLORS['primary_light']};
-        }}
-
-        QFrame[frameShape="5"] {{ /* HLine */
-            color: {COLORS['separator']};
-            margin: 4px 0;
-        }}
-
-        QSlider::groove:horizontal {{
-            height: 6px; 
-            background: {COLORS['background_tertiary']};
-            border-radius: 3px;
-            border: 1px solid {COLORS['border']};
-        }}
-
-        QSlider::handle:horizontal {{
-            background: {COLORS['primary']};
-            border: 1px solid {COLORS['primary_dark']};
-            width: 14px;
-            height: 14px;
-            border-radius: 7px;
-            margin: -5px 0; /* Centrar handle */
-        }}
-
-        QSlider::add-page:horizontal {{
-            background: {COLORS['slider_track']};
-        }}
-
-        QSlider::sub-page:horizontal {{
-            background: {COLORS['slider_progress']};
-        }}
-        """
-        
-        self.setStyleSheet(panel_style)
+    def on_slider_value_changed(self, value: int):
+        """Si el usuario está moviendo el slider, actualiza la posición del reproductor."""
+        if self.is_slider_pressed:
+            self.audio_service.set_position(value)
     
-    def play_pause_clicked(self):
-        """Maneja el clic del botón play/pause, emitiendo la señal apropiada."""
-        if self.is_playing:
-            self.pauseRequested.emit()
-        else:
-            self.playRequested.emit()
-    
-    def stop_clicked(self):
-        """Maneja el clic del botón stop."""
-        self.stopRequested.emit()
-    
-    def progress_pressed(self):
-        """Se llama cuando se presiona el slider de progreso."""
-        self.update_timer.stop()
-    
-    def progress_released(self):
-        """Se llama cuando se suelta el slider de progreso."""
-        position = self.progress_slider.value()
-        self.positionChanged.emit(position)
-    
-    def progress_changed(self, value):
-        """Se llama cuando cambia el valor del slider de progreso."""
-        if self.total_duration > 0:
-            seconds = int((value / 100.0) * self.total_duration)
-            self.current_time_label.setText(self.format_time(seconds))
-    
-    def volume_changed_slot(self, value):
-        """Se llama cuando cambia el volumen."""
-        self.volume_label.setText(f"{value}%")
-        self.volumeChanged.emit(value)
-    
-    def set_playing_state(self, is_playing):
-        """Actualiza el estado de reproducción y el icono del botón, SIN emitir señales."""
-        self.is_playing = is_playing
-        if self.is_playing:
-            self.play_pause_button.setIcon(qta.icon('fa5s.pause', color=COLORS['text_primary']))
-            if self.total_duration > 0:
-                self.update_timer.start(100)
-        else:
-            self.play_pause_button.setIcon(qta.icon('fa5s.play', color=COLORS['text_primary']))
-            self.update_timer.stop()
-    
-    def set_track_info(self, title, artist="Unknown Artist"):
-        """Actualiza la información de la pista actual."""
-        self.track_title.setText(title or "No track selected")
-        self.track_artist.setText(artist or "Unknown Artist")
-    
-    def set_duration(self, duration_seconds):
-        """Establece la duración total de la pista."""
-        self.total_duration = duration_seconds
-        self.total_time_label.setText(self.format_time(duration_seconds))
-    
-    def set_position(self, position_seconds):
-        """Actualiza la posición actual de reproducción."""
-        self.current_position = position_seconds
-        self.current_time_label.setText(self.format_time(position_seconds))
-        
-        if self.total_duration > 0:
-            progress = int((position_seconds / self.total_duration) * 100)
-            self.progress_slider.setValue(progress)
-    
-    def update_display(self):
-        """Actualiza la visualización periódicamente."""
-        # Este método se puede usar para actualizaciones periódicas
-        # si se necesita simular la reproducción sin el backend de audio.
-        # Se deja vacío para que el control lo lleve el backend de audio real.
-        pass
-    
-    def format_time(self, seconds):
-        """Formatea el tiempo en formato MM:SS."""
-        minutes = int(seconds // 60)
-        seconds = int(seconds % 60)
+    def _format_time(self, ms: int) -> str:
+        """Formatea milisegundos a un string MM:SS."""
+        if ms < 0: ms = 0
+        seconds = int((ms / 1000) % 60)
+        minutes = int((ms / (1000 * 60)) % 60)
         return f"{minutes:02d}:{seconds:02d}"
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    panel = PlaybackPanel()
-    panel.setEnabled(True) # Habilitar para la prueba
-    panel.show()
-    sys.exit(app.exec()) 
+    # --- Método público para ser llamado desde el exterior ---
+
+    def load_track(self, track_info: dict):
+        """
+        Método de conveniencia llamado por MainWindow para iniciar la carga
+        de una nueva pista en el servicio.
+        """
+        file_path = track_info.get('file_path')
+        if file_path:
+            self.audio_service.load_track(file_path)
+            # La UI se actualizará a través de la señal trackLoaded.
+            bpm = track_info.get('bpm')
+            if bpm:
+                 self.bpm_value.setText(f"{float(bpm):.1f} BPM")
+            else:
+                 self.bpm_value.setText("--- BPM")
+        else:
+            # Si no hay ruta, limpiar el panel
+            self.reset_for_new_track({}) 

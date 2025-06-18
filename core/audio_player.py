@@ -9,6 +9,7 @@ class AudioPlayerSignals(QObject):
     positionChanged = Signal(float)  # current_pos_seconds
     durationChanged = Signal(float)  # total_duration_seconds
     stateChanged = Signal(bool)      # is_playing
+    trackFinished = Signal()         # se emite cuando termina una pista
 
 class AudioPlayer(QObject):
     """Un reproductor de audio robusto usando Pydub y SimpleAudio."""
@@ -23,6 +24,7 @@ class AudioPlayer(QObject):
         self._is_paused = False
         self._start_time = 0
         self._paused_position_ms = 0
+        self._volume = 0.7  # Volumen por defecto (70%)
         
         # Timer para actualizar la posición
         self._position_timer = QTimer(self)
@@ -54,6 +56,12 @@ class AudioPlayer(QObject):
         else: # Empezar desde el principio
             self._paused_position_ms = 0
             segment_to_play = self._audio_segment
+
+        # Aplicar control de volumen
+        if self._volume != 1.0:
+            # Convertir volumen de 0-1 a dB
+            volume_db = 20 * (self._volume - 1)  # -20dB a 0dB aproximadamente
+            segment_to_play = segment_to_play + volume_db
 
         self._play_obj = sa.play_buffer(
             segment_to_play.raw_data,
@@ -111,6 +119,12 @@ class AudioPlayer(QObject):
         if was_playing:
             self.play()
 
+    @Slot(int)
+    def set_volume(self, volume_percent: int):
+        """Establece el volumen del reproductor (0-100)."""
+        self._volume = volume_percent / 100.0
+        print(f"🎚️ Volumen establecido a {volume_percent}%")
+
     def _update_position(self):
         if self._is_playing and self._play_obj:
             if self._play_obj.is_playing():
@@ -119,7 +133,9 @@ class AudioPlayer(QObject):
                 self.signals.positionChanged.emit(current_pos_ms / 1000.0)
             else:
                 # La canción terminó
+                print("🎵 Pista terminada")
                 self.stop()
+                self.signals.trackFinished.emit()
                 
     def cleanup(self):
         print("🧹 Limpiando reproductor de audio...")

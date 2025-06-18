@@ -1,386 +1,389 @@
 import sys
-import time
-import os # Necesario para os.path.getmtime
+import sqlite3
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget,
-    QHBoxLayout, QVBoxLayout, QSplitter, QLabel, QDockWidget
+    QVBoxLayout, QSplitter, QDialog, QHBoxLayout, QMenuBar, QMenu, QMessageBox, QStatusBar
 )
-from PySide6.QtCore import Qt, QItemSelectionModel, QObject, Signal, QRunnable, Slot, QThreadPool
-
-from ui.track_list import TrackListView, TrackListModel
+from PySide6.QtGui import QAction, QKeySequence, QShortcut
+from PySide6.QtCore import Qt, Signal, QTimer
+from core.database import init_db, create_connection, get_db_path
 from core.library_scanner import LibraryScanner
-from core import database as db # Usar alias db
-from ui.metadata_panel import MetadataPanel
-from core.metadata_writer import write_metadata
-import core.metadata_enricher
-from core.metadata_reader import read_metadata
-from ui.playback_panel import PlaybackPanel
 from core.audio_player import AudioPlayer
-from ui.theme import get_complete_style, COLORS
-
-# --- Clases para Trabajo en Segundo Plano (Threading) ---
-
-class WorkerSignals(QObject):
-    finished = Signal(dict)
-
-class EnrichmentWorker(QRunnable):
-    def __init__(self, track_info: dict):
-        super().__init__()
-        self.track_info = track_info
-        self.signals = WorkerSignals()
-
-    @Slot()
-    def run(self):
-        print("⚙️ Worker de enriquecimiento iniciado en un hilo secundario.")
-        # Pasamos una copia para evitar efectos secundarios si track_info se modifica en otro lugar
-        result = core.metadata_enricher.enrich_metadata(self.track_info.copy())
-        self.signals.finished.emit(result)
-        print("🏁 Worker de enriquecimiento finalizado.")
-
-# --- Ventana Principal ---
+from core.audio_service import AudioService
+from ui.theme import get_complete_style
+from ui.track_list import TrackListView
+from ui.playback_panel import PlaybackPanel
+from ui.metadata_panel import MetadataPanel
+from ui.smart_playlist_editor import SmartPlaylistEditor
+from core.smart_playlist_engine import SmartPlaylistEngine
+from ui.playlist_panel import PlaylistPanel
+from ui.api_config_dialog import APIConfigDialog
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("DjAlfin - Qt Edition")
-        self.setGeometry(50, 50, 1200, 750)
-        self.setMinimumSize(1000, 600)
-        self.threadpool = QThreadPool()
-        print(f"🧵 ThreadPool iniciado con un máximo de {self.threadpool.maxThreadCount()} hilos.")
-        self.player = AudioPlayer()
+        self.setWindowTitle("DjAlfin - Professional DJ Library")
+        self.setGeometry(100, 100, 1600, 900)
 
-        central_widget = QWidget()
-        self.setCentralWidget(central_widget)
-        self.setStyleSheet(get_complete_style())
+        # Inicializar base de datos y componentes del core
+        init_db()
+        self.db_conn = create_connection() # Mantener una conexión para la UI
+        self.audio_service = AudioService(self)
+        self.smart_playlist_engine = SmartPlaylistEngine(db_path=get_db_path())
+
+        # --- Inicialización de Componentes UI ---
+        self.track_list_view = TrackListView(db_connection=self.db_conn)
+        self.metadata_panel = MetadataPanel()
+        self.playback_panel = PlaybackPanel(self.audio_service)
+        self.playlist_panel = PlaylistPanel(engine=self.smart_playlist_engine)
+        self.status_bar = QStatusBar()
+        self.setStatusBar(self.status_bar)
+
+        # --- Conexiones de Señales y Slots ---
+        self.connect_signals()
         
-        main_layout = QHBoxLayout(central_widget)
-        main_layout.setContentsMargins(8, 8, 8, 8)
+        # --- Teclas Rápidas ---
+        self.setup_shortcuts()
+        
+        # --- Layout Principal ---
+        main_widget = QWidget()
+        main_layout = QHBoxLayout(main_widget)
+        
+        left_splitter = QSplitter(Qt.Orientation.Vertical)
+        left_splitter.addWidget(self.playlist_panel)
+        left_splitter.addWidget(self.track_list_view)
+        left_splitter.setSizes([200, 600])
 
         main_splitter = QSplitter(Qt.Orientation.Horizontal)
-        main_layout.addWidget(main_splitter)
+        main_splitter.addWidget(left_splitter)
+        main_splitter.addWidget(self.metadata_panel)
+        main_splitter.setSizes([1200, 400])
 
-        self.track_list_view = TrackListView()
-        self.track_list_model = TrackListModel()
-        self.track_list_view.setModel(self.track_list_model)
-        main_splitter.addWidget(self.track_list_view)
-
-        db.init_db()
-        self.load_tracks_from_db()
-        self.start_library_scan()
-        self.track_list_view.clearSelection()
-
-        self.metadata_panel = MetadataPanel()
-        metadata_dock = QDockWidget("", self)
-        metadata_dock.setWidget(self.metadata_panel)
-        metadata_dock.setAllowedAreas(Qt.DockWidgetArea.RightDockWidgetArea)
-        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, metadata_dock)
-        metadata_dock.setFloating(False)
-        metadata_dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
-        metadata_dock.setTitleBarWidget(QWidget())
-        metadata_dock.setMinimumWidth(380) # Ajustado al nuevo mínimo del panel
-        metadata_dock.setMaximumWidth(450) # Un poco más de espacio si es necesario
-
-        self.playback_panel = PlaybackPanel()
-        playback_dock = QDockWidget("", self)
-        playback_dock.setWidget(self.playback_panel)
-        playback_dock.setAllowedAreas(Qt.DockWidgetArea.BottomDockWidgetArea)
-        self.addDockWidget(Qt.DockWidgetArea.BottomDockWidgetArea, playback_dock)
-        playback_dock.setFloating(False)
-        playback_dock.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
-        playback_dock.setTitleBarWidget(QWidget())
-        playback_dock.setMinimumHeight(120)
-        playback_dock.setMaximumHeight(180)
-
-        main_splitter.setSizes([self.width()])
-
-        self.track_list_view.selectionModel().selectionChanged.connect(self.on_track_selection_changed)
-        self.track_list_view.doubleClicked.connect(self.on_track_double_clicked)
+        right_layout = QVBoxLayout()
+        right_layout.addWidget(main_splitter)
+        right_layout.addWidget(self.playback_panel)
+        right_layout.setStretchFactor(main_splitter, 8)
+        right_layout.setStretchFactor(self.playback_panel, 1)
         
-        self.metadata_panel.metadataChanged.connect(self.on_metadata_changed)
-        self.metadata_panel.enrichRequested.connect(self.on_enrich_clicked)
-        self.metadata_panel.refreshRequested.connect(self.on_refresh_requested)
+        main_layout.addLayout(right_layout)
+        self.setCentralWidget(main_widget)
         
-        self.playback_panel.playRequested.connect(self.on_play_requested)
-        self.playback_panel.pauseRequested.connect(self.on_pause_requested)
-        self.playback_panel.stopRequested.connect(self.on_stop_requested)
-        self.playback_panel.positionChanged.connect(self.on_position_changed)
-        self.playback_panel.volumeChanged.connect(self.on_volume_changed)
-        self.playback_panel.previousRequested.connect(self.on_previous_requested)
-        self.playback_panel.nextRequested.connect(self.on_next_requested)
+        self.setStyleSheet(get_complete_style())
+        self.status_bar.showMessage("✅ Aplicación iniciada y lista.", 5000)
+        self.track_list_view.load_all_tracks()
 
-        self.player.signals.positionChanged.connect(self.update_playback_position)
-        self.player.signals.durationChanged.connect(self.update_playback_duration)
-        self.player.signals.stateChanged.connect(self.update_playback_state)
+    def connect_signals(self):
+        """Centraliza todas las conexiones de señales."""
+        # Cuando se selecciona una pista, notificar al servicio de audio y al panel de metadatos.
+        self.track_list_view.track_selected.connect(self.audio_service.load_track)
+        self.track_list_view.track_selected.connect(self.metadata_panel.update_track_info)
 
-    def start_library_scan(self):
-        print("🚀 Iniciando escáner de biblioteca en segundo plano...")
-        # TODO: Hacer configurable el directorio de música
-        music_dir = os.path.expanduser("~/Music/test_library_small") 
-        if not os.path.isdir(music_dir):
-            print(f"⚠️ Directorio de música de prueba no encontrado: {music_dir}. Creando...")
-            try:
-                os.makedirs(music_dir, exist_ok=True)
-                print(f"ℹ️ Por favor, añade archivos de música a: {music_dir}")
-            except OSError as e:
-                print(f"❌ Error al crear directorio de música: {e}")
-                # Podríamos usar un directorio por defecto o pedir al usuario
-                music_dir = os.path.expanduser("~") # Fallback muy genérico
+        # Cuando el panel de metadatos guarda cambios, refrescar la lista.
+        self.metadata_panel.metadataChanged.connect(self.track_list_view.refresh_current_row)
 
-        self.scanner = LibraryScanner(
-            directory=music_dir, 
-            on_complete_callback=self.on_scan_complete,
-            progress_callback=self.update_scan_progress # Añadir callback de progreso
-        )
-        self.scanner.start()
+        # Cuando el servicio de audio analiza BPM, guardar los resultados.
+        self.playback_panel.bpmAnalyzed.connect(self._on_bpm_analyzed)
 
-    def update_scan_progress(self, message):
-        # Aquí podrías actualizar una barra de estado o un label en la UI
-        print(f"🔍 Progreso del escaneo: {message}")
-        # Ejemplo: self.statusBar().showMessage(message, 2000) si tienes una barra de estado
+        # Mostrar errores del servicio en la barra de estado.
+        self.audio_service.errorOccurred.connect(self.status_bar.showMessage)
 
-    def on_scan_complete(self):
-        print("✅ Escaneo de biblioteca completado. Refrescando la vista.")
-        self.load_tracks_from_db()
+    def _on_track_selection_changed(self, selected, deselected):
+        """Maneja la selección de pistas en la tabla."""
+        indexes = selected.indexes()
+        if indexes:
+            row = indexes[0].row()
+            # Mapear del proxy model al source model
+            source_index = self.track_list_view.proxy_model.mapToSource(indexes[0])
+            track_data = self.track_list_view.model.get_track_at(source_index.row())
+            if track_data:
+                # Actualizar tracking de navegación
+                self.current_track_index = source_index.row()
+                self.current_playlist_tracks = self.track_list_view.model._data
+                
+                # Cargar metadatos en el panel derecho
+                self.metadata_panel.update_track_info(track_data)
+                # Cargar archivo en el reproductor
+                self.audio_player.load(track_data.get('file_path', ''))
+                # Actualizar info en playback panel
+                self.playback_panel.update_track_info(track_data)
 
-    def load_tracks_from_db(self):
-        all_tracks = db.get_all_tracks()
-        self.track_list_model.load_data(all_tracks)
-        print(f"💿 {len(all_tracks)} pistas cargadas desde la base de datos.")
+    def _on_playlist_selection_changed(self, selection_type, item_id):
+        """Se activa cuando se selecciona un elemento en el panel de playlists."""
+        print(f"DEBUG: Selección de playlist: Tipo='{selection_type}', ID={item_id}")
+        if selection_type == 'library':
+            self.track_list_view.load_all_tracks()
+        elif selection_type == 'smart_playlist':
+            rules, match_all = self.smart_playlist_engine.get_playlist_details(item_id)
+            if rules is not None:
+                tracks_data = self.smart_playlist_engine.get_tracks_for_rules(rules, match_all)
+                # Extraer solo los IDs de las pistas
+                track_ids = [track['id'] for track in tracks_data if 'id' in track]
+                self.track_list_view.load_tracks_by_ids(track_ids)
+            else:
+                self.track_list_view.load_tracks_by_ids([])
 
-    def on_track_selection_changed(self, selected=None, deselected=None):
-        indexes = self.track_list_view.selectedIndexes()
-        if not indexes:
-            self.metadata_panel.clear_fields()
-            self.playback_panel.set_track_info("No track selected", "")
+    def _create_menu(self):
+        """Crea la barra de menú de la aplicación."""
+        menubar = self.menuBar()
+        
+        # Menú File
+        file_menu = menubar.addMenu("&File")
+        
+        # Acción para Smart Playlists
+        smart_playlist_action = QAction("Smart Playlists", self)
+        smart_playlist_action.triggered.connect(self.open_smart_playlist_editor)
+        file_menu.addAction(smart_playlist_action)
+        
+        file_menu.addSeparator()
+        
+        # Acción para configurar APIs
+        api_config_action = QAction("🌐 Configurar APIs", self)
+        api_config_action.triggered.connect(self.open_api_config)
+        file_menu.addAction(api_config_action)
+        
+        file_menu.addSeparator()
+        
+        # Acción para salir
+        exit_action = QAction("Salir", self)
+        exit_action.setShortcut("Ctrl+Q")
+        exit_action.triggered.connect(self.close)
+        file_menu.addAction(exit_action)
+
+    def open_smart_playlist_editor(self):
+        """Abre el diálogo del editor de Smart Playlists."""
+        try:
+            spl_editor = SmartPlaylistEditor(engine=self.smart_playlist_engine, parent=self)
+            if spl_editor.exec() == QDialog.Accepted:
+                print("Editor cerrado con éxito, refrescando playlists...")
+                self.playlist_panel.refresh_playlists()
+        except Exception as e:
+            print(f"Error opening smart playlist editor: {e}")
+            # Continue without error to avoid crashing the app
+
+    def _on_seek_requested(self, position_seconds: float):
+        """Maneja las solicitudes de búsqueda desde el slider de posición."""
+        self.audio_player.seek(position_seconds)
+
+    def _on_audio_position_changed(self, position_seconds: float):
+        """Actualiza la posición en el panel sin enviar señal de vuelta."""
+        self.playback_panel.set_position_silent(position_seconds)
+
+    def _on_track_finished(self):
+        """Maneja la finalización de una pista."""
+        # Auto-reproducir siguiente pista si existe
+        if self.current_playlist_tracks and self.current_track_index < len(self.current_playlist_tracks) - 1:
+            print("🎵 Auto-reproduciendo siguiente pista...")
+            self._on_next_track()
+            # Pequeña pausa antes de reproducir automáticamente
+            QTimer.singleShot(500, self.audio_player.play)
+        else:
+            print("🎵 Lista de reproducción terminada")
+
+    def _on_previous_track(self):
+        """Navega a la pista anterior."""
+        if not self.current_playlist_tracks or self.current_track_index <= 0:
+            print("🔚 No hay pista anterior")
             return
-
-        selected_row = indexes[0].row()
-        track_data = self.track_list_model.get_track_at(selected_row)
-        
-        if track_data:
-            if track_data.get('file_path'):
-                self.player.load(track_data['file_path'])
             
-            # track_data de get_track_at ya debería ser completo con todos los campos de la DB
+        self.current_track_index -= 1
+        self._load_track_by_index(self.current_track_index)
+        print(f"⏮️ Pista anterior: {self.current_track_index + 1}/{len(self.current_playlist_tracks)}")
+
+    def _on_next_track(self):
+        """Navega a la pista siguiente."""
+        if not self.current_playlist_tracks or self.current_track_index >= len(self.current_playlist_tracks) - 1:
+            print("🔚 No hay pista siguiente")
+            return
+            
+        self.current_track_index += 1
+        self._load_track_by_index(self.current_track_index)
+        print(f"⏭️ Pista siguiente: {self.current_track_index + 1}/{len(self.current_playlist_tracks)}")
+
+    def _load_track_by_index(self, index: int):
+        """Carga una pista por su índice en la lista actual."""
+        if 0 <= index < len(self.current_playlist_tracks):
+            track_data = self.current_playlist_tracks[index]
+            
+            # Actualizar selección en la vista
+            model_index = self.track_list_view.model.index(index, 0)
+            proxy_index = self.track_list_view.proxy_model.mapFromSource(model_index)
+            self.track_list_view.table_view.selectRow(proxy_index.row())
+            
+            # Cargar en reproductor y paneles
             self.metadata_panel.update_track_info(track_data)
-            self.playback_panel.set_track_info(
-                track_data.get('title', 'Unknown Title'),
-                track_data.get('artist', 'Unknown Artist')
-            )
-        else:
-            self.metadata_panel.clear_fields()
-            self.playback_panel.set_track_info("No track selected", "")
-            
-    def on_track_double_clicked(self, index):
-        selected_row = index.row()
-        track_data = self.track_list_model.get_track_at(selected_row)
-        if track_data and 'file_path' in track_data:
-            self.player.load(track_data['file_path'])
-            self.player.play()
+            self.audio_player.load(track_data.get('file_path', ''))
+            self.playback_panel.update_track_info(track_data)
 
-    def on_play_requested(self): self.player.play()
-    def on_pause_requested(self): self.player.pause()
-    def on_stop_requested(self): self.player.stop()
-
-    def on_previous_requested(self):
-        current_index = self.track_list_view.currentIndex().row()
-        if current_index <= 0:
-            next_index = self.track_list_model.rowCount() - 1
-        else:
-            next_index = current_index - 1
-        if next_index >= 0: # Asegurar que el índice sea válido
-            self.track_list_view.selectRow(next_index)
-            self.on_track_selection_changed() # Carga los detalles y prepara el reproductor
-
-    def on_next_requested(self):
-        current_index = self.track_list_view.currentIndex().row()
-        if current_index < 0 or current_index >= self.track_list_model.rowCount() - 1:
-            next_index = 0
-        else:
-            next_index = current_index + 1
-        if self.track_list_model.rowCount() > 0: # Asegurar que haya pistas
-             self.track_list_view.selectRow(next_index)
-             self.on_track_selection_changed()
-
-    def on_position_changed(self, position_percent):
-        if hasattr(self.player, '_audio_segment') and self.player._audio_segment:
-            duration_seconds = len(self.player._audio_segment) / 1000.0
-            seek_position = (position_percent / 100.0) * duration_seconds
-            self.player.seek(seek_position)
-    
-    def on_volume_changed(self, volume): pass # Implementar si es necesario
-        
-    def on_metadata_changed(self, metadata_from_ui: dict):
-        selected_indexes = self.track_list_view.selectedIndexes()
-        if not selected_indexes: return
-        selected_row = selected_indexes[0].row()
-        
-        original_track_data_from_model = self.track_list_model.get_track_at(selected_row)
-        if not original_track_data_from_model: return
-            
-        file_path = original_track_data_from_model.get('file_path')
-        if not file_path: return
-
-        # 1. Escribir los cambios manuales a los tags del archivo
-        success_write_tags = write_metadata(file_path, metadata_from_ui.copy())
-
-        if success_write_tags:
-            print(f"✅ Metadatos (tags) guardados en archivo: {os.path.basename(file_path)}")
-            
-            # 2. Actualizar la base de datos
-            data_for_db_update = original_track_data_from_model.copy()
-            data_for_db_update.update(metadata_from_ui)
-            
-            try: # Actualizar fecha de modificación del archivo
-                data_for_db_update['last_modified_date'] = os.path.getmtime(file_path)
-            except OSError as e:
-                print(f"⚠️ No se pudo obtener la fecha de modificación para {file_path}: {e}")
-            
-            db.add_track(data_for_db_update) # UPSERT en la DB
-            print(f"💾 Cambios manuales guardados en DB para: {os.path.basename(file_path)}")
-
-            # 3. Refrescar la UI desde la fuente de verdad (archivo y DB)
-            # Esto asegura que lo que se muestra es lo que realmente está en el archivo y DB.
-            self.on_refresh_requested() 
-        else:
-            print(f"⚠️ Error al guardar metadatos (tags) en el archivo: {os.path.basename(file_path)}")
-
-    def on_refresh_requested(self):
-        selected_indexes = self.track_list_view.selectedIndexes()
-        if not selected_indexes: return
-        selected_row = selected_indexes[0].row()
-        
-        track_data_from_model = self.track_list_model.get_track_at(selected_row)
-        if not track_data_from_model or not track_data_from_model.get('file_path'): return
-
-        file_path = track_data_from_model['file_path']
-        print(f"🔄 Refrescando metadatos para: {os.path.basename(file_path)}")
-
-        # Leer los metadatos directamente del archivo (tags básicos)
-        tags_from_file = read_metadata(file_path)
-        
-        # Obtener los datos completos actuales de la DB (que incluye IDs, URLs de arte, etc.)
-        data_from_db = db.get_track_by_path(file_path)
-        
-        if data_from_db:
-            final_refreshed_data = data_from_db.copy()
-            if tags_from_file: # Si se pudieron leer tags del archivo, fusionarlos
-                final_refreshed_data.update(tags_from_file)
-            # Asegurar que file_path y last_modified_date (del archivo) estén actualizados
-            final_refreshed_data['file_path'] = file_path
-            try:
-                final_refreshed_data['last_modified_date'] = os.path.getmtime(file_path)
-            except OSError: pass
-        elif tags_from_file: # Si no está en DB pero sí se leyeron tags (caso raro post-borrado de DB?)
-            final_refreshed_data = tags_from_file
-            final_refreshed_data['file_path'] = file_path
-            try:
-                final_refreshed_data['last_modified_date'] = os.path.getmtime(file_path)
-            except OSError: pass
-        else: # No se pudo leer nada
-            print(f"⚠️ No se pudieron refrescar los metadatos para: {os.path.basename(file_path)}")
-            return
-
-        # Actualizar el modelo de la lista de pistas y el panel de metadatos
-        self.track_list_model.update_track_data(selected_row, final_refreshed_data)
-        self.metadata_panel.update_track_info(final_refreshed_data)
-        print(f"✨ Metadatos refrescados para: {os.path.basename(file_path)}")
-
-
-    def on_enrich_clicked(self):
-        selected_indexes = self.track_list_view.selectedIndexes()
-        if not selected_indexes: return
-        selected_row = selected_indexes[0].row()
-        
-        track_data_for_enrichment = self.track_list_model.get_track_at(selected_row)
-        if not track_data_for_enrichment: return
-
-        self.metadata_panel.enrich_button.setDisabled(True)
-        # Pasamos una copia de los datos actuales para el worker
-        worker = EnrichmentWorker(track_data_for_enrichment.copy()) 
-        worker.signals.finished.connect(self.on_enrichment_finished)
-        self.threadpool.start(worker)
-
-    def on_enrichment_finished(self, api_data_results: dict):
-        selected_indexes = self.track_list_view.selectedIndexes()
-        if not selected_indexes:
-            self.metadata_panel.enrich_button.setDisabled(False)
-            return
-        selected_row = selected_indexes[0].row()
-        
-        current_track_data_from_model = self.track_list_model.get_track_at(selected_row)
-        if not current_track_data_from_model:
-            self.metadata_panel.enrich_button.setDisabled(False)
-            return
-
-        if api_data_results: # Si el enriquecedor devolvió algo
-            # Crear una copia para no modificar el original del modelo directamente antes de tiempo
-            data_to_update_in_db = current_track_data_from_model.copy()
-            
-            # Fusionar los datos de la API. api_data_results tiene prioridad.
-            data_to_update_in_db.update(api_data_results) 
-            
-            # Asegurar que file_path se mantenga (no debería cambiar por enriquecimiento)
-            data_to_update_in_db['file_path'] = current_track_data_from_model['file_path']
-            # last_modified_date no debería cambiar por enriquecimiento, solo por escritura de tags
-            if 'last_modified_date' in current_track_data_from_model:
-                 data_to_update_in_db.setdefault('last_modified_date', current_track_data_from_model['last_modified_date'])
-            
-            # 1. Guardar en la base de datos
-            db.add_track(data_to_update_in_db) 
-            print(f"💾 Datos enriquecidos guardados en DB para: {data_to_update_in_db.get('title')}")
-
-            # 2. Actualizar el modelo de la lista de pistas
-            self.track_list_model.update_track_data(selected_row, data_to_update_in_db)
-            
-            # 3. Actualizar el panel de metadatos con los datos completamente fusionados
-            self.metadata_panel.update_track_info(data_to_update_in_db)
-            print(f"✨ Panel de metadatos actualizado con datos enriquecidos.")
-        else:
-            print("ℹ️ No se encontraron datos adicionales durante el enriquecimiento.")
-        
-        self.metadata_panel.enrich_button.setDisabled(False)
-
-    @Slot(float)
-    def update_playback_position(self, position_seconds):
-        self.playback_panel.set_position(position_seconds)
-
-    @Slot(float)
-    def update_playback_duration(self, duration_seconds):
-        self.playback_panel.set_duration(duration_seconds)
-
-    @Slot(bool)
-    def update_playback_state(self, is_playing):
-        self.playback_panel.set_playing_state(is_playing)
-            
     def closeEvent(self, event):
+        """Se ejecuta al cerrar la aplicación."""
         print("🛑 Cerrando aplicación DjAlfin...")
-        if hasattr(self, 'scanner') and self.scanner.running:
-            print("⏳ Deteniendo escáner de biblioteca...")
-            self.scanner.stop()
-            self.scanner.wait(5000) # Esperar máx 5 segundos
-        
-        self.player.cleanup()
-        print("⏳ Esperando que los hilos del ThreadPool finalicen...")
-        self.threadpool.waitForDone(-1) # Esperar indefinidamente
-        print("✅ Hilos finalizados.")
-        super().closeEvent(event)
+        try:
+            self.audio_player.stop()
+        except:
+            pass
+        self.db_conn.close()
+        event.accept()
 
+    def setup_shortcuts(self):
+        """Configura las teclas rápidas para control con teclado."""
+        # Spacebar: Play/Pause
+        self.play_pause_shortcut = QShortcut(QKeySequence(Qt.Key_Space), self)
+        self.play_pause_shortcut.activated.connect(self._toggle_play_pause)
+        
+        # Flechas para navegación
+        self.prev_shortcut = QShortcut(QKeySequence(Qt.Key_Left), self)
+        self.prev_shortcut.activated.connect(self._on_previous_track)
+        
+        self.next_shortcut = QShortcut(QKeySequence(Qt.Key_Right), self)
+        self.next_shortcut.activated.connect(self._on_next_track)
+        
+        # Flechas arriba/abajo para volumen
+        self.volume_up_shortcut = QShortcut(QKeySequence(Qt.Key_Up), self)
+        self.volume_up_shortcut.activated.connect(self._volume_up)
+        
+        self.volume_down_shortcut = QShortcut(QKeySequence(Qt.Key_Down), self)
+        self.volume_down_shortcut.activated.connect(self._volume_down)
+
+    def _toggle_play_pause(self):
+        """Alterna entre play y pause."""
+        if self.playback_panel.is_playing:
+            self.audio_player.pause()
+        else:
+            self.audio_player.play()
+
+    def _volume_up(self):
+        """Aumenta el volumen en 5%."""
+        current_volume = self.playback_panel.volume_slider.value()
+        new_volume = min(100, current_volume + 5)
+        self.playback_panel.volume_slider.setValue(new_volume)
+
+    def _volume_down(self):
+        """Disminuye el volumen en 5%."""
+        current_volume = self.playback_panel.volume_slider.value()
+        new_volume = max(0, current_volume - 5)
+        self.playback_panel.volume_slider.setValue(new_volume)
+
+    def open_api_config(self):
+        """Abre el dialog de configuración de APIs."""
+        try:
+            dialog = APIConfigDialog(self)
+            dialog.exec()
+        except Exception as e:
+            print(f"Error opening API config dialog: {e}")
+
+    def _on_volume_changed(self, volume: int):
+        """Maneja cambios en el volumen."""
+        self.audio_player.set_volume(volume / 100.0)
+        print(f"🎚️ Volumen establecido a {volume}%")
+        # Sincronizar con el slider si es necesario
+        if self.playback_panel.volume_slider.value() != volume:
+            self.playback_panel.volume_slider.setValue(volume)
+
+    def _on_bpm_analyzed(self, result: dict):
+        """Maneja resultados de análisis BPM."""
+        if self.current_track_info and result.get('bpm'):
+            file_path = self.current_track_info.get('file_path')
+            if file_path:
+                # Actualizar la base de datos con los datos BPM
+                try:
+                    from core.database import update_track_field
+                    
+                    # Guardar BPM principal
+                    update_track_field(file_path, 'bpm', result['bpm'])
+                    
+                    # Guardar datos adicionales si existen
+                    if result.get('confidence'):
+                        update_track_field(file_path, 'bpm_confidence', result['confidence'])
+                    
+                    if result.get('beat_track', {}).get('beat_count'):
+                        update_track_field(file_path, 'beat_count', result['beat_track']['beat_count'])
+                    
+                    if result.get('beat_track', {}).get('stability'):
+                        update_track_field(file_path, 'rhythm_stability', result['beat_track']['stability'])
+                    
+                    # Marca de tiempo del análisis
+                    import datetime
+                    analysis_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    update_track_field(file_path, 'bpm_analyzed_date', analysis_date)
+                    
+                    print(f"🎵 BPM guardado: {result['bpm']:.1f} (Confidence: {result['confidence']:.1%})")
+                    
+                    # Actualizar la vista de tracks si está visible
+                    self.track_list.refresh_view()
+                    
+                except Exception as e:
+                    print(f"❌ Error guardando BPM en DB: {e}")
+        else:
+            print("⚠️ No se puede guardar BPM: falta información del track o BPM")
+
+    def _on_pitch_changed(self, pitch_percent: float):
+        """Maneja cambios en el pitch/tempo."""
+        # Aquí implementaremos control de pitch cuando tengamos el reproductor
+        # Por ahora solo logeamos el cambio
+        print(f"🎛️ Pitch ajustado: {pitch_percent:+.1f}%")
+        
+        # TODO: Implementar pitch shifting real en el audio player
+        # Esto requeriría modificar PyDub o usar una librería como 
+        # librosa con phase vocoder para time stretching
+        if hasattr(self.audio_player, 'set_pitch'):
+            self.audio_player.set_pitch(pitch_percent / 100.0)
+        else:
+            # Placeholder: simular cambio de velocidad (no es pitch real)
+            # speed_factor = 1.0 + (pitch_percent / 100.0)
+            pass
+    
+    def _on_metadata_changed(self, metadata: dict):
+        """Maneja cambios en los metadatos desde el MetadataPanel."""
+        try:
+            file_path = metadata.get('file_path')
+            if not file_path:
+                print("❌ No se puede guardar metadatos: falta file_path")
+                return
+            
+            # Actualizar en la base de datos
+            from core.database import update_track_metadata
+            
+            # Preparar datos para actualizar
+            update_data = {
+                'title': metadata.get('title', ''),
+                'artist': metadata.get('artist', ''),
+                'album': metadata.get('album', ''),
+                'genre': metadata.get('genre', ''),
+                'year': metadata.get('year', ''),
+                'comment': metadata.get('comment', '')
+            }
+            
+            # Filtrar campos vacíos
+            update_data = {k: v for k, v in update_data.items() if v}
+            
+            if update_data:
+                success = update_track_metadata(file_path, update_data)
+                if success:
+                    print(f"✅ Metadatos actualizados para: {metadata.get('title', file_path)}")
+                    # Refrescar la vista de tracks
+                    self.track_list_view.load_all_tracks()
+                else:
+                    print(f"❌ Error actualizando metadatos para: {file_path}")
+            else:
+                print("⚠️ No hay cambios de metadatos para guardar")
+                
+        except Exception as e:
+            print(f"❌ Error procesando cambios de metadatos: {e}")
+            import traceback
+            traceback.print_exc()
+
+def main():
+    app = QApplication(sys.argv)
+    
+    print("🚀 Iniciando aplicación DjAlfin...")
+    init_db()
+    
+    window = MainWindow()
+    window.show()
+    print("✅ MainWindow mostrada")
+    
+    print("🔄 Iniciando bucle de eventos...")
+    sys.exit(app.exec())
 
 if __name__ == "__main__":
-    print("🚀 Iniciando aplicación DjAlfin...")
-    app = QApplication(sys.argv)
-    print("✅ QApplication creada")
-    
-    try:
-        window = MainWindow()
-        print("✅ MainWindow creada")
-        window.show()
-        # window.showMaximized() # Descomentar para abrir maximizado por defecto
-        print("✅ MainWindow mostrada")
-        print("🔄 Iniciando bucle de eventos...")
-        sys.exit(app.exec())
-    except Exception as e:
-        print(f"❌ Error crítico al iniciar la aplicación: {e}")
-        import traceback
-        traceback.print_exc()
+    main()

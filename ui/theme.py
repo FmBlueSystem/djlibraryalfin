@@ -75,6 +75,8 @@ FONTS = {
     'main': '"Segoe UI", "Roboto", "Arial", sans-serif',
     'mono': '"Consolas", "Monaco", "Courier New", monospace',
     'title': '"Segoe UI Semibold", "Roboto Medium", "Arial Bold", sans-serif',
+    'Timecode': '"Consolas", "Monaco", "Courier New", monospace',
+    'Medium': '"Segoe UI", "Roboto", "Arial", sans-serif',
 }
 
 def get_main_window_style():
@@ -256,13 +258,14 @@ def get_button_style():
         letter-spacing: 0.5px;
     }}
     
-            QPushButton:hover {{
-            background: {COLORS['button_hover']};
-        }}
-        
-        QPushButton:pressed {{
-            background: {COLORS['primary_dark']};
-        }}
+    QPushButton:hover {{
+        background: {COLORS['button_hover']};
+        color: {COLORS['text_primary']};
+    }}
+    
+    QPushButton:pressed {{
+        background: {COLORS['primary_dark']};
+    }}
     
     QPushButton:disabled {{
         background: {COLORS['background_tertiary']};
@@ -271,40 +274,30 @@ def get_button_style():
     
     QPushButton[class="secondary"] {{
         background: {COLORS['button_secondary']};
-        color: {COLORS['text_secondary']};
     }}
     
     QPushButton[class="secondary"]:hover {{
-        background: {COLORS['background_tertiary']};
-        color: {COLORS['text_primary']};
+        background: {COLORS['button_secondary_hover']};
     }}
     """
 
 def get_slider_style():
-    """Estilo moderno para sliders"""
+    """Estilo para sliders (usado en el reproductor)"""
     return f"""
     QSlider::groove:horizontal {{
-        background: {COLORS['slider_track']};
+        background: {COLORS['background_input']};
+        border: 1px solid {COLORS['border']};
         height: 6px;
         border-radius: 3px;
     }}
     
     QSlider::handle:horizontal {{
-        background: {GRADIENTS['primary']};
+        background: {COLORS['slider_handle']};
         border: 2px solid {COLORS['text_primary']};
-        width: 20px;
-        height: 20px;
-        border-radius: 12px;
-        margin: -8px 0;
-    }}
-    
-    QSlider::handle:horizontal:hover {{
-        background: {COLORS['primary_light']};
-        border: 2px solid {COLORS['primary_light']};
-    }}
-    
-    QSlider::handle:horizontal:pressed {{
-        background: {COLORS['primary_dark']};
+        width: 14px;
+        height: 14px;
+        margin: -6px 0;
+        border-radius: 9px;
     }}
     
     QSlider::sub-page:horizontal {{
@@ -314,46 +307,185 @@ def get_slider_style():
     """
 
 def get_input_style():
-    """Estilo para campos de entrada"""
+    """Estilo para campos de entrada de texto"""
     return f"""
     QLineEdit {{
-        background: {COLORS['background_tertiary']};
+        background-color: {COLORS['background_input']};
+        border: 1px solid {COLORS['border']};
+        border-radius: 6px;
+        padding: 6px 12px;
         color: {COLORS['text_primary']};
-        border: 2px solid {COLORS['border']};
-        border-radius: 8px;
-        padding: 8px 12px;
         font-family: {FONTS['main']};
         font-size: 13px;
     }}
     
     QLineEdit:focus {{
-        border: 2px solid {COLORS['primary']};
-        background: {COLORS['background_secondary']};
+        border: 1px solid {COLORS['border_focus']};
+        background-color: {COLORS['background_main']};
     }}
-    
-    QTextEdit {{
-        background: {COLORS['background_tertiary']};
-        color: {COLORS['text_primary']};
-        border: 2px solid {COLORS['border']};
+    """
+
+def get_groupbox_style():
+    """Estilo para QGroupBox."""
+    return f"""
+    QGroupBox {{
+        background-color: transparent;
+        border: 1px solid {COLORS['border']};
         border-radius: 8px;
-        padding: 8px;
+        margin-top: 10px;
+        font-family: {FONTS['title']};
+        font-size: 12px;
+        font-weight: bold;
+    }}
+
+    QGroupBox::title {{
+        subcontrol-origin: margin;
+        subcontrol-position: top left;
+        padding: 0 10px;
+        left: 10px;
+        background-color: {COLORS['background_secondary']};
+        color: {COLORS['text_accent']};
+    }}
+    """
+
+def get_radiobutton_style():
+    """Estilo para QRadioButton."""
+    return f"""
+    QRadioButton {{
+        color: {COLORS['text_secondary']};
+        font-size: 12px;
+        spacing: 10px;
+    }}
+
+    QRadioButton::indicator {{
+        width: 18px;
+        height: 18px;
+    }}
+
+    QRadioButton::indicator:unchecked {{
+        border: 2px solid {COLORS['border']};
+        border-radius: 9px;
+        background-color: {COLORS['background_input']};
+    }}
+
+    QRadioButton::indicator:checked {{
+        border: 2px solid {COLORS['primary']};
+        border-radius: 9px;
+        background-color: {COLORS['primary']};
+    }}
+    """
+
+def get_combobox_style():
+    """Estilo para QComboBox."""
+    return f"""
+    QComboBox {{
+        background-color: {COLORS['background_input']};
+        border: 1px solid {COLORS['border']};
+        border-radius: 6px;
+        padding: 8px 12px;
+        color: {COLORS['text_primary']};
         font-family: {FONTS['main']};
         font-size: 13px;
     }}
-    
-    QTextEdit:focus {{
-        border: 2px solid {COLORS['primary']};
+
+    QComboBox:hover {{
+        border: 1px solid {COLORS['primary']};
+    }}
+
+    QComboBox:focus {{
+        border: 1px solid {COLORS['border_focus']};
+    }}
+
+    QComboBox::drop-down {{
+        subcontrol-origin: padding;
+        subcontrol-position: top right;
+        width: 25px;
+        border-left-width: 1px;
+        border-left-color: {COLORS['border']};
+        border-left-style: solid;
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+    }}
+
+    QComboBox::down-arrow {{
+        border-style: solid;
+        border-width: 5px;
+        border-color: {COLORS['text_muted']} transparent transparent transparent;
+        margin: auto;
+    }}
+    QComboBox::down-arrow:on {{
+        border-color: {COLORS['text_primary']} transparent transparent transparent;
+        margin-top: 3px;
+    }}
+
+    QComboBox QAbstractItemView {{
+        background-color: {COLORS['background_panel']};
+        border: 1px solid {COLORS['border']};
+        selection-background-color: {COLORS['primary']};
+        color: {COLORS['text_secondary']};
+        padding: 4px;
+    }}
+    """
+
+def get_scrollbar_style():
+    """Estilo para QScrollBar."""
+    return f"""
+    QScrollBar:vertical {{
+        border: none;
         background: {COLORS['background_secondary']};
+        width: 12px;
+        margin: 0px 0px 0px 0px;
+    }}
+    QScrollBar::handle:vertical {{
+        background: {COLORS['primary']};
+        min-height: 20px;
+        border-radius: 6px;
+    }}
+    QScrollBar::handle:vertical:hover {{
+        background: {COLORS['primary_bright']};
+    }}
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
+        height: 0px;
+        background: none;
+    }}
+    QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {{
+        background: none;
+    }}
+
+    QScrollBar:horizontal {{
+        border: none;
+        background: {COLORS['background_secondary']};
+        height: 12px;
+        margin: 0px 0px 0px 0px;
+    }}
+    QScrollBar::handle:horizontal {{
+        background: {COLORS['primary']};
+        min-width: 20px;
+        border-radius: 6px;
+    }}
+    QScrollBar::handle:horizontal:hover {{
+        background: {COLORS['primary_bright']};
+    }}
+    QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{
+        width: 0px;
+        background: none;
+    }}
+    QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {{
+        background: none;
     }}
     """
 
 def get_complete_style():
-    """Retorna el estilo completo combinado"""
-    return f"""
-    {get_main_window_style()}
-    {get_table_style()}
-    {get_panel_style()}
-    {get_button_style()}
-    {get_slider_style()}
-    {get_input_style()}
-    """
+    """Combina todos los estilos en una sola hoja."""
+    return (
+        get_main_window_style() +
+        get_table_style() +
+        get_panel_style() +
+        get_button_style() +
+        get_slider_style() +
+        get_input_style() +
+        get_groupbox_style() +
+        get_radiobutton_style() +
+        get_combobox_style() +
+        get_scrollbar_style()
+    )
