@@ -1,8 +1,8 @@
 import sys
-from PySide6.QtCore import Qt, QAbstractTableModel, QSortFilterProxyModel, Signal
+from PySide6.QtCore import Qt, QAbstractTableModel, QSortFilterProxyModel, Signal, QTimer
 from PySide6.QtWidgets import (QWidget, QTableView, QApplication, QHeaderView, 
                                QAbstractItemView, QLineEdit, QVBoxLayout, QHBoxLayout,
-                               QPushButton, QLabel, QMenu)
+                               QPushButton, QLabel, QMenu, QMessageBox)
 from PySide6.QtGui import QFont, QIcon, QAction
 import sqlite3
 
@@ -34,38 +34,168 @@ class CustomSortFilterProxyModel(QSortFilterProxyModel):
         left_data = self.sourceModel().data(left, Qt.ItemDataRole.DisplayRole)
         right_data = self.sourceModel().data(right, Qt.ItemDataRole.DisplayRole)
         
-        # Manejo de valores nulos/vacíos
-        if not left_data and not right_data:
+        # Manejo mejorado de valores nulos/vacíos
+        left_empty = not left_data or str(left_data).strip() == ""
+        right_empty = not right_data or str(right_data).strip() == ""
+        
+        if left_empty and right_empty:
             return False
-        if not left_data:
-            return True
-        if not right_data:
+        if left_empty:
+            return True  # Vacíos van al final
+        if right_empty:
             return False
         
         try:
-            # Ordenamiento por tipo de datos
-            if col_config.data_type in ['number', 'time']:
-                left_val = float(left_data) if left_data else 0.0
-                right_val = float(right_data) if right_data else 0.0
+            # Ordenamiento por tipo específico de datos
+            if col_config.data_type == 'number':
+                left_val = self._extract_number(left_data)
+                right_val = self._extract_number(right_data)
                 return left_val < right_val
             
             elif col_config.data_type == 'bpm':
-                # BPM puede tener formato "120.5" 
-                left_val = float(str(left_data).replace(',', '.')) if left_data else 0.0
-                right_val = float(str(right_data).replace(',', '.')) if right_data else 0.0
+                left_val = self._extract_bpm(left_data)
+                right_val = self._extract_bpm(right_data)
                 return left_val < right_val
             
+            elif col_config.data_type == 'time':
+                left_val = self._extract_duration(left_data)
+                right_val = self._extract_duration(right_data)
+                return left_val < right_val
+                
+            elif col_config.data_type == 'key':
+                # Ordenamiento especial para claves musicales
+                return self._compare_musical_keys(left_data, right_data)
+                
+            elif col_config.key == 'year':
+                # Año como número
+                left_val = self._extract_year(left_data)
+                right_val = self._extract_year(right_data)
+                return left_val < right_val
+                
             else:
-                # Ordenamiento de texto (case-insensitive)
-                left_str = str(left_data).lower()
-                right_str = str(right_data).lower()
-                return left_str < right_str
+                # Ordenamiento de texto mejorado (case-insensitive, con números naturales)
+                return self._natural_sort_compare(str(left_data), str(right_data))
                 
         except (ValueError, TypeError):
-            # Fallback a comparación de texto
-            left_str = str(left_data).lower()
-            right_str = str(right_data).lower()
-            return left_str < right_str
+            # Fallback a comparación de texto natural
+            return self._natural_sort_compare(str(left_data), str(right_data))
+    
+    def _extract_number(self, data):
+        """Extrae un número de los datos."""
+        if not data:
+            return 0.0
+        try:
+            # Remover caracteres no numéricos excepto punto y coma
+            clean_str = str(data).replace(',', '.').strip()
+            # Extraer primer número encontrado
+            import re
+            match = re.search(r'[-+]?\d*\.?\d+', clean_str)
+            if match:
+                return float(match.group())
+            return 0.0
+        except (ValueError, TypeError):
+            return 0.0
+    
+    def _extract_bpm(self, data):
+        """Extrae BPM como número flotante."""
+        if not data:
+            return 0.0
+        try:
+            clean_str = str(data).replace(',', '.').strip()
+            # Remover "BPM" si está presente
+            clean_str = clean_str.replace('BPM', '').replace('bpm', '').strip()
+            return float(clean_str) if clean_str else 0.0
+        except (ValueError, TypeError):
+            return 0.0
+    
+    def _extract_duration(self, data):
+        """Extrae duración en segundos."""
+        if not data:
+            return 0.0
+        try:
+            time_str = str(data).strip()
+            if ':' in time_str:
+                # Formato MM:SS o HH:MM:SS
+                parts = time_str.split(':')
+                if len(parts) == 2:  # MM:SS
+                    minutes, seconds = map(int, parts)
+                    return minutes * 60 + seconds
+                elif len(parts) == 3:  # HH:MM:SS
+                    hours, minutes, seconds = map(int, parts)
+                    return hours * 3600 + minutes * 60 + seconds
+            else:
+                # Asumir que son segundos
+                return float(time_str)
+        except (ValueError, TypeError):
+            return 0.0
+    
+    def _extract_year(self, data):
+        """Extrae año como número."""
+        if not data:
+            return 0
+        try:
+            year_str = str(data).strip()
+            import re
+            # Buscar un año de 4 dígitos
+            match = re.search(r'\b(19|20)\d{2}\b', year_str)
+            if match:
+                return int(match.group())
+            # Si no es formato de año, tratar como número
+            return int(float(year_str))
+        except (ValueError, TypeError):
+            return 0
+    
+    def _compare_musical_keys(self, left, right):
+        """Comparación especial para claves musicales usando notación Camelot."""
+        # Orden Camelot: 1A, 1B, 2A, 2B, ..., 12A, 12B
+        def parse_camelot_key(key_str):
+            if not key_str:
+                return (999, 'Z')  # Claves vacías van al final
+            
+            key_str = str(key_str).strip().upper()
+            
+            # Buscar patrón número + letra (ej: "8A", "12B")
+            import re
+            match = re.match(r'(\d+)([AB])', key_str)
+            if match:
+                number = int(match.group(1))
+                letter = match.group(2)
+                return (number, letter)
+            
+            # Si no es formato Camelot, usar comparación alfabética
+            return (999, key_str)
+        
+        left_parsed = parse_camelot_key(left)
+        right_parsed = parse_camelot_key(right)
+        
+        return left_parsed < right_parsed
+    
+    def _natural_sort_compare(self, left, right):
+        """Comparación natural que maneja números dentro del texto."""
+        try:
+            import re
+            
+            def natural_key(text):
+                # Convertir texto a lista de strings y números para comparación natural
+                parts = re.split(r'(\d+)', str(text))
+                result = []
+                for part in parts:
+                    if part.isdigit():
+                        result.append(int(part))
+                    else:
+                        result.append(part.lower())
+                return result
+            
+            left_clean = str(left).strip()
+            right_clean = str(right).strip()
+            
+            left_key = natural_key(left_clean)
+            right_key = natural_key(right_clean)
+            
+            return left_key < right_key
+        except (RecursionError, ValueError, TypeError):
+            # Fallback simple en caso de error
+            return str(left).lower() < str(right).lower()
 
 
 class TrackListModel(QAbstractTableModel):
@@ -157,6 +287,9 @@ class TrackListView(QWidget):
         # Carga inicial
         self.load_all_tracks()
         
+        # Auto-distribuir columnas en la carga inicial
+        self._auto_distribute_initial()
+        
     def setup_ui(self):
         """Configura la interfaz de usuario mejorada."""
         layout = QVBoxLayout(self)
@@ -212,7 +345,15 @@ class TrackListView(QWidget):
         self.table_view.verticalHeader().setVisible(False)
         
         # IMPORTANTE: Habilitar sorting DESPUÉS de establecer el modelo
-        # El sorting será habilitado en load_all_tracks()
+        self.table_view.setSortingEnabled(True)
+        
+        # Configurar el proxy model para sorting mejorado
+        self.table_view.setSortingEnabled(True)
+        self.proxy_model.sort(0, Qt.SortOrder.AscendingOrder)  # Ordenar por título por defecto
+        
+        # Asegurar que los headers muestren indicadores de sorting
+        self.header_view.setSortIndicatorShown(True)
+        self.header_view.setSectionsClickable(True)
         
         # Configuración avanzada
         self.table_view.setShowGrid(False)
@@ -269,8 +410,8 @@ class TrackListView(QWidget):
         QTableView {{
             background: {Theme.BACKGROUND};
             alternate-background-color: {Theme.BACKGROUND_SECONDARY};
-            selection-background-color: {Theme.PRIMARY};
-            selection-color: white;
+            selection-background-color: {Theme.PRIMARY_LIGHT};
+            selection-color: #1a1a1a;
             gridline-color: transparent;
             border: 1px solid {Theme.BORDER};
             border-radius: 6px;
@@ -283,8 +424,8 @@ class TrackListView(QWidget):
         }}
         
         QTableView::item:selected {{
-            background: {Theme.PRIMARY};
-            color: white;
+            background: {Theme.PRIMARY_LIGHT};
+            color: #1a1a1a;
             font-weight: bold;
         }}
         
@@ -309,22 +450,24 @@ class TrackListView(QWidget):
         """)
     
     def connect_signals(self):
-        """Conecta todas las señales necesarias."""
+        """Conecta las señales de los widgets a sus manejadores."""
         # Búsqueda
         self.search_input.textChanged.connect(self.on_search_changed)
         
-        # Selección de tracks
-        self.table_view.selectionModel().selectionChanged.connect(self._on_selection_changed)
-        
-        # Menú contextual de tabla
-        self.table_view.customContextMenuRequested.connect(self.show_table_context_menu)
-        
-        # Auto-tamaño de columnas
-        self.header_view.columnAutoSizeRequested.connect(self.auto_size_column)
-        
-        # Botones de toolbar
-        self.config_columns_btn.clicked.connect(self.header_view.show_column_config)
+        # Botones
         self.advanced_search_btn.clicked.connect(self.show_advanced_search)
+        self.config_columns_btn.clicked.connect(self.header_view.show_column_config)
+        
+        # Tabla y selección
+        self.table_view.selectionModel().selectionChanged.connect(self._on_selection_changed)
+        self.table_view.doubleClicked.connect(self.play_selected_track)
+        self.table_view.customContextMenuRequested.connect(self.show_table_context_menu)
+
+        # Ordenamiento - conectar correctamente con proxy model
+        self.header_view.sectionClicked.connect(self._handle_header_click)
+        
+        # Columnas (el modelo ya maneja sus propios cambios de columnas)
+        self.header_view.sectionResized.connect(self.column_manager.set_column_width)
         
         # Cambios de modelo
         self.proxy_model.rowsInserted.connect(self.update_results_count)
@@ -345,6 +488,23 @@ class TrackListView(QWidget):
             self.results_label.setText(f"{count} tracks")
         else:
             self.results_label.setText(f"{count} de {total} tracks")
+    
+    def _handle_header_click(self, logical_index):
+        """Maneja clicks en el header para sorting."""
+        # Obtener el orden actual
+        current_order = self.header_view.sortIndicatorOrder()
+        
+        # Alternar entre ascendente y descendente
+        if self.header_view.sortIndicatorSection() == logical_index:
+            new_order = Qt.SortOrder.DescendingOrder if current_order == Qt.SortOrder.AscendingOrder else Qt.SortOrder.AscendingOrder
+        else:
+            new_order = Qt.SortOrder.AscendingOrder
+        
+        # Aplicar el sorting
+        self.proxy_model.sort(logical_index, new_order)
+        
+        # Actualizar indicador visual
+        self.header_view.setSortIndicator(logical_index, new_order)
     
     def auto_size_column(self, logical_index):
         """Auto-ajusta el ancho de una columna específica."""
@@ -422,10 +582,40 @@ class TrackListView(QWidget):
     
     def play_selected_track(self):
         """Reproduce el track seleccionado."""
+        print("🎵 TrackListView: play_selected_track() called")
+        
         selected_tracks = self.get_selected_tracks()
+        print(f"🎵 TrackListView: Found {len(selected_tracks)} selected tracks")
+        
         if selected_tracks:
             track = selected_tracks[0]
-            self.track_selected.emit(track)
+            print(f"🎵 TrackListView: Track data keys: {list(track.keys())}")
+            
+            # Verificar que el archivo existe
+            file_path = track.get('file_path')
+            title = track.get('title', 'Unknown')
+            artist = track.get('artist', 'Unknown')
+            
+            print(f"🎵 TrackListView: Track info - Title: '{title}', Artist: '{artist}', Path: '{file_path}'")
+            
+            if file_path:
+                import os
+                if os.path.exists(file_path):
+                    print(f"🎵 TrackListView: File exists, emitting track_selected signal")
+                    print(f"🎵 Playing: {title} - {artist}")
+                    self.track_selected.emit(track)
+                    print(f"🎵 TrackListView: track_selected signal emitted successfully")
+                else:
+                    print(f"❌ TrackListView: File not found: {file_path}")
+                    self.show_error_message("Archivo no encontrado", 
+                                           f"No se pudo encontrar el archivo:\n{file_path}\n\nVerifica que el archivo no haya sido movido o eliminado.")
+            else:
+                print("❌ TrackListView: No file path in track data")
+                self.show_error_message("Datos incompletos", 
+                                       "El track seleccionado no tiene información de archivo válida.")
+        else:
+            print("❌ TrackListView: No track selected for playback")
+            self.show_status_message("No hay ningún track seleccionado para reproducir")
     
     def get_selected_tracks(self):
         """Obtiene los tracks seleccionados actualmente."""
@@ -439,6 +629,37 @@ class TrackListView(QWidget):
                 tracks.append(track)
         
         return tracks
+    
+    def _auto_distribute_initial(self):
+        """Auto-distribuye las columnas al cargar inicialmente."""
+        # Usar QTimer para asegurar que el widget está completamente renderizado
+        from PySide6.QtCore import QTimer
+        QTimer.singleShot(100, self._perform_auto_distribution)
+    
+    def _perform_auto_distribution(self):
+        """Realiza la auto-distribución de columnas."""
+        if self.table_view and self.header_view:
+            viewport_width = self.table_view.viewport().width()
+            if viewport_width > 100:  # Solo si el viewport es válido
+                self.column_manager.distribute_columns_to_width(viewport_width)
+    
+    def resizeEvent(self, event):
+        """Maneja el redimensionamiento del widget."""
+        super().resizeEvent(event)
+        
+        # Auto-redistribuir cuando cambia el tamaño significativamente
+        if hasattr(self, 'table_view') and self.table_view:
+            new_width = event.size().width()
+            if hasattr(event, 'oldSize') and event.oldSize().isValid():
+                old_width = event.oldSize().width()
+                # Solo redistribuir si el cambio es significativo (>5%)
+                if abs(new_width - old_width) > old_width * 0.05:
+                    self._perform_auto_distribution()
+    
+    def fit_columns_to_viewport(self):
+        """Método público para ajustar columnas al viewport."""
+        if self.header_view:
+            self.header_view.auto_fit_to_viewport()
 
     def _on_selection_changed(self, selected, deselected):
         """Slot para manejar el cambio de selección en la tabla."""
@@ -594,6 +815,34 @@ class TrackListView(QWidget):
                 width = int((remaining_width * weight) / total_weight)
                 width = max(col.min_width, min(width, col.max_width))
                 self.table_view.setColumnWidth(i, width)
+    
+    def show_error_message(self, title, message):
+        """Muestra un mensaje de error al usuario."""
+        msg_box = QMessageBox(self)
+        msg_box.setIcon(QMessageBox.Icon.Critical)
+        msg_box.setWindowTitle(title)
+        msg_box.setText(message)
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg_box.exec()
+    
+    def show_status_message(self, message, duration=3000):
+        """Muestra un mensaje de estado temporal."""
+        # Actualizar el label de resultados temporalmente
+        original_text = self.results_label.text()
+        self.results_label.setText(f"⚠️ {message}")
+        self.results_label.setProperty("class", "results_counter_warning")
+        self.results_label.style().unpolish(self.results_label)
+        self.results_label.style().polish(self.results_label)
+        
+        # Restaurar el texto original después del tiempo especificado
+        QTimer.singleShot(duration, lambda: self._restore_results_label(original_text))
+    
+    def _restore_results_label(self, original_text):
+        """Restaura el texto original del label de resultados."""
+        self.results_label.setText(original_text)
+        self.results_label.setProperty("class", "results_counter")
+        self.results_label.style().unpolish(self.results_label)
+        self.results_label.style().polish(self.results_label)
 
 class TrackModel(QAbstractTableModel):
     def __init__(self, db_connection, parent=None):
