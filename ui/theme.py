@@ -5,55 +5,32 @@ Tema visual moderno y profesional para DjAlfin
 Inspirado en aplicaciones DJ profesionales como Serato y rekordbox
 """
 
-# Paleta de colores principal - Tema DJ Profesional (Mejorado para contraste)
+"""
+Módulo para centralizar la paleta de colores y las fuentes de la aplicación.
+"""
+
 COLORS = {
-    # Colores principales
-    'primary': '#FF6B35',           # Naranja vibrante (color principal)
-    'primary_dark': '#E55A2B',      # Naranja oscuro
-    'primary_light': '#FF8A5C',     # Naranja claro
-    'primary_bright': '#FFA366',    # Naranja muy claro para texto
+    # ----- Paleta Base -----
+    "background_dark": "#2B2B2B",  # Fondo principal muy oscuro
+    "background": "#353535",       # Fondo de paneles y entradas de texto
+    "background_light": "#4A4A4A", # Fondos ligeramente más claros
+    "foreground": "#E0E0E0",       # Color de texto principal
+    "foreground_dark": "#B0B0B0",  # Color de texto secundario o deshabilitado
     
-    # Colores de fondo
-    'background_main': '#1A1A1A',   # Negro principal
-    'background_secondary': '#2D2D2D', # Gris oscuro
-    'background_tertiary': '#4A4A4A',  # Gris medio (más claro para mejor contraste)
-    'background_panel': '#252525',   # Paneles laterales
-    'background_input': '#353535',   # Fondo de campos de entrada (más claro)
+    # ----- Colores de Acento -----
+    "primary": "#4682B4",          # Azul acero: para elementos principales (selección, progreso)
+    "primary_bright": "#FFA366",   # Naranja: para etiquetas, notificaciones y enfoque
+    "secondary": "#606060",        # Gris medio: para botones secundarios y bordes
     
-    # Colores de texto
-    'text_primary': '#FFFFFF',      # Blanco principal
-    'text_secondary': '#E0E0E0',    # Gris muy claro (mejor contraste)
-    'text_muted': '#B0B0B0',        # Gris medio claro (mejor contraste)
-    'text_accent': '#FF8A5C',       # Naranja claro para acentos
-    'text_placeholder': '#A0A0A0',  # Placeholder más visible
+    # ----- Colores de Estado -----
+    "success": "#5cb85c",          # Verde para operaciones exitosas
+    "warning": "#f0ad4e",          # Amarillo para advertencias
+    "error": "#d9534f",            # Rojo para errores
     
-    # Colores de estado
-    'success': '#00D4AA',           # Verde turquesa
-    'warning': '#FFB800',           # Amarillo
-    'error': '#FF4757',             # Rojo
-    'info': '#3742FA',              # Azul
-    
-    # Colores de la tabla
-    'table_header': '#333333',      # Header de tabla
-    'table_row_even': '#242424',    # Filas pares (un poco más claras para contraste)
-    'table_row_odd': '#1F1F1F',     # Filas impares (se mantiene oscuro)
-    'table_selected': '#FF6B35',    # Fila seleccionada
-    'table_hover': '#3A3A3A',       # Hover
-    
-    # Colores de controles
-    'button_primary': '#FF6B35',    # Botón principal
-    'button_secondary': '#606060',  # Botón secundario (más claro)
-    'button_secondary_hover': '#707070', # Hover botón secundario
-    'button_hover': '#FF8A5C',      # Hover de botón
-    'slider_track': '#606060',      # Track del slider (más visible)
-    'slider_handle': '#FF6B35',     # Handle del slider
-    'slider_progress': '#FF8A5C',   # Progreso del slider
-    
-    # Bordes y separadores
-    'border': '#606060',            # Bordes generales (más visibles)
-    'border_light': '#707070',      # Bordes claros
-    'border_focus': '#FF6B35',      # Borde de focus
-    'separator': '#404040',         # Separadores
+    # ----- Componentes Específicos -----
+    "border": "#606060",
+    "selection": "#5A5A5A",
+    "text_placeholder": "#999999",
 }
 
 # Gradientes
@@ -72,11 +49,11 @@ SHADOWS = {
 
 # Fuentes
 FONTS = {
-    'main': '"Segoe UI", "Roboto", "Arial", sans-serif',
+    "main": "Segoe UI, Arial, sans-serif",
+    "main_size": "10pt",
+    "title_size": "12pt",
+    "section_header_size": "11px",
     'mono': '"Consolas", "Monaco", "Courier New", monospace',
-    'title': '"Segoe UI Semibold", "Roboto Medium", "Arial Bold", sans-serif',
-    'Timecode': '"Consolas", "Monaco", "Courier New", monospace',
-    'Medium': '"Segoe UI", "Roboto", "Arial", sans-serif',
 }
 
 def get_main_window_style():

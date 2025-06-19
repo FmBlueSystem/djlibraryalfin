@@ -15,7 +15,7 @@ class AudioService(QObject):
     positionChanged = Signal(int) # Posición en milisegundos
     durationChanged = Signal(int) # Duración en milisegundos
     trackLoaded = Signal(dict)
-    bpmAnalyzed = Signal(dict)
+    bpmAnalyzed = Signal(dict) # Emitirá un diccionario con file_path y bpm
     errorOccurred = Signal(str)
 
     def __init__(self, parent=None):
@@ -33,14 +33,14 @@ class AudioService(QObject):
         self._player.durationChanged.connect(self.on_player_duration_changed)
         self._player.errorOccurred.connect(self._handle_player_error)
 
-    def load_track(self, file_path: str):
-        if not file_path:
+    def load_track(self, track_data: dict):
+        if not track_data or 'file_path' not in track_data:
             return
         
+        file_path = track_data.get('file_path')
         self.current_file = file_path
         self._player.setSource(QUrl.fromLocalFile(file_path))
-        track_info = {'file_path': file_path}
-        self.trackLoaded.emit(track_info)
+        self.trackLoaded.emit(track_data)
         print(f"🎵 Pista cargada en el servicio de audio: {file_path}")
 
     def play(self):
@@ -87,7 +87,12 @@ class AudioService(QObject):
     def _on_bpm_analysis_complete(self, result: dict):
         self.is_analyzing_bpm = False
         if result and result.get('bpm'):
-            self.bpmAnalyzed.emit(result)
+            # Adjuntar el file_path al resultado para que el receptor sepa qué pista se actualizó
+            analysis_result = {
+                'file_path': self.current_file,
+                'bpm': result.get('bpm')
+            }
+            self.bpmAnalyzed.emit(analysis_result)
         else:
             self.errorOccurred.emit(f"No se pudo analizar el BPM: {result.get('error', 'Error desconocido')}")
 

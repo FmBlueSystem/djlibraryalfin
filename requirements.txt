@@ -15,3 +15,7 @@ librosa
 numpy
 pytest
 pytest-qt
+watchdog
+python-vlc
+yt-dlp
+sentry-sdk

@@ -1,4 +1,9 @@
 {
     "library_path": "/Volumes/KINGSTON/Audio",
-    "window_geometry": "1424x784+8+33"
+    "window_geometry": "1424x784+8+33",
+    "spotify_client_id": "TU_CLIENT_ID_DE_SPOTIFY",
+    "spotify_client_secret": "TU_CLIENT_SECRET_DE_SPOTIFY",
+    "serpapi_api_key": "TU_API_KEY_DE_SERPAPI",
+    "discogs_user_token": "TU_USER_TOKEN_DE_DISCOGS",
+    "sentry_dsn": "https://a5ce4f0bec0888369808e94c6e8f85b8@o4508854869098496.ingest.us.sentry.io/4509522368724992"
 }

@@ -104,24 +104,28 @@ class TrackListView(QWidget):
         self.table_view.setAlternatingRowColors(True)
         self.table_view.verticalHeader().setVisible(False)
         self.table_view.hideColumn(0)  # Ocultar la columna de ID
-        self.table_view.hideColumn(7) # Ocultar la columna de File Path
+        self.table_view.hideColumn(8)  # Ocultar la columna de File Path
 
         header = self.table_view.horizontalHeader()
         header.setStretchLastSection(False)
         
         # Configurar anchos específicos para cada columna
-        header.setSectionResizeMode(1, QHeaderView.Stretch)      # Title - se estira
-        header.setSectionResizeMode(2, QHeaderView.Stretch)      # Artist - se estira
-        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # Album
+        # Solo Title se expandirá, el resto tendrán anchos fijos
+        header.setSectionResizeMode(1, QHeaderView.Stretch)      # Title - se expande
+        header.setSectionResizeMode(2, QHeaderView.Fixed)        # Artist - ancho fijo
+        header.setSectionResizeMode(3, QHeaderView.Fixed)        # Album - ancho fijo
         header.setSectionResizeMode(4, QHeaderView.Fixed)        # BPM - ancho fijo
         header.setSectionResizeMode(5, QHeaderView.Fixed)        # Key - ancho fijo
-        header.setSectionResizeMode(6, QHeaderView.ResizeToContents)  # Genre
+        header.setSectionResizeMode(6, QHeaderView.Fixed)        # Genre - ancho fijo
         header.setSectionResizeMode(7, QHeaderView.Fixed)        # Duration - ancho fijo
         
         # Establecer anchos fijos para columnas específicas
-        self.table_view.setColumnWidth(4, 60)   # BPM
+        self.table_view.setColumnWidth(2, 150)  # Artist
+        self.table_view.setColumnWidth(3, 120)  # Album
+        self.table_view.setColumnWidth(4, 70)   # BPM
         self.table_view.setColumnWidth(5, 50)   # Key
-        self.table_view.setColumnWidth(7, 70)   # Duration
+        self.table_view.setColumnWidth(6, 100)  # Genre
+        self.table_view.setColumnWidth(7, 80)   # Duration
 
     def _on_selection_changed(self, selected, deselected):
         """Slot para manejar el cambio de selección en la tabla."""
@@ -134,11 +138,63 @@ class TrackListView(QWidget):
 
     def refresh_current_row(self):
         """
-        Refresca los datos de la vista de la tabla.
-        Solución simple: recargar todo.
-        TODO: Implementar una actualización de una sola fila para mejor rendimiento.
+        Refresca los datos de la fila actual manteniendo la selección.
         """
-        self.load_all_tracks()
+        # Obtener la selección actual
+        selected_proxy_indexes = self.table_view.selectionModel().selectedRows()
+        if not selected_proxy_indexes:
+            # Si no hay selección, recargar todo
+            self.load_all_tracks()
+            return
+        
+        # Obtener el índice de la fuente (modelo real)
+        source_index = self.proxy_model.mapToSource(selected_proxy_indexes[0])
+        selected_row = source_index.row()
+        
+        # Obtener el ID de la pista seleccionada
+        if selected_row >= 0 and selected_row < len(self.model._data):
+            track_id = self.model._data[selected_row].get('id')
+            if track_id:
+                # Recargar solo los datos de esta pista desde la BD
+                try:
+                    cursor = self.model.db_conn.cursor()
+                    cursor.execute("""
+                        SELECT id, title, artist, album, bpm, key, genre, duration, file_path 
+                        FROM tracks WHERE id = ?
+                    """, [track_id])
+                    
+                    row_data = cursor.fetchone()
+                    if row_data:
+                        # Actualizar los datos en el modelo
+                        columns = [desc[0] for desc in cursor.description]
+                        updated_track = dict(zip(columns, row_data))
+                        self.model._data[selected_row] = updated_track
+                        
+                        # Notificar al modelo que los datos cambiaron
+                        top_left = self.model.index(selected_row, 0)
+                        bottom_right = self.model.index(selected_row, self.model.columnCount() - 1)
+                        self.model.dataChanged.emit(top_left, bottom_right)
+                        
+                        print(f"✅ Fila {selected_row} actualizada correctamente")
+                        
+                        # Mantener la selección
+                        self.table_view.selectRow(selected_proxy_indexes[0].row())
+                        
+                        # Emitir señal con datos actualizados
+                        self.track_selected.emit(updated_track)
+                    else:
+                        print(f"⚠️ No se encontró la pista con ID {track_id} en la BD")
+                        
+                except sqlite3.Error as e:
+                    print(f"❌ Error al actualizar fila: {e}")
+                    # En caso de error, recargar todo
+                    self.load_all_tracks()
+            else:
+                print("⚠️ No se pudo obtener el ID de la pista seleccionada")
+                self.load_all_tracks()
+        else:
+            print("⚠️ Índice de fila fuera de rango")
+            self.load_all_tracks()
 
     def get_selected_track_info(self):
         """Devuelve los datos de la pista seleccionada actualmente."""
@@ -189,7 +245,6 @@ class TrackModel(QAbstractTableModel):
             columns = [desc[0] for desc in cursor.description]
             self._data = [dict(zip(columns, row)) for row in cursor.fetchall()]
             
-            print(f"✅ Modelo de pistas cargado con {len(self._data)} canciones.")
         except sqlite3.Error as e:
             print(f"❌ Error al cargar pistas en el modelo: {e}")
             self._data = []

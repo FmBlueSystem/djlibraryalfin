@@ -1,105 +1,142 @@
-from .theme_manager import theme_manager
+"""
+Módulo para generar la hoja de estilos QSS global de la aplicación.
+"""
+from .theme import COLORS, FONTS
 
-def get_dark_theme_qss():
+def get_stylesheet():
     """
-    Genera una hoja de estilos (QSS) para un tema oscuro, basada en la paleta
-    de colores del ThemeManager existente.
+    Genera y devuelve la hoja de estilos QSS completa para la aplicación.
     """
-    colors = theme_manager.themes["dark"]
-
-    qss = f"""
-        /* --- General --- */
+    return f"""
+        /* --- Estilos Globales --- */
         QWidget {{
-            background-color: {colors['bg_primary']};
-            color: {colors['fg_primary']};
+            background-color: {COLORS['background_dark']};
+            color: {COLORS['foreground']};
+            font-family: {FONTS['main']};
+            font-size: {FONTS['main_size']};
             border: none;
-            font-family: "Segoe UI", "Arial", sans-serif;
-            font-size: 11pt;
         }}
 
-        /* --- Ventana Principal --- */
-        QMainWindow {{
-            background-color: {colors['bg_primary']};
+        QMainWindow, QDialog {{
+            background-color: {COLORS['background_dark']};
         }}
 
-        /* --- Tabla (Tracklist) --- */
-        QTableView {{
-            background-color: {colors['bg_secondary']};
-            gridline-color: {colors['border_color']};
-            border: 1px solid {colors['border_color']};
-            font-size: 10pt;
-        }}
-        
-        QTableView::item {{
-            padding: 5px;
-            border-bottom: 1px solid {colors['border_color']};
+        /* --- Paneles y Áreas Principales --- */
+        QFrame, QGroupBox {{
+            background-color: {COLORS['background']};
+            border-radius: 4px;
         }}
 
-        QTableView::item:selected {{
-            background-color: {colors['selection_color']};
-            color: {colors['fg_primary']};
-        }}
-        
-        QTableView::item:hover {{
-            background-color: {colors['hover_color']};
-        }}
-
-        /* --- Cabecera de la Tabla --- */
-        QHeaderView::section {{
-            background-color: {colors['bg_tertiary']};
-            color: {colors['fg_secondary']};
-            padding: 8px;
-            border: 1px solid {colors['border_color']};
-            font-size: 10pt;
+        QGroupBox::title {{
+            subcontrol-origin: margin;
+            subcontrol-position: top left;
+            padding: 5px 10px;
+            background-color: {COLORS['background_light']};
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
             font-weight: bold;
+            color: {COLORS['primary_bright']};
         }}
-
-        /* --- Barras de Desplazamiento --- */
-        QScrollBar:vertical {{
-            background: {colors['bg_secondary']};
-            width: 12px;
-            margin: 0;
-        }}
-        QScrollBar::handle:vertical {{
-            background: {colors['bg_tertiary']};
-            min-height: 20px;
-            border-radius: 6px;
-        }}
-        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
-            height: 0;
-            background: none;
-        }}
-
-        QScrollBar:horizontal {{
-            background: {colors['bg_secondary']};
-            height: 12px;
-            margin: 0;
-        }}
-        QScrollBar::handle:horizontal {{
-            background: {colors['bg_tertiary']};
-            min-width: 20px;
-            border-radius: 6px;
-        }}
-        QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{
-            width: 0;
-            background: none;
-        }}
-
+        
         /* --- Botones --- */
         QPushButton {{
-            background-color: {colors['accent_primary']};
-            color: #FFFFFF;
+            background-color: {COLORS['secondary']};
+            color: {COLORS['foreground']};
+            padding: 8px 12px;
             border-radius: 4px;
-            padding: 8px 16px;
             font-weight: bold;
         }}
-
         QPushButton:hover {{
-            background-color: {colors['accent_secondary']};
+            background-color: {COLORS['background_light']};
+        }}
+        QPushButton:pressed {{
+            background-color: {COLORS['primary']};
+        }}
+        QPushButton:disabled {{
+            background-color: #555;
+            color: {COLORS['foreground_dark']};
         }}
 
-        QPushButton:pressed {{
-            background-color: {colors['bg_tertiary']};
+        /* --- Entradas de Texto --- */
+        QLineEdit, QTextEdit, QSpinBox {{
+            background-color: {COLORS['background']};
+            border: 1px solid {COLORS['border']};
+            padding: 5px;
+            border-radius: 4px;
         }}
-    """
-    return qss 
+        QLineEdit:focus, QTextEdit:focus, QSpinBox:focus {{
+            border: 1px solid {COLORS['primary_bright']};
+        }}
+
+        /* --- Listas y Tablas --- */
+        QListView, QTableView, QTreeView {{
+            background-color: {COLORS['background']};
+            border: 1px solid {COLORS['border']};
+            alternate-background-color: {COLORS['background_light']};
+        }}
+        QTableView::item, QListView::item, QTreeView::item {{
+            padding: 5px;
+        }}
+        QTableView::item:selected, QListView::item:selected, QTreeView::item:selected {{
+            background-color: {COLORS['primary']};
+            color: white;
+        }}
+        QHeaderView::section {{
+            background-color: {COLORS['secondary']};
+            padding: 5px;
+            border: 1px solid {COLORS['background_dark']};
+            font-weight: bold;
+            color: {COLORS['primary_bright']};
+        }}
+
+        /* --- Sliders --- */
+        QSlider::groove:horizontal {{
+            border: 1px solid {COLORS['border']};
+            height: 4px;
+            background: {COLORS['background_dark']};
+            margin: 2px 0;
+            border-radius: 2px;
+        }}
+        QSlider::handle:horizontal {{
+            background: {COLORS['primary_bright']};
+            border: 1px solid {COLORS['primary_bright']};
+            width: 14px;
+            margin: -5px 0;
+            border-radius: 7px;
+        }}
+        QSlider::sub-page:horizontal {{
+            background: {COLORS['primary']};
+        }}
+
+        /* --- Barras de Scroll --- */
+        QScrollBar:vertical, QScrollBar:horizontal {{
+            border: none;
+            background: {COLORS['background']};
+            width: 10px;
+            height: 10px;
+            margin: 0px;
+        }}
+        QScrollBar::handle {{
+            background: {COLORS['secondary']};
+            min-height: 20px;
+            min-width: 20px;
+            border-radius: 5px;
+        }}
+        QScrollBar::handle:hover {{
+            background: {COLORS['background_light']};
+        }}
+
+        /* --- Labels Específicos --- */
+        QLabel#SectionHeader {{
+            color: {COLORS['primary_bright']};
+            font-size: {FONTS['section_header_size']};
+            font-weight: bold;
+            background-color: transparent;
+        }}
+
+        QLabel#MetadataValue {{
+            font-weight: bold;
+            color: white;
+            background-color: transparent;
+        }}
+    """ 

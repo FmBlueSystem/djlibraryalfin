@@ -26,11 +26,14 @@ class AppConfig:
                 self._config = {
                     "library_path": "",
                     "window_geometry": "1200x800",
+                    "serpapi_api_key": "",
+                    "discogs_user_token": "",
+                    "sentry_dsn": "",
                 }
                 self.save()
         except (json.JSONDecodeError, OSError) as e:
             print(f"Error al cargar config.json: {e}. Usando configuración por defecto.")
-            self._config = {"library_path": "", "window_geometry": "1200x800"}
+            self._config = {"library_path": "", "window_geometry": "1200x800", "serpapi_api_key": "", "discogs_user_token": "", "sentry_dsn": ""}
 
     def save(self) -> None:
         """Persist current configuration to ``CONFIG_FILE``."""
@@ -49,4 +52,28 @@ class AppConfig:
         self._config[key] = value
         if persist:
             self.save()
+
+    def get_spotify_credentials(self):
+        return self._config.get('spotify_client_id'), self._config.get('spotify_client_secret')
+
+    def get_serpapi_api_key(self):
+        return self._config.get('serpapi_api_key')
+
+    def get_discogs_user_token(self):
+        return self._config.get('discogs_user_token')
+        
+    def get_sentry_dsn(self):
+        return self._config.get('sentry_dsn')
+
+    def save_settings(self):
+        """Guarda la configuración actual en el archivo JSON."""
+        self._config['serpapi_api_key'] = self._config.get('serpapi_api_key', '')
+        self._config['discogs_user_token'] = self._config.get('discogs_user_token', '')
+        self._config['sentry_dsn'] = self._config.get('sentry_dsn', '')
+        
+        try:
+            with open(CONFIG_FILE, 'w', encoding="utf-8") as f:
+                json.dump(self._config, f, indent=4)
+        except OSError as e:
+            print(f"Error al guardar config.json: {e}")
 

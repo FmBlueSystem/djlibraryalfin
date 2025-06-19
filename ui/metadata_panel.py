@@ -569,42 +569,47 @@ class MetadataPanel(QWidget):
             self.album_art_label.setPixmap(QPixmap()) # Limpiar imagen anterior
 
     def update_track_info(self, track_data: dict):
-        """Actualiza los campos del panel con la información de la pista."""
-        if track_data:
-            self.current_track = track_data
-            self.title_edit.setText(track_data.get('title', ''))
-            self.artist_edit.setText(track_data.get('artist', ''))
-            self.album_edit.setText(track_data.get('album', ''))
-            self.genre_edit.setText(track_data.get('genre', ''))
-            self.year_edit.setText(str(track_data.get('year', '') if track_data.get('year') is not None else ''))
-            
-            self.comments_edit.setText(track_data.get('comment', ''))
-
-            bpm_val = track_data.get('bpm')
-            self.bpm_value.setText(str(bpm_val) if bpm_val is not None else "---")
-            
-            key_val = track_data.get('key')
-            self.key_value.setText(str(key_val) if key_val is not None and str(key_val).strip() else "---")
-
-            # Cargar arte de portada
-            self.load_album_art(track_data.get('album_art_url'))
-
-            # Actualizar campos de IDs externos
-            self.mb_recording_id_edit.setText(track_data.get('musicbrainz_recording_id', ''))
-            self.mb_artist_id_edit.setText(track_data.get('musicbrainz_artist_id', ''))
-            self.mb_release_id_edit.setText(track_data.get('musicbrainz_release_id', ''))
-            self.spotify_track_id_edit.setText(track_data.get('spotify_track_id', ''))
-            self.spotify_artist_id_edit.setText(track_data.get('spotify_artist_id', ''))
-            self.spotify_album_id_edit.setText(track_data.get('spotify_album_id', ''))
-            self.discogs_release_id_edit.setText(track_data.get('discogs_release_id', ''))
-
-            can_enrich = bool(track_data.get('artist') and track_data.get('title'))
-            self.enrich_button.setEnabled(can_enrich)
-            self.refresh_button.setEnabled(True)
-            self.save_button.setEnabled(True)
-            self.cancel_button.setEnabled(True)
-        else:
+        """
+        Actualiza los campos del panel con la información de una pista.
+        Se activa cuando el usuario selecciona una pista en TrackListView.
+        """
+        
+        if not track_data:
             self.clear_fields()
+            return
+        
+        self.current_track = track_data
+        self.title_edit.setText(track_data.get('title', ''))
+        self.artist_edit.setText(track_data.get('artist', ''))
+        self.album_edit.setText(track_data.get('album', ''))
+        self.genre_edit.setText(track_data.get('genre', ''))
+        self.year_edit.setText(str(track_data.get('year', '') if track_data.get('year') is not None else ''))
+        
+        self.comments_edit.setText(track_data.get('comment', ''))
+
+        bpm_val = track_data.get('bpm')
+        self.bpm_value.setText(str(bpm_val) if bpm_val is not None else "---")
+        
+        key_val = track_data.get('key')
+        self.key_value.setText(str(key_val) if key_val is not None and str(key_val).strip() else "---")
+
+        # Cargar arte de portada
+        self.load_album_art(track_data.get('album_art_url'))
+
+        # Actualizar campos de IDs externos
+        self.mb_recording_id_edit.setText(track_data.get('musicbrainz_recording_id', ''))
+        self.mb_artist_id_edit.setText(track_data.get('musicbrainz_artist_id', ''))
+        self.mb_release_id_edit.setText(track_data.get('musicbrainz_release_id', ''))
+        self.spotify_track_id_edit.setText(track_data.get('spotify_track_id', ''))
+        self.spotify_artist_id_edit.setText(track_data.get('spotify_artist_id', ''))
+        self.spotify_album_id_edit.setText(track_data.get('spotify_album_id', ''))
+        self.discogs_release_id_edit.setText(track_data.get('discogs_release_id', ''))
+
+        can_enrich = bool(track_data.get('artist') and track_data.get('title'))
+        self.enrich_button.setEnabled(can_enrich)
+        self.refresh_button.setEnabled(True)
+        self.save_button.setEnabled(True)
+        self.cancel_button.setEnabled(True)
 
     def clear_fields(self):
         """Limpia todos los campos del panel de metadatos."""
@@ -641,19 +646,16 @@ class MetadataPanel(QWidget):
         """Recupera los metadatos actuales de los campos de la UI."""
         # No incluimos los IDs aquí ya que no son editables por el usuario directamente
         # y se obtienen del enriquecimiento.
-        return {
-            "title": self.title_edit.text(),
-            "artist": self.artist_edit.text(),
-            "album": self.album_edit.text(),
-            "genre": self.genre_edit.toPlainText(),
-            "year": self.year_edit.text(),
-            "comments": self.comments_edit.toPlainText(),
-            # BPM y Key no son editables directamente en este panel, se leen de los badges
-            # Si se quisiera hacerlos editables, se necesitarían QLineEdit para ellos.
-            # Por ahora, los tomamos de los labels, asumiendo que se actualizan por otras vías.
-            "key": self.key_value.text() if self.key_value.text() != "---" else "",
-            "bpm": self.bpm_value.text() if self.bpm_value.text() != "---" else ""
+        data = {
+            'id': self.current_track.get('id'),
+            'title': self.title_edit.text(),
+            'artist': self.artist_edit.text(),
+            'album': self.album_edit.text(),
+            'genre': self.genre_edit.toPlainText(),
+            'year': self.year_edit.text(),
+            'comment': self.comments_edit.toPlainText(),
         }
+        return data
     
     def save_metadata(self):
         """Emite la señal para guardar los metadatos."""
