@@ -26,13 +26,23 @@ class EnhancedTrackModel(QAbstractTableModel):
     
     def load_tracks(self, track_ids: Optional[List[int]] = None):
         """Carga tracks desde la base de datos."""
+        print(f"🔄 EnhancedTrackModel: Iniciando carga de tracks (IDs: {track_ids})")
         self.beginResetModel()
+        
         try:
+            # Verificar conexión a la base de datos
+            if not self.db_conn:
+                print("❌ EnhancedTrackModel: No hay conexión a la base de datos")
+                self._data = []
+                self.endResetModel()
+                return
+            
             cursor = self.db_conn.cursor()
             
             # Obtener todas las columnas disponibles para optimizar la query
             all_columns = self.column_manager.get_all_columns()
             column_names = list(all_columns.keys())
+            print(f"📊 EnhancedTrackModel: Cargando columnas: {column_names}")
             
             # Construir query con solo las columnas necesarias
             query = f"SELECT {', '.join(column_names)} FROM tracks"
@@ -40,6 +50,7 @@ class EnhancedTrackModel(QAbstractTableModel):
 
             if track_ids is not None:
                 if not track_ids:
+                    print("📭 EnhancedTrackModel: Lista de track_ids vacía, limpiando datos")
                     self._data = []
                     self.endResetModel()
                     return
@@ -47,18 +58,29 @@ class EnhancedTrackModel(QAbstractTableModel):
                 placeholders = ','.join('?' for _ in track_ids)
                 query += f" WHERE id IN ({placeholders})"
                 params = list(track_ids)
+                print(f"🔍 EnhancedTrackModel: Query filtrada para {len(track_ids)} tracks específicos")
+            else:
+                print("🔍 EnhancedTrackModel: Query para todos los tracks")
             
+            print(f"💾 EnhancedTrackModel: Ejecutando query: {query}")
             cursor.execute(query, params)
             
             # Convertir a diccionarios
             columns = [desc[0] for desc in cursor.description]
-            self._data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+            rows = cursor.fetchall()
+            self._data = [dict(zip(columns, row)) for row in rows]
+            
+            print(f"✅ EnhancedTrackModel: {len(self._data)} tracks cargados exitosamente")
             
         except sqlite3.Error as e:
-            print(f"❌ Error al cargar tracks: {e}")
+            print(f"❌ EnhancedTrackModel: Error de SQLite al cargar tracks: {e}")
+            self._data = []
+        except Exception as e:
+            print(f"❌ EnhancedTrackModel: Error general al cargar tracks: {e}")
             self._data = []
         finally:
             self.endResetModel()
+            print(f"🔄 EnhancedTrackModel: Modelo reseteado, {len(self._data)} filas disponibles")
     
     def rowCount(self, parent=QModelIndex()):
         """Número de filas."""
@@ -251,3 +273,58 @@ class EnhancedTrackModel(QAbstractTableModel):
                     base_info += f"Duración: {duration}"
         
         return base_info.strip()
+    
+    # === DRAG & DROP SUPPORT ===
+    
+    def supportedDragActions(self):
+        """Define las acciones de drag soportadas."""
+        return Qt.DropAction.CopyAction
+    
+    def mimeTypes(self):
+        """Define los tipos MIME soportados para drag & drop."""
+        return ['application/x-djlibrarytrack-ids']
+    
+    def mimeData(self, indexes):
+        """Genera datos MIME para drag & drop."""
+        from PySide6.QtCore import QMimeData
+        import json
+        
+        # Obtener filas únicas (evitar duplicados si múltiples columnas están seleccionadas)
+        rows = list(set(index.row() for index in indexes if index.isValid()))
+        
+        # Obtener IDs de tracks
+        track_ids = []
+        track_info = []
+        
+        for row in rows:
+            if 0 <= row < len(self._data):
+                track = self._data[row]
+                track_ids.append(track.get('id'))
+                # Información básica para mostrar durante el drag
+                track_info.append({
+                    'id': track.get('id'),
+                    'title': track.get('title', 'Unknown'),
+                    'artist': track.get('artist', 'Unknown'),
+                    'duration': track.get('duration', 0)
+                })
+        
+        # Crear MIME data
+        mime_data = QMimeData()
+        
+        # Datos principales (IDs para la base de datos)
+        data = {
+            'track_ids': track_ids,
+            'track_info': track_info,
+            'source': 'djlibrary'
+        }
+        
+        mime_data.setData('application/x-djlibrarytrack-ids', json.dumps(data).encode('utf-8'))
+        
+        # Texto plano como fallback
+        text_lines = []
+        for info in track_info:
+            text_lines.append(f"{info['artist']} - {info['title']}")
+        
+        mime_data.setText('\n'.join(text_lines))
+        
+        return mime_data

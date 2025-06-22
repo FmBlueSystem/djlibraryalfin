@@ -120,12 +120,11 @@ class AdvancedHeaderView(QHeaderView):
             else:
                 self.setSectionResizeMode(i, QHeaderView.ResizeMode.Fixed)
         
-        # Configurar la última columna visible para que use el espacio restante
-        if visible_columns:
-            last_index = len(visible_columns) - 1
-            last_col = visible_columns[last_index]
-            if last_col.resizable:
-                self.setStretchLastSection(True)
+        # NO usar stretch para la última sección - usamos distribución uniforme
+        self.setStretchLastSection(False)
+        
+        # Auto-distribuir si es necesario
+        self._auto_distribute_if_needed()
     
     def _on_section_moved(self, logical_index, old_visual_index, new_visual_index):
         """Maneja el movimiento de secciones."""
@@ -214,6 +213,10 @@ class AdvancedHeaderView(QHeaderView):
         auto_size_all_action.triggered.connect(self.auto_size_all_columns)
         menu.addAction(auto_size_all_action)
         
+        fit_viewport_action = QAction("Llenar Pantalla Completa", self)
+        fit_viewport_action.triggered.connect(self.auto_fit_to_viewport)
+        menu.addAction(fit_viewport_action)
+        
         # Mostrar menú
         menu.exec(self.mapToGlobal(position))
     
@@ -244,11 +247,56 @@ class AdvancedHeaderView(QHeaderView):
     
     def mousePressEvent(self, event):
         """Maneja clics en el header."""
-        super().mousePressEvent(event)
-        
-        # Aquí se puede agregar lógica adicional para clics
+        # IMPORTANTE: Llamar super() ANTES para no interferir con el sorting
         if event.button() == Qt.MouseButton.LeftButton:
             logical_index = self.logicalIndexAt(event.position().toPoint())
             if logical_index >= 0:
-                # Lógica adicional para clics en columnas
-                pass
+                # Emitir señal de click de sección para sorting
+                self.sectionClicked.emit(logical_index)
+        
+        # Llamar super después de manejar el sorting
+        super().mousePressEvent(event)
+    
+    def _auto_distribute_if_needed(self):
+        """Auto-distribuye las columnas si el total no llena el viewport."""
+        if not self.column_manager or not self.parent():
+            return
+        
+        # Obtener ancho del viewport
+        viewport = self.parent()
+        if hasattr(viewport, 'viewport'):
+            viewport_width = viewport.viewport().width()
+        else:
+            viewport_width = viewport.width() if viewport else 1200
+        
+        current_total = self.column_manager.get_total_width()
+        
+        # Si el total actual es significativamente menor que el viewport, redistribuir
+        if current_total < viewport_width * 0.85:  # Si usa menos del 85%
+            self.column_manager.distribute_columns_to_width(viewport_width)
+    
+    def auto_fit_to_viewport(self):
+        """Auto-ajusta todas las columnas al tamaño del viewport."""
+        if not self.column_manager or not self.parent():
+            return
+        
+        # Obtener ancho del viewport
+        viewport = self.parent()
+        if hasattr(viewport, 'viewport'):
+            viewport_width = viewport.viewport().width()
+        else:
+            viewport_width = viewport.width() if viewport else 1200
+        
+        # Aplicar distribución inteligente
+        self.column_manager.auto_fit_to_viewport(viewport_width)
+    
+    def resizeEvent(self, event):
+        """Maneja el redimensionamiento del header."""
+        super().resizeEvent(event)
+        
+        # Auto-distribuir cuando cambia el tamaño
+        if self.column_manager and event.size().width() != event.oldSize().width():
+            viewport_width = event.size().width()
+            # Solo redistribuir si el cambio es significativo
+            if abs(viewport_width - event.oldSize().width()) > 50:
+                self.column_manager.distribute_columns_to_width(viewport_width)

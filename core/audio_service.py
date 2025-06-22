@@ -198,7 +198,8 @@ class AudioService(QObject):
             # Adjuntar el file_path al resultado para que el receptor sepa qué pista se actualizó
             analysis_result = {
                 'file_path': self.current_file,
-                'bpm': result.get('bpm')
+                'bpm': result.get('bpm'),
+                'confidence': result.get('confidence', 0.0)
             }
             self.bpmAnalyzed.emit(analysis_result)
         else:

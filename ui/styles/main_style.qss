@@ -572,7 +572,7 @@ QPushButton[class="btn_minimal_primary"] {
                                 stop:0 #66BB6A, stop:1 #4CAF50);
     color: #FFFFFF;
     border: 2px solid #388E3C;
-    border-radius: 15px;
+    border-radius: 12px;
     font-weight: 700;
     font-size: 16px;
     padding: 2px;
@@ -597,7 +597,7 @@ QPushButton[class="btn_minimal"] {
                                 stop:0 #616161, stop:1 #424242);
     color: #FFFFFF;
     border: 1px solid #757575;
-    border-radius: 13px;
+    border-radius: 12px;
     font-size: 14px;
     font-weight: 600;
     padding: 1px;
@@ -614,6 +614,31 @@ QPushButton[class="btn_minimal"]:pressed {
     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                                 stop:0 #303030, stop:1 #212121);
     border-color: #424242;
+}
+
+/* Botones secundarios (anterior/siguiente) */
+QPushButton[class="btn_minimal_secondary"] {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #4A4A4A, stop:1 #353535);
+    color: #E0E0E0;
+    border: 1px solid #606060;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 1px;
+}
+
+QPushButton[class="btn_minimal_secondary"]:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #FF8A65, stop:1 #FF6B35);
+    border-color: #FF6B35;
+    color: #FFFFFF;
+}
+
+QPushButton[class="btn_minimal_secondary"]:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #F57C00, stop:1 #E65100);
+    border-color: #BF360C;
 }
 
 /* Slider de progreso */
@@ -829,4 +854,316 @@ QSlider[class="progress_minimal"]::handle:horizontal {
 QSlider[class="progress_minimal"]::sub-page:horizontal {
     background-color: #4682B4;
     border-radius: 2px;
+}
+
+/* === SLIDING PANELS === */
+
+/* Base sliding panel styling */
+QWidget[class="sliding_panel"] {
+    background: rgba(30, 50, 80, 0.85);  /* Azul oscuro distintivo */
+    border: 2px solid #4A90E2;
+    border-radius: 8px;
+    /* Shadow will be handled by QGraphicsDropShadowEffect */
+}
+
+/* Sliding panel headers */
+QLabel[class="sliding_panel_header"] {
+    font-size: 12px;
+    font-weight: bold;
+    color: #666666;
+    padding: 8px 0 4px 0;
+    border-bottom: 1px solid #E0E0E0;
+    margin-bottom: 8px;
+    background: transparent;
+}
+
+/* Edge hover areas - invisible but functional */
+QWidget[class="edge_hover_area"] {
+    background: transparent;
+    border: none;
+}
+
+/* Panel content styling */
+QWidget[class="sliding_panel"] QTreeView {
+    background: transparent;
+    border: none;
+    alternate-background-color: #F5F5F5;
+}
+
+QWidget[class="sliding_panel"] QTreeView::item {
+    padding: 6px 8px;
+    border-radius: 4px;
+    margin: 1px 0;
+}
+
+QWidget[class="sliding_panel"] QTreeView::item:selected {
+    background: #2196F3;
+    color: white;
+}
+
+QWidget[class="sliding_panel"] QTreeView::item:hover {
+    background: #F0F0F0;
+}
+
+/* Buttons inside sliding panels */
+QWidget[class="sliding_panel"] QPushButton {
+    background: #F5F5F5;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    padding: 6px 12px;
+    color: #333333;
+    font-size: 11px;
+}
+
+QWidget[class="sliding_panel"] QPushButton:hover {
+    background: #EEEEEE;
+    border-color: #CCCCCC;
+}
+
+QWidget[class="sliding_panel"] QPushButton:pressed {
+    background: #E0E0E0;
+}
+
+/* Primary buttons in sliding panels */
+QWidget[class="sliding_panel"] QPushButton[class="btn_minimal_primary"] {
+    background: #2196F3;
+    border: 1px solid #1976D2;
+    color: white;
+}
+
+QWidget[class="sliding_panel"] QPushButton[class="btn_minimal_primary"]:hover {
+    background: #1976D2;
+}
+
+/* Form elements in sliding panels */
+QWidget[class="sliding_panel"] QLineEdit {
+    background: white;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 12px;
+}
+
+QWidget[class="sliding_panel"] QLineEdit:focus {
+    border-color: #2196F3;
+    outline: none;
+}
+
+/* Labels in sliding panels */
+QWidget[class="sliding_panel"] QLabel[class="field_label"] {
+    color: #666666;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+QWidget[class="sliding_panel"] QLabel[class="section_title"] {
+    color: #2196F3;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 12px 0 6px 0;
+}
+
+/* Progress bars in sliding panels */
+QWidget[class="sliding_panel"] QProgressBar {
+    background: #F0F0F0;
+    border: none;
+    border-radius: 2px;
+    text-align: center;
+    font-size: 10px;
+}
+
+QWidget[class="sliding_panel"] QProgressBar::chunk {
+    background: #2196F3;
+    border-radius: 2px;
+}
+
+/* === PANELES DESLIZANTES MODERNOS === */
+
+/* Panel base deslizante */
+QWidget[class="sliding_panel"] {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 rgba(45, 45, 45, 240),
+        stop:1 rgba(30, 30, 30, 240));
+    border: 1px solid #444444;
+    border-radius: 8px;
+}
+
+/* Títulos de paneles deslizantes */
+QLabel[class="sliding_panel_title"] {
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 0px;
+}
+
+/* Secciones dentro de paneles */
+QLabel[class="sliding_panel_section"] {
+    color: #FFB74D;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 5px 0px 3px 0px;
+}
+
+/* Botones de paneles deslizantes */
+QPushButton[class="sliding_panel_button"] {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #FF6B35,
+        stop:1 #F7931E);
+    color: #FFFFFF;
+    border: 1px solid #E65100;
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+QPushButton[class="sliding_panel_button"]:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #FF8A65,
+        stop:1 #FFB74D);
+}
+
+QPushButton[class="sliding_panel_button"]:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #FF5722,
+        stop:1 #F57C00);
+}
+
+/* Items de lista en paneles */
+QPushButton[class="sliding_panel_list_item"] {
+    background-color: rgba(66, 66, 66, 150);
+    color: #E0E0E0;
+    border: 1px solid rgba(117, 117, 117, 100);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 12px;
+    text-align: left;
+}
+
+QPushButton[class="sliding_panel_list_item"]:hover {
+    background-color: rgba(97, 97, 97, 180);
+    border: 1px solid #FF6B35;
+    color: #FFFFFF;
+}
+
+QPushButton[class="sliding_panel_list_item"]:pressed {
+    background-color: rgba(117, 117, 117, 200);
+}
+
+/* Tree view en paneles deslizantes */
+QTreeView[class="sliding_panel_tree"] {
+    background-color: rgba(66, 66, 66, 120);
+    alternate-background-color: rgba(77, 77, 77, 120);
+    color: #E0E0E0;
+    border: 1px solid rgba(117, 117, 117, 80);
+    border-radius: 4px;
+    selection-background-color: rgba(255, 107, 53, 150);
+    selection-color: #FFFFFF;
+    outline: none;
+}
+
+QTreeView[class="sliding_panel_tree"]::item {
+    padding: 6px 8px;
+    border: none;
+}
+
+QTreeView[class="sliding_panel_tree"]::item:hover {
+    background-color: rgba(97, 97, 97, 120);
+    color: #FFFFFF;
+}
+
+QTreeView[class="sliding_panel_tree"]::item:selected {
+    background-color: rgba(255, 107, 53, 180);
+    color: #FFFFFF;
+}
+
+/* Campos de entrada en paneles */
+QLabel[class="sliding_panel_field_label"] {
+    color: #BDBDBD;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 0px;
+}
+
+QLineEdit[class="sliding_panel_field"], 
+QTextEdit[class="sliding_panel_field"] {
+    background-color: rgba(66, 66, 66, 150);
+    color: #FFFFFF;
+    border: 1px solid rgba(117, 117, 117, 100);
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 12px;
+}
+
+QLineEdit[class="sliding_panel_field"]:focus,
+QTextEdit[class="sliding_panel_field"]:focus {
+    border: 1px solid #FF6B35;
+    background-color: rgba(77, 77, 77, 180);
+}
+
+/* Barras de progreso en paneles */
+QProgressBar[class="sliding_panel_progress"] {
+    background-color: rgba(66, 66, 66, 150);
+    border: 1px solid rgba(117, 117, 117, 100);
+    border-radius: 3px;
+    text-align: center;
+    font-size: 10px;
+    color: #FFFFFF;
+}
+
+QProgressBar[class="sliding_panel_progress"]::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #FF6B35,
+        stop:1 #F7931E);
+    border-radius: 2px;
+}
+
+/* Descripción de texto en paneles */
+QLabel[class="sliding_panel_description"] {
+    color: #B0B0B0;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* Separadores en paneles */
+QLabel[class="sliding_panel_separator"] {
+    background-color: rgba(117, 117, 117, 80);
+    margin: 5px 0px;
+}
+
+/* Scroll area en paneles */
+QScrollArea[class="sliding_panel_scroll"] {
+    background-color: transparent;
+    border: none;
+}
+
+QScrollArea[class="sliding_panel_scroll"] QScrollBar:vertical {
+    background-color: rgba(66, 66, 66, 100);
+    width: 12px;
+    border-radius: 6px;
+    margin: 0px;
+}
+
+QScrollArea[class="sliding_panel_scroll"] QScrollBar::handle:vertical {
+    background-color: rgba(255, 107, 53, 150);
+    border-radius: 6px;
+    min-height: 20px;
+}
+
+QScrollArea[class="sliding_panel_scroll"] QScrollBar::handle:vertical:hover {
+    background-color: rgba(255, 107, 53, 200);
+}
+
+QScrollArea[class="sliding_panel_scroll"] QScrollBar::add-line:vertical,
+QScrollArea[class="sliding_panel_scroll"] QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollArea[class="sliding_panel_scroll"] QScrollBar::add-page:vertical,
+QScrollArea[class="sliding_panel_scroll"] QScrollBar::sub-page:vertical {
+    background: none;
 }

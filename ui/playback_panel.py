@@ -26,6 +26,8 @@ class PlaybackPanel(QWidget):
     """
     
     bpmAnalyzed = Signal(dict)
+    previousTrackRequested = Signal()
+    nextTrackRequested = Signal()
 
     def __init__(self, audio_service: AudioService, parent=None):
         super().__init__(parent)
@@ -55,6 +57,17 @@ class PlaybackPanel(QWidget):
         self.track_title.setFixedWidth(180)
         
         # --- Controles Centrales ---
+        # Botón Previous (Anterior)
+        self.previous_button = QPushButton()
+        self.previous_button.setProperty("class", "btn_minimal_secondary")
+        if HAS_QTAWESOME:
+            self.previous_button.setIcon(qta.icon("fa5s.step-backward", color=COLORS['text_primary']))
+        else:
+            self.previous_button.setText("⏮")
+        self.previous_button.setFixedSize(24, 24)
+        self.previous_button.setToolTip("Track anterior")
+        
+        # Botón Play/Pause (Principal)
         self.play_pause_button = QPushButton()
         self.play_pause_button.setProperty("class", "btn_minimal_primary")
         if HAS_QTAWESOME:
@@ -63,6 +76,17 @@ class PlaybackPanel(QWidget):
             self.play_pause_button.setText("▶")
         self.play_pause_button.setFixedSize(30, 30)
 
+        # Botón Next (Siguiente)
+        self.next_button = QPushButton()
+        self.next_button.setProperty("class", "btn_minimal_secondary")
+        if HAS_QTAWESOME:
+            self.next_button.setIcon(qta.icon("fa5s.step-forward", color=COLORS['text_primary']))
+        else:
+            self.next_button.setText("⏭")
+        self.next_button.setFixedSize(24, 24)
+        self.next_button.setToolTip("Track siguiente")
+
+        # Botón Stop
         self.stop_button = QPushButton()
         self.stop_button.setProperty("class", "btn_minimal")
         if HAS_QTAWESOME:
@@ -109,7 +133,9 @@ class PlaybackPanel(QWidget):
         # Ensamblar layout con separadores visuales
         main_layout.addWidget(self.track_title)
         main_layout.addWidget(self._create_separator())
+        main_layout.addWidget(self.previous_button)
         main_layout.addWidget(self.play_pause_button)
+        main_layout.addWidget(self.next_button)
         main_layout.addWidget(self.stop_button)
         main_layout.addWidget(self.current_time_label)
         main_layout.addWidget(self.progress_slider, 1)  # Se expande
@@ -133,7 +159,9 @@ class PlaybackPanel(QWidget):
         """Conecta los widgets de la UI al AudioService y viceversa."""
         
         # 1. Conectar acciones del usuario (botones, sliders) a los métodos del servicio
+        self.previous_button.clicked.connect(self.previous_track)
         self.play_pause_button.clicked.connect(self.audio_service.play_pause)
+        self.next_button.clicked.connect(self.next_track)
         self.stop_button.clicked.connect(self.audio_service.stop)
         
         # Conectar control de volumen
@@ -239,6 +267,18 @@ class PlaybackPanel(QWidget):
         
         # Actualizar tooltip del slider para mostrar el valor actual
         self.volume_slider.setToolTip(f"Volumen: {value}%")
+        
+    # --- Métodos de navegación ---
+    
+    def previous_track(self):
+        """Solicita reproducir el track anterior."""
+        print("⏮️ PlaybackPanel: Previous track requested")
+        self.previousTrackRequested.emit()
+        
+    def next_track(self):
+        """Solicita reproducir el track siguiente."""
+        print("⏭️ PlaybackPanel: Next track requested")
+        self.nextTrackRequested.emit()
 
     # --- Método público para ser llamado desde el exterior ---
 

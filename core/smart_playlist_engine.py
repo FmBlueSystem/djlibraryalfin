@@ -68,68 +68,6 @@ class SmartPlaylistEngine:
         query = base_query + " WHERE " + separator.join(conditions)
         return query, params
 
-    def _format_value(self, field, operator, value):
-        """Formatea el valor para la consulta SQL según el operador."""
-        if field not in self.numeric_fields:
-            str_value = str(value).replace("'", "''")
-            if operator in ["contains", "not_contains"]:
-                return f"'%{str_value}%'"
-            elif operator == "starts_with":
-                return f"'{str_value}%'"
-            elif operator == "ends_with":
-                return f"'%{str_value}'"
-            return f"'{str_value}'"
-        
-        if operator == "between":
-            try:
-                low, high = map(float, value.split('-'))
-                return f"{low} AND {high}"
-            except (ValueError, IndexError):
-                return "0 AND 0"
-        
-        # Para todos los demás operadores numéricos
-        try:
-            return float(value)
-        except (ValueError, TypeError):
-            return 0 # Valor por defecto si no es un número válido
-
-    def get_query_from_rules(self, rules, match_all=True):
-        """
-        Construye una consulta SQL a partir de una lista de reglas.
-        """
-        base_query = "SELECT * FROM tracks WHERE "
-        conditions = []
-
-        if not rules:
-            return "SELECT * FROM tracks"
-
-        for rule in rules:
-            field = rule.get('field')
-            operator_key = rule.get('operator')
-            value = rule.get('value')
-
-            if not all([field, operator_key, value]):
-                continue
-
-            if operator_key not in self.operators:
-                continue
-
-            sql_operator = self.operators[operator_key]
-            
-            # Usamos `f-string` para todo, ya que la sanitización se hace en _format_value
-            # y esto simplifica la construcción de la condición.
-            # Nos aseguramos de envolver los nombres de campo en ` ` para evitar conflictos con palabras clave de SQL.
-            formatted_value = self._format_value(field, operator_key, value)
-
-            conditions.append(f"`{field}` {sql_operator} {formatted_value}")
-
-
-        if not conditions:
-            # Si ninguna regla es válida, devolvemos todas las pistas para no romper la preview.
-            return "SELECT * FROM tracks"
-
-        separator = " AND " if match_all else " OR "
-        return base_query + separator.join(conditions)
 
     def get_tracks_for_rules(self, rules, match_all=True):
         """

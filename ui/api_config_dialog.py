@@ -31,7 +31,7 @@ class APIConfigDialog(QDialog):
         # Título
         title_label = QLabel("🌐 CONFIGURACIÓN DE APIs EXTERNAS")
         title_label.setProperty("class", "title")
-        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title_label)
         
         # Descripción
@@ -40,7 +40,7 @@ class APIConfigDialog(QDialog):
             "Estas claves se guardan localmente en el archivo .env"
         )
         desc_label.setProperty("class", "description")
-        desc_label.setAlignment(Qt.AlignCenter)
+        desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         desc_label.setWordWrap(True)
         layout.addWidget(desc_label)
         
@@ -84,7 +84,7 @@ class APIConfigDialog(QDialog):
         self.spotify_client_secret = QLineEdit()
         self.spotify_client_secret.setPlaceholderText("Client Secret de Spotify...")
         self.spotify_client_secret.setProperty("class", "api_input")
-        self.spotify_client_secret.setEchoMode(QLineEdit.Password)
+        self.spotify_client_secret.setEchoMode(QLineEdit.EchoMode.Password)
         
         form_layout.addRow("Client ID:", self.spotify_client_id)
         form_layout.addRow("Client Secret:", self.spotify_client_secret)
@@ -116,7 +116,7 @@ class APIConfigDialog(QDialog):
         self.discogs_token = QLineEdit()
         self.discogs_token.setPlaceholderText("Personal Access Token de Discogs...")
         self.discogs_token.setProperty("class", "api_input")
-        self.discogs_token.setEchoMode(QLineEdit.Password)
+        self.discogs_token.setEchoMode(QLineEdit.EchoMode.Password)
         
         form_layout.addRow("Token:", self.discogs_token)
         

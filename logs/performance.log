@@ -1,0 +1,1393 @@
+DJLogger initialized successfully
+DJLogger initialized successfully
+New encryption key generated
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "type object 'Spacing' has no attribute 'SMALL'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 45, in __init__
+    self.setup_layout()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 65, in setup_layout
+    self.browser_panel = BrowserPanel()
+                         ^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/browser_panel.py", line 24, in __init__
+    self.setup_ui()
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/browser_panel.py", line 30, in setup_ui
+    layout.setContentsMargins(Spacing.SMALL, Spacing.SMALL,
+                             ^^^^^^^^^^^^^
+AttributeError: type object 'Spacing' has no attribute 'SMALL'
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+❌ Error crítico en main() - {"metadata": {}, "exception_type": "TypeError", "exception_message": "unsupported operand type(s) for //: 'str' and 'int'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 45, in __init__
+    self.setup_layout()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 120, in setup_layout
+    self.connect_new_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 162, in connect_new_signals
+    self.load_initial_tracks()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 334, in load_initial_tracks
+    self.quick_track_panel.load_tracks(tracks[:100])  # Cargar primeros 100
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/quick_track_panel.py", line 247, in load_tracks
+    self.populate_tracks(self.current_tracks)
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/quick_track_panel.py", line 282, in populate_tracks
+    minutes = int(duration // 60)
+                  ~~~~~~~~~^^~~~
+TypeError: unsupported operand type(s) for //: 'str' and 'int'
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+{"timestamp": "2025-06-18T20:01:47.431474", "action": "browser_history_selected", "details": {"success": true}}
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+{"timestamp": "2025-06-18T20:03:03.586331", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:04.534034", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:05.583904", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:13.865400", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:15.032070", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:15.864618", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:16.831659", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:17.698532", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:19.102229", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:20.067367", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:20.983921", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:21.966681", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:22.734407", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:23.398279", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:26.082145", "action": "browser_library_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:03:28.599465", "action": "browser_library_selected", "details": {"success": true}}
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+{"timestamp": "2025-06-18T20:18:34.532093", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:18:35.913631", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:18:36.680766", "action": "browser_playlist_selected", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:19:00.732629", "action": "deck_play_pause", "details": {"success": true}}
+{"timestamp": "2025-06-18T20:19:02.881028", "action": "browser_playlist_selected", "details": {"success": true}}
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+❌ Error crítico en main() - {"metadata": {}, "exception_type": "UnboundLocalError", "exception_message": "cannot access local variable 'CustomSlider' where it is not associated with a value"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 41, in __init__
+    self.playback_panel = PlaybackPanel(self.audio_service)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/playback_panel.py", line 41, in __init__
+    self.setup_ui()
+  File "/Volumes/KINGSTON/DjAlfin/ui/playback_panel.py", line 55, in setup_ui
+    self.progress_slider = CustomSlider(Qt.Orientation.Horizontal)
+                           ^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'CustomSlider' where it is not associated with a value
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'show_config_dialog'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 318, in connect_signals
+    self.config_columns_btn.clicked.connect(self.column_manager.show_config_dialog)
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'show_config_dialog'
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'show_config_dialog'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 318, in connect_signals
+    self.config_columns_btn.clicked.connect(self.column_manager.show_config_dialog)
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'show_config_dialog'
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'columns_changed'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 329, in connect_signals
+    self.column_manager.columns_changed.connect(self.model.set_visible_columns)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'columns_changed'
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'columns_changed'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 329, in connect_signals
+    self.column_manager.columns_changed.connect(self.model.set_visible_columns)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'columns_changed'
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'EnhancedTrackModel' object has no attribute 'set_visible_columns'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 329, in connect_signals
+    self.column_manager.columnsChanged.connect(self.model.set_visible_columns)
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'EnhancedTrackModel' object has no attribute 'set_visible_columns'
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'MainWindow' object has no attribute 'handle_bpm_analysis_completed'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 69, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 204, in connect_signals
+    self.audio_service.bpmAnalyzed.connect(self.handle_bpm_analysis_completed)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MainWindow' object has no attribute 'handle_bpm_analysis_completed'
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+[AGGREGATION] aggregator: Starting aggregation for The Chainsmokers - Something Just Like This | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+[API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+[API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+[API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+[ERROR] aggregator: Pocos datos obtenidos, activando fallback | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+[API_RESPONSE] lastfm: Response from lastfm: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+[API_REQUEST] curator: Curación completada: 4 -> 4 géneros | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+[AGGREGATION] aggregator: Aggregation completed: 4 genres found | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+[AGGREGATION] aggregator: Starting aggregation for Oasis - She's Electric (DJ Edit) | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+[API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+[API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+[API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+[API_REQUEST] curator: Curación completada: 3 -> 2 géneros | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+[AGGREGATION] aggregator: Aggregation completed: 2 genres found | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+[AGGREGATION] aggregator: Starting aggregation for will.i.am - Scream & Shout | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+[API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+[API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+[API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+[ERROR] aggregator: Pocos datos obtenidos, activando fallback | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+[API_RESPONSE] lastfm: Response from lastfm: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+[API_REQUEST] curator: Curación completada: 3 -> 2 géneros | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+[AGGREGATION] aggregator: Aggregation completed: 2 genres found | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+[AGGREGATION] aggregator: Starting aggregation for Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+[API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+[API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+[API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+[API_REQUEST] curator: Curación completada: 4 -> 4 géneros | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+[AGGREGATION] aggregator: Aggregation completed: 4 genres found | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+[AGGREGATION] aggregator: Starting aggregation for The Automatic - Monster | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:alias>, uncaught attribute type-id
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+[API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+[API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+[API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+[ERROR] aggregator: Pocos datos obtenidos, activando fallback | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+[API_RESPONSE] lastfm: Response from lastfm: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+[API_REQUEST] curator: Curación completada: 1 -> 1 géneros | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+[AGGREGATION] aggregator: Aggregation completed: 1 genres found | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+[AGGREGATION] aggregator: Starting aggregation for Everything But The Girl - Missing (Clean) (Extended) | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+in <ws2:recording>, uncaught <first-release-date>
+in <ws2:release-group>, uncaught attribute type-id
+in <ws2:artist>, uncaught attribute type-id
+[API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+[API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+[API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+[ERROR] aggregator: Pocos datos obtenidos, activando fallback | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+[API_RESPONSE] lastfm: Response from lastfm: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+[API_REQUEST] curator: Curación completada: 4 -> 4 géneros | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+[AGGREGATION] aggregator: Aggregation completed: 4 genres found | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+❌ Error crítico en main() - {"metadata": {}, "exception_type": "NameError", "exception_message": "name 'EnrichmentPanel' is not defined"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 51, in __init__
+    self.enrichment_panel = EnrichmentPanel()
+                            ^^^^^^^^^^^^^^^
+NameError: name 'EnrichmentPanel' is not defined
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+[AGGREGATION] aggregator: Starting aggregation for Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+[API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+[API_REQUEST] curator: Curación completada: 4 -> 4 géneros | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+[AGGREGATION] aggregator: Aggregation completed: 4 genres found | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+[API_REQUEST] audio_enricher: Starting audio analysis for Alice Cooper - School's Out_PN.flac | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+[API_RESPONSE] audio_enricher: Audio analysis completed for Alice Cooper - School's Out_PN.flac | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...
+DJLogger initialized successfully
+🚀 Iniciando aplicación DjAlfin...
+✅ Sentry configurado correctamente
+✅ Stylesheet aplicado correctamente
+✅ Base de datos inicializada
+✅ MainWindow mostrada
+🔄 Iniciando bucle de eventos...

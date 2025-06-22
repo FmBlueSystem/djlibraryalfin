@@ -1,0 +1,140 @@
+2025-06-18 19:55:54,226 - app - ERROR - log_error:278 - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "type object 'Spacing' has no attribute 'SMALL'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 45, in __init__
+    self.setup_layout()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 65, in setup_layout
+    self.browser_panel = BrowserPanel()
+                         ^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/browser_panel.py", line 24, in __init__
+    self.setup_ui()
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/browser_panel.py", line 30, in setup_ui
+    layout.setContentsMargins(Spacing.SMALL, Spacing.SMALL,
+                             ^^^^^^^^^^^^^
+AttributeError: type object 'Spacing' has no attribute 'SMALL'
+2025-06-18 19:56:43,681 - app - ERROR - log_error:278 - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "TypeError", "exception_message": "unsupported operand type(s) for //: 'str' and 'int'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 45, in __init__
+    self.setup_layout()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 120, in setup_layout
+    self.connect_new_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 162, in connect_new_signals
+    self.load_initial_tracks()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 334, in load_initial_tracks
+    self.quick_track_panel.load_tracks(tracks[:100])  # Cargar primeros 100
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/quick_track_panel.py", line 247, in load_tracks
+    self.populate_tracks(self.current_tracks)
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/quick_track_panel.py", line 282, in populate_tracks
+    minutes = int(duration // 60)
+                  ~~~~~~~~~^^~~~
+TypeError: unsupported operand type(s) for //: 'str' and 'int'
+2025-06-19 03:58:23,429 - app - ERROR - log_error:278 - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "UnboundLocalError", "exception_message": "cannot access local variable 'CustomSlider' where it is not associated with a value"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 41, in __init__
+    self.playback_panel = PlaybackPanel(self.audio_service)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/playback_panel.py", line 41, in __init__
+    self.setup_ui()
+  File "/Volumes/KINGSTON/DjAlfin/ui/playback_panel.py", line 55, in setup_ui
+    self.progress_slider = CustomSlider(Qt.Orientation.Horizontal)
+                           ^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'CustomSlider' where it is not associated with a value
+2025-06-19 05:53:26,372 - app - ERROR - log_error:278 - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'show_config_dialog'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 318, in connect_signals
+    self.config_columns_btn.clicked.connect(self.column_manager.show_config_dialog)
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'show_config_dialog'
+2025-06-19 05:53:44,025 - app - ERROR - log_error:278 - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'show_config_dialog'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 318, in connect_signals
+    self.config_columns_btn.clicked.connect(self.column_manager.show_config_dialog)
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'show_config_dialog'
+2025-06-19 05:56:20,503 - app - ERROR - log_error:278 - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'columns_changed'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 329, in connect_signals
+    self.column_manager.columns_changed.connect(self.model.set_visible_columns)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'columns_changed'
+2025-06-19 05:57:14,627 - app - ERROR - log_error:278 - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'columns_changed'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 329, in connect_signals
+    self.column_manager.columns_changed.connect(self.model.set_visible_columns)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'columns_changed'
+2025-06-19 05:58:06,964 - app - ERROR - log_error:278 - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'EnhancedTrackModel' object has no attribute 'set_visible_columns'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 329, in connect_signals
+    self.column_manager.columnsChanged.connect(self.model.set_visible_columns)
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'EnhancedTrackModel' object has no attribute 'set_visible_columns'
+2025-06-21 03:06:35,362 - app - ERROR - log_error:278 - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'MainWindow' object has no attribute 'handle_bpm_analysis_completed'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 69, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 204, in connect_signals
+    self.audio_service.bpmAnalyzed.connect(self.handle_bpm_analysis_completed)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MainWindow' object has no attribute 'handle_bpm_analysis_completed'
+2025-06-22 07:59:58,390 - app - ERROR - log_error:278 - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "NameError", "exception_message": "name 'EnrichmentPanel' is not defined"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 51, in __init__
+    self.enrichment_panel = EnrichmentPanel()
+                            ^^^^^^^^^^^^^^^
+NameError: name 'EnrichmentPanel' is not defined

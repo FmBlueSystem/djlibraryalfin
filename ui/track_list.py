@@ -11,6 +11,10 @@ from ui.base.column_manager import ColumnManager
 from ui.base.advanced_header_view import AdvancedHeaderView
 from ui.base.enhanced_track_model import EnhancedTrackModel
 
+# Importar componentes para playlists
+from ui.components.playlist_dialog import PlaylistDialog
+from services.playlist_service import PlaylistService
+
 
 class CustomSortFilterProxyModel(QSortFilterProxyModel):
     """Proxy model personalizado con sorting inteligente por tipo de columna."""
@@ -260,10 +264,19 @@ class TrackListView(QWidget):
     
     # Señales
     track_selected = Signal(dict)
+    playlist_created = Signal()  # Señal para refrescar el panel de playlists
     
     def __init__(self, db_connection, parent=None):
         super().__init__(parent)
         self.db_connection = db_connection
+        
+        # Inicializar servicios
+        from core.database import get_db_path
+        self.playlist_service = PlaylistService(get_db_path())
+        
+        # Contexto de navegación
+        self.current_context = "library"  # "library" o "playlist"
+        self.current_playlist_name = ""
         
         # Inicializar componentes base
         self.column_manager = ColumnManager(self)
@@ -299,6 +312,25 @@ class TrackListView(QWidget):
         # Barra de herramientas superior
         toolbar_layout = QHBoxLayout()
         
+        # Indicador de contexto y navegación
+        nav_layout = QHBoxLayout()
+        nav_layout.setSpacing(8)
+        
+        # Botón "Biblioteca" 
+        self.home_btn = QPushButton("🏠 Biblioteca")
+        self.home_btn.setToolTip("Regresar a la biblioteca completa")
+        self.home_btn.setProperty("class", "btn_minimal")
+        self.home_btn.clicked.connect(self.go_to_library)
+        
+        # Indicador de ubicación actual
+        self.context_label = QLabel("📚 Biblioteca")
+        self.context_label.setProperty("class", "context_indicator")
+        self.context_label.setToolTip("Ubicación actual")
+        
+        nav_layout.addWidget(self.home_btn)
+        nav_layout.addWidget(QLabel("→"))  # Separador visual
+        nav_layout.addWidget(self.context_label)
+        
         # Búsqueda mejorada
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("🔍 Buscar en biblioteca... (título, artista, álbum, etc.)")
@@ -318,6 +350,7 @@ class TrackListView(QWidget):
         self.results_label = QLabel("0 tracks")
         self.results_label.setProperty("class", "results_counter")
         
+        toolbar_layout.addLayout(nav_layout)  # Navegación a la izquierda
         toolbar_layout.addWidget(self.search_input, 1)  # Se expande
         toolbar_layout.addWidget(self.advanced_search_btn)
         toolbar_layout.addWidget(self.config_columns_btn)
@@ -447,6 +480,17 @@ class TrackListView(QWidget):
             background: {Theme.PRIMARY};
             color: white;
         }}
+        
+        /* Indicador de contexto */
+        QLabel[class="context_indicator"] {{
+            background: {Theme.BACKGROUND_TERTIARY};
+            border: 1px solid {Theme.BORDER};
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            color: {Theme.TEXT_SECONDARY};
+        }}
         """)
     
     def connect_signals(self):
@@ -556,7 +600,14 @@ class TrackListView(QWidget):
         
         # Acciones de playlist
         add_to_playlist_action = QAction("📝 Agregar a Playlist...", self)
+        add_to_playlist_action.triggered.connect(lambda: self.show_add_to_playlist_menu(selected_tracks))
         menu.addAction(add_to_playlist_action)
+        
+        # Acción de recomendaciones (solo para track único)
+        if len(selected_tracks) == 1:
+            recommend_action = QAction("🎯 Sugerir canciones compatibles", self)
+            recommend_action.triggered.connect(lambda: self.show_track_recommendations(selected_tracks[0]))
+            menu.addAction(recommend_action)
         
         menu.addSeparator()
         
@@ -630,6 +681,11 @@ class TrackListView(QWidget):
         
         return tracks
     
+    def get_current_track(self):
+        """Obtiene el track actualmente seleccionado (el primero si hay múltiples)."""
+        selected_tracks = self.get_selected_tracks()
+        return selected_tracks[0] if selected_tracks else None
+    
     def _auto_distribute_initial(self):
         """Auto-distribuye las columnas al cargar inicialmente."""
         # Usar QTimer para asegurar que el widget está completamente renderizado
@@ -673,10 +729,14 @@ class TrackListView(QWidget):
     def refresh_current_row(self):
         """
         Refresca los datos de la fila actual manteniendo la selección.
+        Versión mejorada con mejor sincronización de UI.
         """
+        print("🔄 TrackListView: Iniciando refresh_current_row...")
+        
         # Obtener la selección actual
         selected_proxy_indexes = self.table_view.selectionModel().selectedRows()
         if not selected_proxy_indexes:
+            print("⚠️ No hay selección, recargando todos los tracks")
             # Si no hay selección, recargar todo
             self.load_all_tracks()
             return
@@ -685,15 +745,26 @@ class TrackListView(QWidget):
         source_index = self.proxy_model.mapToSource(selected_proxy_indexes[0])
         selected_row = source_index.row()
         
+        print(f"🎯 Refrescando fila {selected_row} del modelo fuente")
+        
         # Obtener el ID de la pista seleccionada
         track = self.model.get_track_at(selected_row)
         if track and 'id' in track:
             track_id = track['id']
+            print(f"🎵 Refrescando track ID: {track_id}")
+            
             # Recargar solo los datos de esta pista desde la BD
             try:
                 cursor = self.db_connection.cursor()
-                cursor.execute("""
-                    SELECT id, title, artist, album, bpm, key, genre, duration, file_path 
+                
+                # Query mejorado que incluye todas las columnas necesarias
+                all_columns = self.column_manager.get_all_columns()
+                columns_list = list(all_columns.keys())
+                columns_str = ', '.join(columns_list)
+                
+                print(f"🔍 Ejecutando query para actualizar track ID {track_id}: SELECT {columns_str[:100]}...")
+                cursor.execute(f"""
+                    SELECT {columns_str}
                     FROM tracks WHERE id = ?
                 """, [track_id])
                 
@@ -703,17 +774,34 @@ class TrackListView(QWidget):
                     columns = [desc[0] for desc in cursor.description]
                     updated_track = dict(zip(columns, row_data))
                     
-                    # Usar el método del modelo mejorado
-                    if self.model.update_track_data(selected_row, updated_track):
-                        print(f"✅ Fila {selected_row} actualizada correctamente")
-                        
-                        # Mantener la selección
-                        self.table_view.selectRow(selected_proxy_indexes[0].row())
-                        
-                        # Emitir señal con datos actualizados
-                        self.track_selected.emit(updated_track)
+                    print(f"📊 Datos actualizados obtenidos para track: {updated_track.get('title', 'Unknown')}")
+                    print(f"   Género actualizado: {updated_track.get('genre', 'N/A')}")
+                    
+                    # Usar el método del modelo mejorado si está disponible
+                    if hasattr(self.model, 'update_track_data') and self.model.update_track_data(selected_row, updated_track):
+                        print(f"✅ Fila {selected_row} actualizada en modelo usando update_track_data")
                     else:
-                        print(f"⚠️ Error al actualizar datos del modelo")
+                        # Fallback: forzar recarga completa del modelo
+                        print("🔄 Fallback: Recargando modelo completo...")
+                        self.model.load_tracks()
+                        # Re-seleccionar el track después de la recarga
+                        for row in range(self.proxy_model.rowCount()):
+                            proxy_index = self.proxy_model.index(row, 0)
+                            source_index = self.proxy_model.mapToSource(proxy_index)
+                            track_data = self.model.get_track_at(source_index.row())
+                            if track_data and track_data.get('id') == track_id:
+                                self.table_view.selectRow(row)
+                                print(f"✅ Track re-seleccionado en fila {row}")
+                                break
+                    
+                    # Mantener/restaurar la selección original
+                    original_proxy_row = selected_proxy_indexes[0].row()
+                    self.table_view.selectRow(original_proxy_row)
+                    
+                    # Emitir señal con datos actualizados
+                    self.track_selected.emit(updated_track)
+                    print(f"📡 Señal track_selected emitida con datos actualizados")
+                    
                 else:
                     print(f"⚠️ No se encontró la pista con ID {track_id} en la BD")
                     
@@ -733,6 +821,63 @@ class TrackListView(QWidget):
         
         source_index = self.proxy_model.mapToSource(selected_proxy_indexes[0])
         return self.model.get_track_at(source_index.row())
+        
+    def select_previous_track(self):
+        """Selecciona y reproduce el track anterior en la lista."""
+        current_selection = self.table_view.selectionModel().selectedRows()
+        if not current_selection:
+            # Si no hay selección, seleccionar el primer track
+            if self.proxy_model.rowCount() > 0:
+                self._select_track_at_row(0)
+            return
+            
+        current_row = current_selection[0].row()
+        previous_row = max(0, current_row - 1)
+        
+        if previous_row != current_row:  # Solo si hay un track anterior
+            self._select_track_at_row(previous_row)
+        else:
+            print("⏮️ Ya estás en el primer track")
+            
+    def select_next_track(self):
+        """Selecciona y reproduce el track siguiente en la lista."""
+        current_selection = self.table_view.selectionModel().selectedRows()
+        max_row = self.proxy_model.rowCount() - 1
+        
+        if not current_selection:
+            # Si no hay selección, seleccionar el primer track
+            if max_row >= 0:
+                self._select_track_at_row(0)
+            return
+            
+        current_row = current_selection[0].row()
+        next_row = min(max_row, current_row + 1)
+        
+        if next_row != current_row:  # Solo si hay un track siguiente
+            self._select_track_at_row(next_row)
+        else:
+            print("⏭️ Ya estás en el último track")
+            
+    def _select_track_at_row(self, row):
+        """Selecciona un track en la fila especificada y emite la señal."""
+        if 0 <= row < self.proxy_model.rowCount():
+            # Seleccionar la fila
+            proxy_index = self.proxy_model.index(row, 0)
+            self.table_view.selectionModel().clearSelection()
+            self.table_view.selectionModel().select(proxy_index, 
+                self.table_view.selectionModel().SelectionFlag.SelectCurrent | 
+                self.table_view.selectionModel().SelectionFlag.Rows)
+            
+            # Hacer scroll para asegurar que la fila esté visible
+            self.table_view.scrollTo(proxy_index, QAbstractItemView.ScrollHint.EnsureVisible)
+            
+            # Obtener los datos del track y emitir la señal
+            source_index = self.proxy_model.mapToSource(proxy_index)
+            track_data = self.model.get_track_at(source_index.row())
+            
+            if track_data:
+                print(f"🎵 TrackListView: Seleccionado '{track_data.get('title', 'Unknown')}' - '{track_data.get('artist', 'Unknown')}'")
+                self.track_selected.emit(track_data)
 
     def load_all_tracks(self):
         """Recarga el modelo con todas las pistas de la base de datos."""
@@ -746,6 +891,9 @@ class TrackListView(QWidget):
         
         # Auto-ajustar columnas después de cargar datos
         self._auto_resize_columns()
+        
+        # Actualizar contexto de navegación
+        self.set_context("library", "")
 
     def load_tracks_by_ids(self, track_ids):
         """Carga en el modelo solo las pistas que coinciden con los IDs proporcionados."""
@@ -763,6 +911,56 @@ class TrackListView(QWidget):
         """Limpia la lista de tracks."""
         self.model.load_tracks(track_ids=[])
         self.update_results_count()
+    
+    def force_refresh(self):
+        """Fuerza una actualización completa de la vista de tracks."""
+        print("🔄 TrackListView: Iniciando force_refresh...")
+        
+        try:
+            # Verificar conexión a la base de datos
+            if not self.db_connection:
+                print("❌ TrackListView: No hay conexión a la base de datos")
+                return False
+            
+            # Deshabilitar sorting temporalmente para evitar problemas durante la carga
+            self.table_view.setSortingEnabled(False)
+            
+            # Limpiar selección actual
+            self.table_view.clearSelection()
+            
+            # Forzar recarga del modelo
+            print("🔄 TrackListView: Recargando modelo de tracks...")
+            self.model.load_tracks()
+            
+            # Verificar que se cargaron datos
+            row_count = self.model.rowCount()
+            print(f"📊 TrackListView: Modelo cargado con {row_count} filas")
+            
+            if row_count > 0:
+                # Rehabilitar sorting
+                self.table_view.setSortingEnabled(True)
+                
+                # Aplicar ordenamiento por defecto (artista)
+                self.table_view.sortByColumn(0, Qt.SortOrder.AscendingOrder)
+                
+                # Auto-ajustar columnas
+                self._auto_resize_columns()
+                
+                # Actualizar contador
+                self.update_results_count()
+                
+                print(f"✅ TrackListView: Force refresh completado exitosamente ({row_count} tracks)")
+                return True
+            else:
+                print("⚠️ TrackListView: No se cargaron tracks en el modelo")
+                self.update_results_count()
+                return False
+                
+        except Exception as e:
+            print(f"❌ TrackListView: Error en force_refresh: {e}")
+            # Rehabilitar sorting en caso de error
+            self.table_view.setSortingEnabled(True)
+            return False
     
     def _auto_resize_columns(self):
         """Auto-ajusta las columnas de manera inteligente."""
@@ -843,6 +1041,186 @@ class TrackListView(QWidget):
         self.results_label.setProperty("class", "results_counter")
         self.results_label.style().unpolish(self.results_label)
         self.results_label.style().polish(self.results_label)
+    
+    def show_add_to_playlist_menu(self, selected_tracks):
+        """Muestra menú para agregar tracks a playlists existentes o crear nueva."""
+        if not selected_tracks:
+            return
+        
+        menu = QMenu("Agregar a Playlist", self)
+        
+        # Obtener playlists existentes
+        try:
+            existing_playlists = self.playlist_service.get_all_playlists()
+            
+            # Agregar opción para crear nueva playlist
+            create_new_action = QAction("➕ Nueva Playlist con estos tracks", self)
+            create_new_action.triggered.connect(lambda: self.create_playlist_with_tracks(selected_tracks))
+            menu.addAction(create_new_action)
+            
+            if existing_playlists:
+                menu.addSeparator()
+                menu.addSection("📂 Playlists Existentes")
+                
+                # Agregar cada playlist existente
+                for playlist in existing_playlists:
+                    playlist_name = playlist['name']
+                    track_count = playlist.get('track_count', 0)
+                    action_text = f"📝 {playlist_name} ({track_count} tracks)"
+                    
+                    action = QAction(action_text, self)
+                    action.triggered.connect(lambda checked, pid=playlist['id'], name=playlist_name: 
+                                           self.add_tracks_to_existing_playlist(selected_tracks, pid, name))
+                    menu.addAction(action)
+            else:
+                menu.addSeparator()
+                menu.addAction("(No hay playlists creadas)").setEnabled(False)
+            
+            # Mostrar menú
+            cursor_pos = self.mapFromGlobal(self.cursor().pos())
+            menu.exec(self.mapToGlobal(cursor_pos))
+            
+        except Exception as e:
+            print(f"❌ Error mostrando menú de playlists: {e}")
+            QMessageBox.warning(self, "Error", f"No se pudo cargar las playlists:\n{e}")
+    
+    def create_playlist_with_tracks(self, selected_tracks):
+        """Crea una nueva playlist con los tracks seleccionados."""
+        dialog = PlaylistDialog(self)
+        
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            playlist_data = dialog.get_playlist_data()
+            
+            # Crear la playlist
+            playlist_id = self.playlist_service.create_playlist(
+                playlist_data['name'],
+                playlist_data['description'],
+                playlist_data['color']
+            )
+            
+            if playlist_id:
+                # Obtener IDs de los tracks
+                track_ids = [track['id'] for track in selected_tracks if 'id' in track]
+                
+                # Agregar tracks a la nueva playlist
+                if track_ids:
+                    success = self.playlist_service.add_tracks_to_playlist(playlist_id, track_ids)
+                    
+                    if success:
+                        QMessageBox.information(
+                            self, 
+                            "Playlist Creada", 
+                            f"Playlist '{playlist_data['name']}' creada exitosamente con {len(track_ids)} tracks."
+                        )
+                        # Emitir señal para refrescar el panel de playlists
+                        self.playlist_created.emit()
+                    else:
+                        QMessageBox.warning(self, "Error", "No se pudieron agregar todos los tracks a la playlist.")
+                else:
+                    QMessageBox.warning(self, "Error", "No se encontraron tracks válidos para agregar.")
+            else:
+                QMessageBox.warning(self, "Error", "No se pudo crear la playlist.")
+    
+    def add_tracks_to_existing_playlist(self, selected_tracks, playlist_id, playlist_name):
+        """Agrega tracks a una playlist existente."""
+        track_ids = [track['id'] for track in selected_tracks if 'id' in track]
+        
+        if track_ids:
+            success = self.playlist_service.add_tracks_to_playlist(playlist_id, track_ids)
+            
+            if success:
+                QMessageBox.information(
+                    self, 
+                    "Tracks Agregados", 
+                    f"{len(track_ids)} tracks agregados a '{playlist_name}' exitosamente."
+                )
+                # Emitir señal para refrescar el panel de playlists
+                self.playlist_created.emit()
+            else:
+                QMessageBox.warning(self, "Error", f"No se pudieron agregar los tracks a '{playlist_name}'.")
+        else:
+            QMessageBox.warning(self, "Error", "No se encontraron tracks válidos para agregar.")
+    
+    def go_to_library(self):
+        """Regresa a la vista de biblioteca completa."""
+        self.load_all_tracks()
+        self.set_context("library", "")
+        self.show_status_message("Regresando a la biblioteca completa", 2000)
+    
+    def set_context(self, context_type, playlist_name=""):
+        """Actualiza el contexto de navegación y la UI."""
+        self.current_context = context_type
+        self.current_playlist_name = playlist_name
+        
+        if context_type == "library":
+            self.context_label.setText("📚 Biblioteca")
+            self.home_btn.setVisible(False)  # Ocultar si ya estamos en biblioteca
+        elif context_type == "playlist":
+            self.context_label.setText(f"📋 {playlist_name}")
+            self.home_btn.setVisible(True)   # Mostrar para poder regresar
+    
+    def load_playlist_tracks(self, track_ids, playlist_name):
+        """Carga tracks de una playlist específica y actualiza contexto."""
+        # Cargar tracks usando el método existente
+        self.model.load_tracks(track_ids=track_ids)
+        
+        # Habilitar sorting después de cargar datos filtrados
+        self.table_view.setSortingEnabled(True)
+        
+        # Auto-ajustar columnas
+        self._auto_resize_columns()
+        
+        self.update_results_count()
+        
+        # Actualizar contexto de navegación
+        self.set_context("playlist", playlist_name)
+    
+    def show_track_recommendations(self, track):
+        """Muestra diálogo con recomendaciones de canciones compatibles."""
+        try:
+            print(f"🎯 Abriendo recomendaciones para: {track.get('title', 'Unknown')} - {track.get('artist', 'Unknown')}")
+            
+            # Validar track antes de proceder
+            if not track:
+                QMessageBox.warning(self, "Error", "No se ha seleccionado ningún track.")
+                return
+            
+            if not track.get('id'):
+                QMessageBox.warning(self, "Error", "El track seleccionado no tiene un ID válido.")
+                return
+            
+            # Verificar datos mínimos necesarios
+            missing_data = []
+            if not track.get('bpm') or track.get('bpm') <= 0:
+                missing_data.append("BPM")
+            if not track.get('key') or track.get('key') == 'Unknown':
+                missing_data.append("Tonalidad")
+            
+            if missing_data:
+                QMessageBox.information(
+                    self, 
+                    "Datos Incompletos", 
+                    f"El track '{track.get('title', 'Unknown')}' no tiene datos completos para generar recomendaciones precisas.\n\n"
+                    f"Faltan: {', '.join(missing_data)}\n\n"
+                    f"Las recomendaciones se basarán en los datos disponibles."
+                )
+            
+            from ui.components.recommendations_dialog import RecommendationsDialog
+            
+            dialog = RecommendationsDialog(track, self)
+            dialog.track_selected.connect(self.track_selected.emit)  # Conectar señal para reproducir tracks recomendados
+            dialog.show()
+            
+            print("✅ Diálogo de recomendaciones abierto")
+            
+        except ImportError as e:
+            print(f"❌ Error importando RecommendationsDialog: {e}")
+            QMessageBox.critical(self, "Error", "No se pudo cargar el módulo de recomendaciones.")
+        except Exception as e:
+            print(f"❌ Error mostrando recomendaciones: {e}")
+            import traceback
+            print(f"   Detalle: {traceback.format_exc()}")
+            QMessageBox.warning(self, "Error", f"No se pudieron cargar las recomendaciones:\n\n{str(e)}")
 
 class TrackModel(QAbstractTableModel):
     def __init__(self, db_connection, parent=None):

@@ -1,0 +1,1442 @@
+2025-06-18 19:42:40,901 - root - INFO - DJLogger initialized successfully
+2025-06-18 19:44:41,763 - root - INFO - DJLogger initialized successfully
+2025-06-18 19:44:42,625 - security - INFO - New encryption key generated
+2025-06-18 19:46:55,089 - root - INFO - DJLogger initialized successfully
+2025-06-18 19:46:55,090 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-18 19:46:55,090 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-18 19:46:55,198 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-18 19:46:55,201 - app - INFO - ✅ Base de datos inicializada
+2025-06-18 19:46:55,574 - app - INFO - ✅ MainWindow mostrada
+2025-06-18 19:46:55,574 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-18 19:55:53,786 - root - INFO - DJLogger initialized successfully
+2025-06-18 19:55:53,788 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-18 19:55:53,788 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-18 19:55:53,895 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-18 19:55:53,899 - app - INFO - ✅ Base de datos inicializada
+2025-06-18 19:55:54,226 - app - ERROR - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "type object 'Spacing' has no attribute 'SMALL'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 45, in __init__
+    self.setup_layout()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 65, in setup_layout
+    self.browser_panel = BrowserPanel()
+                         ^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/browser_panel.py", line 24, in __init__
+    self.setup_ui()
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/browser_panel.py", line 30, in setup_ui
+    layout.setContentsMargins(Spacing.SMALL, Spacing.SMALL,
+                             ^^^^^^^^^^^^^
+AttributeError: type object 'Spacing' has no attribute 'SMALL'
+2025-06-18 19:56:43,231 - root - INFO - DJLogger initialized successfully
+2025-06-18 19:56:43,232 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-18 19:56:43,232 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-18 19:56:43,313 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-18 19:56:43,317 - app - INFO - ✅ Base de datos inicializada
+2025-06-18 19:56:43,681 - app - ERROR - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "TypeError", "exception_message": "unsupported operand type(s) for //: 'str' and 'int'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 45, in __init__
+    self.setup_layout()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 120, in setup_layout
+    self.connect_new_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 162, in connect_new_signals
+    self.load_initial_tracks()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 334, in load_initial_tracks
+    self.quick_track_panel.load_tracks(tracks[:100])  # Cargar primeros 100
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/quick_track_panel.py", line 247, in load_tracks
+    self.populate_tracks(self.current_tracks)
+  File "/Volumes/KINGSTON/DjAlfin/ui/components/quick_track_panel.py", line 282, in populate_tracks
+    minutes = int(duration // 60)
+                  ~~~~~~~~~^^~~~
+TypeError: unsupported operand type(s) for //: 'str' and 'int'
+2025-06-18 19:57:04,062 - root - INFO - DJLogger initialized successfully
+2025-06-18 19:57:04,063 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-18 19:57:04,063 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-18 19:57:04,148 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-18 19:57:04,153 - app - INFO - ✅ Base de datos inicializada
+2025-06-18 19:57:04,550 - app - INFO - ✅ MainWindow mostrada
+2025-06-18 19:57:04,550 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-18 20:01:33,467 - root - INFO - DJLogger initialized successfully
+2025-06-18 20:01:33,468 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-18 20:01:33,468 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-18 20:01:33,548 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-18 20:01:33,551 - app - INFO - ✅ Base de datos inicializada
+2025-06-18 20:01:33,924 - app - INFO - ✅ MainWindow mostrada
+2025-06-18 20:01:33,924 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-18 20:01:47,431 - user_actions - INFO - {"timestamp": "2025-06-18T20:01:47.431474", "action": "browser_history_selected", "details": {"success": true}}
+2025-06-18 20:02:50,430 - root - INFO - DJLogger initialized successfully
+2025-06-18 20:02:50,430 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-18 20:02:50,430 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-18 20:02:50,508 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-18 20:02:50,510 - app - INFO - ✅ Base de datos inicializada
+2025-06-18 20:02:50,849 - app - INFO - ✅ MainWindow mostrada
+2025-06-18 20:02:50,849 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-18 20:03:03,586 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:03.586331", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:04,534 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:04.534034", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:05,584 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:05.583904", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:13,865 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:13.865400", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:15,032 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:15.032070", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:15,864 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:15.864618", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:16,831 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:16.831659", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:17,698 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:17.698532", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:19,102 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:19.102229", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:20,067 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:20.067367", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:20,984 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:20.983921", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:21,966 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:21.966681", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:22,734 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:22.734407", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:23,398 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:23.398279", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:03:26,082 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:26.082145", "action": "browser_library_selected", "details": {"success": true}}
+2025-06-18 20:03:28,599 - user_actions - INFO - {"timestamp": "2025-06-18T20:03:28.599465", "action": "browser_library_selected", "details": {"success": true}}
+2025-06-18 20:18:07,672 - root - INFO - DJLogger initialized successfully
+2025-06-18 20:18:07,677 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-18 20:18:07,677 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-18 20:18:08,336 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-18 20:18:08,344 - app - INFO - ✅ Base de datos inicializada
+2025-06-18 20:18:12,650 - app - INFO - ✅ MainWindow mostrada
+2025-06-18 20:18:12,650 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-18 20:18:34,533 - user_actions - INFO - {"timestamp": "2025-06-18T20:18:34.532093", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:18:35,913 - user_actions - INFO - {"timestamp": "2025-06-18T20:18:35.913631", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:18:36,680 - user_actions - INFO - {"timestamp": "2025-06-18T20:18:36.680766", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-18 20:19:00,732 - user_actions - INFO - {"timestamp": "2025-06-18T20:19:00.732629", "action": "deck_play_pause", "details": {"success": true}}
+2025-06-18 20:19:02,881 - user_actions - INFO - {"timestamp": "2025-06-18T20:19:02.881028", "action": "browser_playlist_selected", "details": {"success": true}}
+2025-06-19 03:54:19,027 - root - INFO - DJLogger initialized successfully
+2025-06-19 03:54:19,028 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 03:54:19,028 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 03:54:19,186 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 03:54:19,191 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 03:54:19,624 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 03:54:19,625 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 03:58:23,117 - root - INFO - DJLogger initialized successfully
+2025-06-19 03:58:23,117 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 03:58:23,117 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 03:58:23,198 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 03:58:23,199 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 03:58:23,429 - app - ERROR - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "UnboundLocalError", "exception_message": "cannot access local variable 'CustomSlider' where it is not associated with a value"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 41, in __init__
+    self.playback_panel = PlaybackPanel(self.audio_service)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/playback_panel.py", line 41, in __init__
+    self.setup_ui()
+  File "/Volumes/KINGSTON/DjAlfin/ui/playback_panel.py", line 55, in setup_ui
+    self.progress_slider = CustomSlider(Qt.Orientation.Horizontal)
+                           ^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'CustomSlider' where it is not associated with a value
+2025-06-19 03:58:34,295 - root - INFO - DJLogger initialized successfully
+2025-06-19 03:58:34,295 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 03:58:34,296 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 03:58:34,377 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 03:58:34,379 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 03:58:34,674 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 03:58:34,674 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 04:05:16,506 - root - INFO - DJLogger initialized successfully
+2025-06-19 04:05:16,506 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 04:05:16,506 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 04:05:16,589 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 04:05:16,590 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 04:05:16,908 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 04:05:16,908 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 04:23:40,505 - root - INFO - DJLogger initialized successfully
+2025-06-19 04:23:40,507 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 04:23:40,507 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 04:23:40,620 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 04:23:40,624 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 04:23:41,013 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 04:23:41,013 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 04:29:41,728 - root - INFO - DJLogger initialized successfully
+2025-06-19 04:29:41,730 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 04:29:41,730 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 04:29:41,808 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 04:29:41,813 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 04:29:42,141 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 04:29:42,142 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 04:54:03,631 - root - INFO - DJLogger initialized successfully
+2025-06-19 04:54:03,633 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 04:54:03,633 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 04:54:03,826 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 04:54:03,833 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 04:54:04,311 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 04:54:04,311 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 05:02:04,715 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:02:04,717 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:02:04,717 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:02:04,863 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:02:04,868 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:02:05,329 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 05:02:05,329 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 05:21:07,644 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:21:07,646 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:21:07,647 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:21:07,857 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:21:07,861 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:21:08,487 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 05:21:08,487 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 05:22:24,194 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:22:24,196 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:22:24,196 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:22:24,335 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:22:24,341 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:22:24,787 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 05:22:24,787 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 05:27:08,585 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:27:08,586 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:27:08,586 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:27:08,729 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:27:08,733 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:27:09,158 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 05:27:09,158 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 05:31:10,150 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:31:10,151 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:31:10,151 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:31:10,293 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:31:10,297 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:31:10,735 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 05:31:10,735 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 05:36:49,246 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:36:49,248 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:36:49,248 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:36:49,394 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:36:49,398 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:36:49,843 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 05:36:49,843 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 05:38:31,432 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:38:31,434 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:38:31,434 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:38:31,536 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:38:31,542 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:38:31,892 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 05:38:31,892 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 05:39:26,537 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:39:26,539 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:39:26,539 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:39:26,647 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:39:26,653 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:39:27,027 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 05:39:27,027 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 05:41:56,580 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:41:56,582 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:41:56,582 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:41:56,679 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:41:56,682 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:41:57,061 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 05:41:57,061 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 05:47:58,409 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:47:58,411 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:47:58,411 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:47:58,536 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:47:58,540 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:47:58,950 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 05:47:58,950 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 05:53:25,975 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:53:25,976 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:53:25,976 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:53:26,103 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:53:26,108 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:53:26,372 - app - ERROR - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'show_config_dialog'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 318, in connect_signals
+    self.config_columns_btn.clicked.connect(self.column_manager.show_config_dialog)
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'show_config_dialog'
+2025-06-19 05:53:43,671 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:53:43,673 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:53:43,673 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:53:43,784 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:53:43,789 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:53:44,025 - app - ERROR - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'show_config_dialog'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 318, in connect_signals
+    self.config_columns_btn.clicked.connect(self.column_manager.show_config_dialog)
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'show_config_dialog'
+2025-06-19 05:56:20,099 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:56:20,100 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:56:20,101 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:56:20,231 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:56:20,235 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:56:20,503 - app - ERROR - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'columns_changed'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 329, in connect_signals
+    self.column_manager.columns_changed.connect(self.model.set_visible_columns)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'columns_changed'
+2025-06-19 05:57:14,217 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:57:14,219 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:57:14,219 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:57:14,347 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:57:14,352 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:57:14,627 - app - ERROR - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'ColumnManager' object has no attribute 'columns_changed'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 329, in connect_signals
+    self.column_manager.columns_changed.connect(self.model.set_visible_columns)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ColumnManager' object has no attribute 'columns_changed'
+2025-06-19 05:58:06,562 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:58:06,564 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:58:06,564 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:58:06,696 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:58:06,700 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:58:06,964 - app - ERROR - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'EnhancedTrackModel' object has no attribute 'set_visible_columns'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 39, in __init__
+    self.track_list_view = TrackListView(db_connection=self.db_conn)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 155, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/track_list.py", line 329, in connect_signals
+    self.column_manager.columnsChanged.connect(self.model.set_visible_columns)
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'EnhancedTrackModel' object has no attribute 'set_visible_columns'
+2025-06-19 05:58:25,100 - root - INFO - DJLogger initialized successfully
+2025-06-19 05:58:25,102 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 05:58:25,102 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 05:58:25,210 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 05:58:25,214 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 05:58:25,637 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 05:58:25,637 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 10:18:37,696 - root - INFO - DJLogger initialized successfully
+2025-06-19 10:18:37,698 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 10:18:37,698 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 10:18:37,840 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 10:18:37,844 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 10:18:38,332 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 10:18:38,332 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 10:24:44,728 - root - INFO - DJLogger initialized successfully
+2025-06-19 10:24:44,729 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 10:24:44,730 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 10:24:44,874 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 10:24:44,878 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 10:24:45,332 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 10:24:45,332 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 10:56:52,890 - root - INFO - DJLogger initialized successfully
+2025-06-19 10:56:52,892 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 10:56:52,892 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 10:56:53,139 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 10:56:53,143 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 10:56:53,716 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 10:56:53,716 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 11:09:33,086 - root - INFO - DJLogger initialized successfully
+2025-06-19 11:09:33,087 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 11:09:33,087 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 11:09:33,366 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 11:09:33,370 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 11:09:33,981 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 11:09:33,981 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 11:14:31,961 - root - INFO - DJLogger initialized successfully
+2025-06-19 11:14:31,963 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 11:14:31,963 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 11:14:32,154 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 11:14:32,164 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 11:14:32,668 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 11:14:32,668 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 11:15:59,463 - root - INFO - DJLogger initialized successfully
+2025-06-19 11:15:59,464 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 11:15:59,464 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 11:15:59,563 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 11:15:59,566 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 11:15:59,943 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 11:15:59,943 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 11:21:56,083 - root - INFO - DJLogger initialized successfully
+2025-06-19 11:21:56,084 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 11:21:56,084 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 11:21:56,185 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 11:21:56,188 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 11:21:56,553 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 11:21:56,553 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 11:23:48,924 - root - INFO - DJLogger initialized successfully
+2025-06-19 11:23:48,925 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 11:23:48,925 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 11:23:49,018 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 11:23:49,022 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 11:23:49,428 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 11:23:49,428 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 11:27:18,262 - root - INFO - DJLogger initialized successfully
+2025-06-19 11:27:18,262 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 11:27:18,262 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 11:27:18,367 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 11:27:18,370 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 11:27:18,721 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 11:27:18,721 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 11:30:08,217 - root - INFO - DJLogger initialized successfully
+2025-06-19 11:30:08,218 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 11:30:08,218 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 11:30:08,319 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 11:30:08,323 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 11:30:08,685 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 11:30:08,686 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 11:45:22,263 - root - INFO - DJLogger initialized successfully
+2025-06-19 11:45:22,265 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 11:45:22,265 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 11:45:22,352 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 11:45:22,357 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 11:45:22,725 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 11:45:22,725 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 13:25:16,241 - root - INFO - DJLogger initialized successfully
+2025-06-19 13:25:16,243 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 13:25:16,243 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 13:25:16,479 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 13:25:16,484 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 13:25:16,992 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 13:25:16,992 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 13:30:14,401 - root - INFO - DJLogger initialized successfully
+2025-06-19 13:30:14,403 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 13:30:14,403 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 13:30:14,497 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 13:30:14,501 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 13:30:14,850 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 13:30:14,850 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 15:02:26,654 - root - INFO - DJLogger initialized successfully
+2025-06-19 15:02:26,655 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 15:02:26,655 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 15:02:26,844 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 15:02:26,849 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 15:02:27,366 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 15:02:27,366 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 15:23:24,971 - root - INFO - DJLogger initialized successfully
+2025-06-19 15:23:24,973 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 15:23:24,973 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 15:23:25,069 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 15:23:25,073 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 15:23:25,533 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 15:23:25,533 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 15:38:21,217 - root - INFO - DJLogger initialized successfully
+2025-06-19 15:38:21,219 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 15:38:21,219 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 15:38:21,311 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 15:38:21,318 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 15:38:21,741 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 15:38:21,741 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 15:39:37,296 - root - INFO - DJLogger initialized successfully
+2025-06-19 15:39:37,298 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 15:39:37,298 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 15:39:37,410 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 15:39:37,414 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 15:39:37,839 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 15:39:37,839 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 15:48:19,630 - root - INFO - DJLogger initialized successfully
+2025-06-19 15:48:19,632 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 15:48:19,632 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 15:48:19,759 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 15:48:19,763 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 15:48:20,207 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 15:48:20,207 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 15:51:49,179 - root - INFO - DJLogger initialized successfully
+2025-06-19 15:51:49,180 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 15:51:49,180 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 15:51:49,285 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 15:51:49,289 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 15:51:49,743 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 15:51:49,743 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 15:57:00,585 - root - INFO - DJLogger initialized successfully
+2025-06-19 15:57:00,586 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 15:57:00,586 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 15:57:00,769 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 15:57:00,773 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 15:57:01,271 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 15:57:01,271 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 16:00:46,292 - root - INFO - DJLogger initialized successfully
+2025-06-19 16:00:46,294 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 16:00:46,294 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 16:00:46,400 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 16:00:46,404 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 16:00:46,857 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 16:00:46,857 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 16:08:11,007 - root - INFO - DJLogger initialized successfully
+2025-06-19 16:08:11,009 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 16:08:11,009 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 16:08:11,112 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 16:08:11,116 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 16:08:11,528 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 16:08:11,528 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 16:14:41,483 - root - INFO - DJLogger initialized successfully
+2025-06-19 16:14:41,484 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 16:14:41,484 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 16:14:41,608 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 16:14:41,615 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 16:14:42,063 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 16:14:42,063 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 16:15:51,457 - root - INFO - DJLogger initialized successfully
+2025-06-19 16:15:51,459 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 16:15:51,459 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 16:15:51,563 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 16:15:51,567 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 16:15:52,002 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 16:15:52,002 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-19 16:18:23,142 - root - INFO - DJLogger initialized successfully
+2025-06-19 16:18:23,143 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-19 16:18:23,143 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-19 16:18:23,266 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-19 16:18:23,270 - app - INFO - ✅ Base de datos inicializada
+2025-06-19 16:18:23,741 - app - INFO - ✅ MainWindow mostrada
+2025-06-19 16:18:23,741 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:23:44,290 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:23:44,293 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:23:44,293 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:23:44,476 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:23:44,483 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:23:45,037 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:23:45,037 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:27:44,215 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:27:44,216 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:27:44,216 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:27:44,333 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:27:44,337 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:27:44,758 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:27:44,758 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:31:12,106 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:31:12,110 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:31:12,110 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:31:12,222 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:31:12,228 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:31:12,665 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:31:12,665 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:33:54,041 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:33:54,043 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:33:54,043 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:33:54,183 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:33:54,187 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:33:54,713 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:33:54,713 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:34:45,324 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:34:45,326 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:34:45,326 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:34:45,432 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:34:45,436 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:34:45,855 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:34:45,855 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:38:09,316 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:38:09,318 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:38:09,318 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:38:09,432 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:38:09,435 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:38:09,856 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:38:09,856 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:39:22,001 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:39:22,005 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:39:22,005 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:39:22,118 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:39:22,122 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:39:22,557 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:39:22,557 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:40:32,565 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:40:32,567 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:40:32,567 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:40:32,670 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:40:32,674 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:40:33,073 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:40:33,073 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:43:25,055 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:43:25,056 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:43:25,056 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:43:25,180 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:43:25,184 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:43:25,584 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:43:25,584 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:47:03,733 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:47:03,735 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:47:03,735 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:47:03,854 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:47:03,858 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:47:04,292 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:47:04,292 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:51:03,966 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:51:03,968 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:51:03,968 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:51:04,097 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:51:04,101 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:51:04,538 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:51:04,538 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:54:35,896 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:54:35,897 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:54:35,897 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:54:36,012 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:54:36,016 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:54:36,458 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:54:36,458 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 17:56:34,896 - root - INFO - DJLogger initialized successfully
+2025-06-20 17:56:34,897 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 17:56:34,897 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 17:56:34,977 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 17:56:34,979 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 17:56:35,321 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 17:56:35,321 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 18:02:25,623 - root - INFO - DJLogger initialized successfully
+2025-06-20 18:02:25,624 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 18:02:25,624 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 18:02:25,740 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 18:02:25,744 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 18:02:26,161 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 18:02:26,161 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 18:05:29,818 - root - INFO - DJLogger initialized successfully
+2025-06-20 18:05:29,819 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 18:05:29,819 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 18:05:29,940 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 18:05:29,944 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 18:05:30,364 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 18:05:30,364 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 18:06:31,128 - root - INFO - DJLogger initialized successfully
+2025-06-20 18:06:31,130 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 18:06:31,130 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 18:06:31,243 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 18:06:31,250 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 18:06:31,678 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 18:06:31,679 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 18:11:16,509 - root - INFO - DJLogger initialized successfully
+2025-06-20 18:11:16,510 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 18:11:16,510 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 18:11:16,607 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 18:11:16,611 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 18:11:16,995 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 18:11:16,995 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 19:53:00,390 - root - INFO - DJLogger initialized successfully
+2025-06-20 19:53:00,392 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 19:53:00,392 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 19:53:00,600 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 19:53:00,604 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 19:53:01,155 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 19:53:01,155 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-20 20:11:59,906 - root - INFO - DJLogger initialized successfully
+2025-06-20 20:11:59,907 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-20 20:11:59,907 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-20 20:12:00,087 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-20 20:12:00,432 - app - INFO - ✅ Base de datos inicializada
+2025-06-20 20:12:00,931 - app - INFO - ✅ MainWindow mostrada
+2025-06-20 20:12:00,931 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 02:31:15,738 - root - INFO - DJLogger initialized successfully
+2025-06-21 02:31:15,740 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 02:31:15,740 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 02:31:15,979 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 02:31:15,984 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 02:31:16,515 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 02:31:16,515 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 02:40:25,768 - root - INFO - DJLogger initialized successfully
+2025-06-21 02:40:25,770 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 02:40:25,770 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 02:40:25,979 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 02:40:25,985 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 02:40:26,516 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 02:40:26,517 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 02:43:20,592 - root - INFO - DJLogger initialized successfully
+2025-06-21 02:43:20,593 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 02:43:20,593 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 02:43:20,698 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 02:43:20,703 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 02:43:21,128 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 02:43:21,129 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 02:44:35,622 - root - INFO - DJLogger initialized successfully
+2025-06-21 02:44:35,623 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 02:44:35,623 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 02:44:35,736 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 02:44:35,743 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 02:44:36,163 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 02:44:36,163 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 02:49:05,506 - root - INFO - DJLogger initialized successfully
+2025-06-21 02:49:05,508 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 02:49:05,508 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 02:49:05,643 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 02:49:05,648 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 02:49:06,127 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 02:49:06,127 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 02:49:13,868 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:13,870 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:13,871 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:13,871 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:13,871 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:13,871 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:13,871 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:13,871 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:13,871 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:13,871 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:13,871 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:13,872 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:13,872 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:14,474 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:49:18,024 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:18,024 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:18,875 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:49:23,300 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:23,301 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:23,301 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:23,301 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,301 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,304 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,304 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,304 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,304 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,304 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,304 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,304 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,305 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,305 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,305 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,305 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,305 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,305 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,307 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,307 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,307 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,307 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,307 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,307 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,308 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,308 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,308 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,310 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,310 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,310 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,313 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,313 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,313 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,313 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,313 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,313 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,313 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,314 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,314 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,314 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,314 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,314 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,314 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,314 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,315 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:23,908 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:49:28,294 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:28,299 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:28,299 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:28,299 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:28,300 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:28,300 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:28,300 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,300 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,300 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,300 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,301 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,301 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,301 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,301 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,301 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,302 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,303 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,304 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,304 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,304 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,304 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,305 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,305 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,305 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,305 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,305 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,306 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,307 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,309 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,309 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,309 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,310 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,310 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,310 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,310 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,310 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,310 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,310 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,311 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,312 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,313 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,313 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,313 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,313 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:28,908 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:49:31,974 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:31,975 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,975 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,976 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,976 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,976 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,977 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,977 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,977 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,977 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,978 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,978 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,978 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,978 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,978 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,978 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,979 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,979 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,979 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:31,979 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:32,692 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:49:36,098 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:36,102 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:36,102 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:36,102 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:36,102 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:36,102 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:36,102 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:36,103 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:36,103 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:36,103 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:36,103 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:36,103 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:36,104 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:36,104 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:36,104 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:36,752 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:49:40,259 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:40,259 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:41,239 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:49:42,983 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:42,985 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:42,985 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:42,985 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:42,985 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:42,986 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:42,986 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:43,728 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:49:47,174 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:47,174 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:47,175 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:47,992 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:49:50,977 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:49:50,978 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:50,978 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:51,942 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:49:56,313 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:56,316 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:59,942 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:49:59,943 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:59,943 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:59,943 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:49:59,943 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:50:00,930 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:50:04,172 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:04,172 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:04,173 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:04,173 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:50:04,173 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:50:04,861 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:50:08,912 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:50:09,635 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:50:12,186 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,190 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,190 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,190 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,190 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,190 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,191 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,191 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,191 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,191 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,191 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,191 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,192 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,192 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,192 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,192 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,192 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,193 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,193 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,193 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,193 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,193 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,193 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,194 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,194 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,194 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,194 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,194 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,194 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,194 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,194 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,195 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,195 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,195 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,195 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,195 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:12,195 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:50:12,196 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:50:12,866 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:50:15,943 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:50:16,583 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:50:19,665 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:50:19,668 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:50:20,313 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:50:23,099 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:23,099 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:50:23,099 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:50:24,107 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:50:27,310 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:27,313 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 02:50:27,313 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 02:50:27,314 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 02:50:28,194 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 02:54:29,600 - root - INFO - DJLogger initialized successfully
+2025-06-21 02:54:29,602 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 02:54:29,602 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 02:54:29,717 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 02:54:29,721 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 02:54:30,153 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 02:54:30,153 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 02:56:31,856 - root - INFO - DJLogger initialized successfully
+2025-06-21 02:56:31,858 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 02:56:31,858 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 02:56:31,968 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 02:56:31,973 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 02:56:32,426 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 02:56:32,427 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 03:06:34,881 - root - INFO - DJLogger initialized successfully
+2025-06-21 03:06:34,882 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 03:06:34,882 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 03:06:35,001 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 03:06:35,006 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 03:06:35,362 - app - ERROR - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "AttributeError", "exception_message": "'MainWindow' object has no attribute 'handle_bpm_analysis_completed'"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 69, in __init__
+    self.connect_signals()
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 204, in connect_signals
+    self.audio_service.bpmAnalyzed.connect(self.handle_bpm_analysis_completed)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MainWindow' object has no attribute 'handle_bpm_analysis_completed'
+2025-06-21 03:06:48,487 - root - INFO - DJLogger initialized successfully
+2025-06-21 03:06:48,487 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 03:06:48,487 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 03:06:48,569 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 03:06:48,571 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 03:06:48,924 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 03:06:48,924 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 03:08:58,508 - root - INFO - DJLogger initialized successfully
+2025-06-21 03:08:58,509 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 03:08:58,509 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 03:08:58,623 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 03:08:58,629 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 03:08:59,056 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 03:08:59,056 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 03:16:02,124 - root - INFO - DJLogger initialized successfully
+2025-06-21 03:16:02,126 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 03:16:02,126 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 03:16:02,309 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 03:16:02,314 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 03:16:02,849 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 03:16:02,849 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 03:26:12,148 - root - INFO - DJLogger initialized successfully
+2025-06-21 03:26:12,149 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 03:26:12,150 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 03:26:12,276 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 03:26:12,281 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 03:26:12,735 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 03:26:12,735 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 06:07:34,420 - root - INFO - DJLogger initialized successfully
+2025-06-21 06:07:34,422 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 06:07:34,422 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 06:07:34,636 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 06:07:34,641 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 06:07:35,216 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 06:07:35,217 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 06:11:00,102 - root - INFO - DJLogger initialized successfully
+2025-06-21 06:11:00,104 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 06:11:00,104 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 06:11:00,308 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 06:11:00,313 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 06:11:00,865 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 06:11:00,865 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 06:17:17,993 - root - INFO - DJLogger initialized successfully
+2025-06-21 06:17:17,995 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 06:17:17,995 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 06:17:18,134 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 06:17:18,141 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 06:17:18,582 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 06:17:18,582 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 06:25:26,922 - root - INFO - DJLogger initialized successfully
+2025-06-21 06:25:26,923 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 06:25:26,924 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 06:25:27,163 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 06:25:27,168 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 06:25:27,632 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 06:25:27,632 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 06:25:57,894 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 06:25:57,897 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 06:25:58,530 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 06:26:25,503 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 06:26:25,505 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 06:26:26,264 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 06:26:53,982 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 06:26:53,985 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 06:26:54,929 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 06:26:56,282 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 06:26:56,283 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 06:26:57,344 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 06:27:11,601 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 06:27:11,605 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 06:27:12,532 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 06:27:13,988 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 06:27:13,989 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 06:27:14,876 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 06:39:07,372 - root - INFO - DJLogger initialized successfully
+2025-06-21 06:39:07,374 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 06:39:07,374 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 06:39:07,584 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 06:39:07,589 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 06:39:08,153 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 06:39:08,153 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 06:39:33,113 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 06:39:33,117 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 06:39:34,097 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 06:40:00,931 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 06:40:00,935 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 06:40:01,937 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 06:40:03,287 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 06:40:03,288 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 06:40:04,288 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 07:07:18,362 - root - INFO - DJLogger initialized successfully
+2025-06-21 07:07:18,364 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 07:07:18,364 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 07:07:18,560 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 07:07:18,564 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 07:07:19,120 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 07:07:19,120 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 07:07:37,361 - enrichment - INFO - [AGGREGATION] aggregator: Starting aggregation for The Chainsmokers - Something Just Like This | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:37,365 - enrichment - DEBUG - [CACHE_MISS] musicbrainz: Cache miss for The Chainsmokers - Something Just Like This | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:37,366 - enrichment - DEBUG - [API_REQUEST] musicbrainz: Requesting The Chainsmokers - Something Just Like This | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:38,268 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:07:38,268 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:07:38,268 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:07:38,268 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:07:38,269 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:07:38,269 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 07:07:38,269 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:07:38,996 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 07:07:41,296 - enrichment - INFO - [API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:41,325 - enrichment - DEBUG - [CACHE_MISS] spotify: Cache miss for The Chainsmokers - Something Just Like This | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:41,325 - enrichment - DEBUG - [API_REQUEST] spotify: Requesting The Chainsmokers - Something Just Like This | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:42,242 - enrichment - INFO - [API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:42,242 - enrichment - DEBUG - [CACHE_MISS] discogs: Cache miss for The Chainsmokers - Something Just Like This | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:42,242 - enrichment - DEBUG - [API_REQUEST] discogs: Requesting The Chainsmokers - Something Just Like This | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:42,242 - enrichment - INFO - [API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:42,243 - enrichment - WARNING - [ERROR] aggregator: Pocos datos obtenidos, activando fallback | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:42,243 - enrichment - DEBUG - [CACHE_MISS] lastfm: Cache miss for The Chainsmokers - Something Just Like This | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:42,243 - enrichment - DEBUG - [API_REQUEST] lastfm: Requesting The Chainsmokers - Something Just Like This | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:42,244 - enrichment - INFO - [API_RESPONSE] lastfm: Response from lastfm: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:42,246 - enrichment - INFO - [API_REQUEST] curator: Curación completada: 4 -> 4 géneros | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:07:42,246 - enrichment - INFO - [AGGREGATION] aggregator: Aggregation completed: 4 genres found | Context: {"task_type": "aggregation", "track_artist": "The Chainsmokers", "track_title": "Something Just Like This"}
+2025-06-21 07:08:05,388 - enrichment - INFO - [AGGREGATION] aggregator: Starting aggregation for Oasis - She's Electric (DJ Edit) | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:05,392 - enrichment - DEBUG - [CACHE_MISS] musicbrainz: Cache miss for Oasis - She's Electric (DJ Edit) | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:05,392 - enrichment - DEBUG - [API_REQUEST] musicbrainz: Requesting Oasis - She's Electric (DJ Edit) | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:06,535 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:06,536 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 07:08:06,536 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,536 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,536 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,537 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,537 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,537 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,538 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,538 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,538 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,538 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,538 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,538 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,539 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,539 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,539 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,540 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,540 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,540 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,540 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,540 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,540 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,541 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,541 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,541 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,541 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,541 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,542 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,542 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,542 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,542 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,542 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,543 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,543 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,543 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,543 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,543 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,543 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,544 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,544 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,544 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:06,544 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:07,240 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 07:08:08,913 - enrichment - INFO - [API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:08,947 - enrichment - DEBUG - [CACHE_MISS] spotify: Cache miss for Oasis - She's Electric (DJ Edit) | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:08,947 - enrichment - DEBUG - [API_REQUEST] spotify: Requesting Oasis - She's Electric (DJ Edit) | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:09,408 - enrichment - INFO - [API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:09,442 - enrichment - DEBUG - [CACHE_MISS] discogs: Cache miss for Oasis - She's Electric (DJ Edit) | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:09,442 - enrichment - DEBUG - [API_REQUEST] discogs: Requesting Oasis - She's Electric (DJ Edit) | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:09,442 - enrichment - INFO - [API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:09,444 - enrichment - INFO - [API_REQUEST] curator: Curación completada: 3 -> 2 géneros | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:09,444 - enrichment - INFO - [AGGREGATION] aggregator: Aggregation completed: 2 genres found | Context: {"task_type": "aggregation", "track_artist": "Oasis", "track_title": "She's Electric (DJ Edit)"}
+2025-06-21 07:08:25,013 - enrichment - INFO - [AGGREGATION] aggregator: Starting aggregation for will.i.am - Scream & Shout | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:25,015 - enrichment - DEBUG - [CACHE_MISS] musicbrainz: Cache miss for will.i.am - Scream & Shout | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:25,015 - enrichment - DEBUG - [API_REQUEST] musicbrainz: Requesting will.i.am - Scream & Shout | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:26,287 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:26,287 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:26,287 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:26,288 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:26,288 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:26,288 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:26,288 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:26,288 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:26,289 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:26,289 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:26,289 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 07:08:26,289 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:26,289 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:26,290 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:26,290 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:26,936 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 07:08:29,563 - enrichment - INFO - [API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:29,603 - enrichment - DEBUG - [CACHE_MISS] spotify: Cache miss for will.i.am - Scream & Shout | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:29,604 - enrichment - DEBUG - [API_REQUEST] spotify: Requesting will.i.am - Scream & Shout | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:30,049 - enrichment - INFO - [API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:30,050 - enrichment - DEBUG - [CACHE_MISS] discogs: Cache miss for will.i.am - Scream & Shout | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:30,050 - enrichment - DEBUG - [API_REQUEST] discogs: Requesting will.i.am - Scream & Shout | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:30,050 - enrichment - INFO - [API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:30,050 - enrichment - WARNING - [ERROR] aggregator: Pocos datos obtenidos, activando fallback | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:30,050 - enrichment - DEBUG - [CACHE_MISS] lastfm: Cache miss for will.i.am - Scream & Shout | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:30,051 - enrichment - DEBUG - [API_REQUEST] lastfm: Requesting will.i.am - Scream & Shout | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:30,051 - enrichment - INFO - [API_RESPONSE] lastfm: Response from lastfm: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:30,052 - enrichment - INFO - [API_REQUEST] curator: Curación completada: 3 -> 2 géneros | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:30,052 - enrichment - INFO - [AGGREGATION] aggregator: Aggregation completed: 2 genres found | Context: {"task_type": "aggregation", "track_artist": "will.i.am", "track_title": "Scream & Shout"}
+2025-06-21 07:08:37,816 - enrichment - INFO - [AGGREGATION] aggregator: Starting aggregation for Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:37,817 - enrichment - DEBUG - [CACHE_MISS] musicbrainz: Cache miss for Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:37,817 - enrichment - DEBUG - [API_REQUEST] musicbrainz: Requesting Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:38,565 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 07:08:38,566 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:38,566 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:38,566 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:38,566 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:39,459 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 07:08:40,076 - enrichment - INFO - [API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:40,114 - enrichment - DEBUG - [CACHE_MISS] spotify: Cache miss for Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:40,114 - enrichment - DEBUG - [API_REQUEST] spotify: Requesting Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:40,517 - enrichment - INFO - [API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:40,552 - enrichment - DEBUG - [CACHE_MISS] discogs: Cache miss for Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:40,553 - enrichment - DEBUG - [API_REQUEST] discogs: Requesting Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:40,553 - enrichment - INFO - [API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:40,554 - enrichment - INFO - [API_REQUEST] curator: Curación completada: 4 -> 4 géneros | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:40,554 - enrichment - INFO - [AGGREGATION] aggregator: Aggregation completed: 4 genres found | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-21 07:08:53,358 - enrichment - INFO - [AGGREGATION] aggregator: Starting aggregation for The Automatic - Monster | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:53,363 - enrichment - DEBUG - [CACHE_MISS] musicbrainz: Cache miss for The Automatic - Monster | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:53,363 - enrichment - DEBUG - [API_REQUEST] musicbrainz: Requesting The Automatic - Monster | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:54,109 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:54,110 - musicbrainzngs - INFO - in <ws2:alias>, uncaught attribute type-id
+2025-06-21 07:08:54,110 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 07:08:54,110 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:08:54,984 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 07:08:55,593 - enrichment - INFO - [API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,629 - enrichment - DEBUG - [CACHE_MISS] spotify: Cache miss for The Automatic - Monster | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,630 - enrichment - DEBUG - [API_REQUEST] spotify: Requesting The Automatic - Monster | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,979 - enrichment - INFO - [API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,980 - enrichment - DEBUG - [CACHE_MISS] discogs: Cache miss for The Automatic - Monster | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,980 - enrichment - DEBUG - [API_REQUEST] discogs: Requesting The Automatic - Monster | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,980 - enrichment - INFO - [API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,981 - enrichment - WARNING - [ERROR] aggregator: Pocos datos obtenidos, activando fallback | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,981 - enrichment - DEBUG - [CACHE_MISS] lastfm: Cache miss for The Automatic - Monster | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,981 - enrichment - DEBUG - [API_REQUEST] lastfm: Requesting The Automatic - Monster | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,981 - enrichment - INFO - [API_RESPONSE] lastfm: Response from lastfm: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,982 - enrichment - INFO - [API_REQUEST] curator: Curación completada: 1 -> 1 géneros | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:08:55,982 - enrichment - INFO - [AGGREGATION] aggregator: Aggregation completed: 1 genres found | Context: {"task_type": "aggregation", "track_artist": "The Automatic", "track_title": "Monster"}
+2025-06-21 07:09:05,055 - enrichment - INFO - [AGGREGATION] aggregator: Starting aggregation for Everything But The Girl - Missing (Clean) (Extended) | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:05,060 - enrichment - DEBUG - [CACHE_MISS] musicbrainz: Cache miss for Everything But The Girl - Missing (Clean) (Extended) | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:05,060 - enrichment - DEBUG - [API_REQUEST] musicbrainz: Requesting Everything But The Girl - Missing (Clean) (Extended) | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:05,899 - musicbrainzngs - INFO - in <ws2:recording>, uncaught <first-release-date>
+2025-06-21 07:09:05,900 - musicbrainzngs - INFO - in <ws2:release-group>, uncaught attribute type-id
+2025-06-21 07:09:06,694 - musicbrainzngs - INFO - in <ws2:artist>, uncaught attribute type-id
+2025-06-21 07:09:08,404 - enrichment - INFO - [API_RESPONSE] musicbrainz: Response from musicbrainz: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,439 - enrichment - DEBUG - [CACHE_MISS] spotify: Cache miss for Everything But The Girl - Missing (Clean) (Extended) | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,440 - enrichment - DEBUG - [API_REQUEST] spotify: Requesting Everything But The Girl - Missing (Clean) (Extended) | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,872 - enrichment - INFO - [API_RESPONSE] spotify: Response from spotify: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,873 - enrichment - DEBUG - [CACHE_MISS] discogs: Cache miss for Everything But The Girl - Missing (Clean) (Extended) | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,873 - enrichment - DEBUG - [API_REQUEST] discogs: Requesting Everything But The Girl - Missing (Clean) (Extended) | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,873 - enrichment - INFO - [API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,873 - enrichment - WARNING - [ERROR] aggregator: Pocos datos obtenidos, activando fallback | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,874 - enrichment - DEBUG - [CACHE_MISS] lastfm: Cache miss for Everything But The Girl - Missing (Clean) (Extended) | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,874 - enrichment - DEBUG - [API_REQUEST] lastfm: Requesting Everything But The Girl - Missing (Clean) (Extended) | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,874 - enrichment - INFO - [API_RESPONSE] lastfm: Response from lastfm: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,876 - enrichment - INFO - [API_REQUEST] curator: Curación completada: 4 -> 4 géneros | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 07:09:08,876 - enrichment - INFO - [AGGREGATION] aggregator: Aggregation completed: 4 genres found | Context: {"task_type": "aggregation", "track_artist": "Everything But The Girl", "track_title": "Missing (Clean) (Extended)"}
+2025-06-21 19:07:48,876 - root - INFO - DJLogger initialized successfully
+2025-06-21 19:07:48,878 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 19:07:48,879 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 19:07:49,107 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 19:07:50,451 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 19:07:51,032 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 19:07:51,032 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 19:10:13,946 - root - INFO - DJLogger initialized successfully
+2025-06-21 19:10:13,948 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 19:10:13,948 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 19:10:14,061 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 19:10:14,067 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 19:10:14,484 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 19:10:14,484 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 19:21:52,198 - root - INFO - DJLogger initialized successfully
+2025-06-21 19:21:52,199 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 19:21:52,199 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 19:21:52,295 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 19:21:52,300 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 19:21:52,710 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 19:21:52,710 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 19:32:30,099 - root - INFO - DJLogger initialized successfully
+2025-06-21 19:32:30,100 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 19:32:30,100 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 19:32:30,208 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 19:32:30,214 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 19:32:30,641 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 19:32:30,641 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 20:04:10,336 - root - INFO - DJLogger initialized successfully
+2025-06-21 20:04:10,338 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 20:04:10,338 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 20:04:10,450 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 20:04:10,455 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 20:04:10,891 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 20:04:10,892 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-21 20:09:40,049 - root - INFO - DJLogger initialized successfully
+2025-06-21 20:09:40,051 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-21 20:09:40,051 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-21 20:09:40,154 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-21 20:09:40,159 - app - INFO - ✅ Base de datos inicializada
+2025-06-21 20:09:40,593 - app - INFO - ✅ MainWindow mostrada
+2025-06-21 20:09:40,594 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 07:35:04,685 - root - INFO - DJLogger initialized successfully
+2025-06-22 07:35:04,687 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 07:35:04,687 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 07:35:04,848 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 07:35:04,854 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 07:35:05,383 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 07:35:05,383 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 07:53:29,636 - root - INFO - DJLogger initialized successfully
+2025-06-22 07:53:29,637 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 07:53:29,638 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 07:53:29,767 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 07:53:29,773 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 07:53:30,255 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 07:53:30,255 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 07:59:57,915 - root - INFO - DJLogger initialized successfully
+2025-06-22 07:59:57,917 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 07:59:57,917 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 07:59:58,025 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 07:59:58,032 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 07:59:58,390 - app - ERROR - ❌ Error crítico en main() - {"metadata": {}, "exception_type": "NameError", "exception_message": "name 'EnrichmentPanel' is not defined"}
+Traceback (most recent call last):
+  File "/Volumes/KINGSTON/DjAlfin/main.py", line 48, in main
+    window = MainWindow()
+             ^^^^^^^^^^^^
+  File "/Volumes/KINGSTON/DjAlfin/ui/main_window.py", line 51, in __init__
+    self.enrichment_panel = EnrichmentPanel()
+                            ^^^^^^^^^^^^^^^
+NameError: name 'EnrichmentPanel' is not defined
+2025-06-22 08:01:18,696 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:01:18,697 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:01:18,697 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:01:18,801 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:01:18,806 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:01:19,233 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:01:19,233 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:09:20,606 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:09:20,607 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:09:20,607 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:09:20,728 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:09:20,734 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:09:21,180 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:09:21,180 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:10:30,649 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:10:30,650 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:10:30,650 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:10:30,735 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:10:30,741 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:10:31,112 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:10:31,113 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:11:36,526 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:11:36,527 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:11:36,527 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:11:36,642 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:11:36,648 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:11:37,070 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:11:37,070 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:17:01,979 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:17:01,980 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:17:01,980 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:17:02,095 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:17:02,101 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:17:02,551 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:17:02,552 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:18:37,170 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:18:37,172 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:18:37,172 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:18:37,260 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:18:37,266 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:18:37,635 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:18:37,635 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:19:08,531 - enrichment - INFO - [AGGREGATION] aggregator: Starting aggregation for Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-22 08:19:08,536 - enrichment - DEBUG - [CACHE_HIT] musicbrainz: Cache hit for Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-22 08:19:08,536 - enrichment - DEBUG - [CACHE_HIT] spotify: Cache hit for Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-22 08:19:08,536 - enrichment - DEBUG - [CACHE_MISS] discogs: Cache miss for Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-22 08:19:08,536 - enrichment - DEBUG - [API_REQUEST] discogs: Requesting Alice Cooper - School's Out_PN | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-22 08:19:08,536 - enrichment - INFO - [API_RESPONSE] discogs: Response from discogs: SUCCESS | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-22 08:19:08,538 - enrichment - INFO - [API_REQUEST] curator: Curación completada: 4 -> 4 géneros | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-22 08:19:08,538 - enrichment - INFO - [AGGREGATION] aggregator: Aggregation completed: 4 genres found | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-22 08:19:08,541 - enrichment - INFO - [API_REQUEST] audio_enricher: Starting audio analysis for Alice Cooper - School's Out_PN.flac | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-22 08:19:32,276 - enrichment - DEBUG - [API_REQUEST] audio_enricher: Audio features saved to DB for Alice Cooper - School's Out_PN.flac | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-22 08:19:32,281 - enrichment - INFO - [API_RESPONSE] audio_enricher: Audio analysis completed for Alice Cooper - School's Out_PN.flac | Context: {"task_type": "aggregation", "track_artist": "Alice Cooper", "track_title": "School's Out_PN"}
+2025-06-22 08:24:33,682 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:24:33,683 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:24:33,683 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:24:33,802 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:24:33,807 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:24:34,229 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:24:34,229 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:31:22,042 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:31:22,044 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:31:22,044 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:31:22,145 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:31:22,151 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:31:22,578 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:31:22,579 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:37:05,349 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:37:05,350 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:37:05,351 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:37:05,457 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:37:05,461 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:37:05,886 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:37:05,887 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:39:35,965 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:39:35,967 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:39:35,967 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:39:36,077 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:39:36,083 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:39:36,513 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:39:36,513 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:46:17,032 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:46:17,034 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:46:17,034 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:46:17,120 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:46:17,125 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:46:17,531 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:46:17,531 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:47:10,063 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:47:10,064 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:47:10,065 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:47:10,167 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:47:10,173 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:47:10,584 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:47:10,584 - app - INFO - 🔄 Iniciando bucle de eventos...
+2025-06-22 08:49:45,056 - root - INFO - DJLogger initialized successfully
+2025-06-22 08:49:45,057 - app - INFO - 🚀 Iniciando aplicación DjAlfin...
+2025-06-22 08:49:45,057 - app - INFO - ✅ Sentry configurado correctamente
+2025-06-22 08:49:45,144 - app - INFO - ✅ Stylesheet aplicado correctamente
+2025-06-22 08:49:45,148 - app - INFO - ✅ Base de datos inicializada
+2025-06-22 08:49:45,545 - app - INFO - ✅ MainWindow mostrada
+2025-06-22 08:49:45,546 - app - INFO - 🔄 Iniciando bucle de eventos...

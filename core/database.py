@@ -56,6 +56,55 @@ def create_smart_playlist_tables(cursor):
     except sqlite3.Error as e:
         print(f"Error al crear las tablas de listas inteligentes: {e}")
 
+def create_playlist_triggers(cursor):
+    """Crea triggers para actualizar estadísticas de playlists automáticamente."""
+    try:
+        # Trigger para actualizar estadísticas después de insertar tracks
+        cursor.execute("""
+            CREATE TRIGGER IF NOT EXISTS update_playlist_stats_insert
+            AFTER INSERT ON playlist_tracks
+            BEGIN
+                UPDATE playlists SET 
+                    track_count = (
+                        SELECT COUNT(*) FROM playlist_tracks 
+                        WHERE playlist_id = NEW.playlist_id
+                    ),
+                    duration = (
+                        SELECT COALESCE(SUM(t.duration), 0) 
+                        FROM playlist_tracks pt 
+                        JOIN tracks t ON pt.track_id = t.id 
+                        WHERE pt.playlist_id = NEW.playlist_id
+                    ),
+                    modified_date = datetime('now')
+                WHERE id = NEW.playlist_id;
+            END;
+        """)
+        
+        # Trigger para actualizar estadísticas después de eliminar tracks
+        cursor.execute("""
+            CREATE TRIGGER IF NOT EXISTS update_playlist_stats_delete
+            AFTER DELETE ON playlist_tracks
+            BEGIN
+                UPDATE playlists SET 
+                    track_count = (
+                        SELECT COUNT(*) FROM playlist_tracks 
+                        WHERE playlist_id = OLD.playlist_id
+                    ),
+                    duration = (
+                        SELECT COALESCE(SUM(t.duration), 0) 
+                        FROM playlist_tracks pt 
+                        JOIN tracks t ON pt.track_id = t.id 
+                        WHERE pt.playlist_id = OLD.playlist_id
+                    ),
+                    modified_date = datetime('now')
+                WHERE id = OLD.playlist_id;
+            END;
+        """)
+        
+        print("Triggers de playlists creados correctamente.")
+    except sqlite3.Error as e:
+        print(f"Error creando triggers: {e}")
+
 def init_db(conn=None):
     local_conn = False
     if conn is None:
@@ -86,6 +135,41 @@ def init_db(conn=None):
                 );
             """)
             
+            # === PLAYLISTS REGULARES ===
+            # Tabla principal de playlists
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS playlists (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL UNIQUE,
+                    description TEXT DEFAULT '',
+                    created_date TEXT NOT NULL,
+                    modified_date TEXT NOT NULL,
+                    track_count INTEGER DEFAULT 0,
+                    duration REAL DEFAULT 0.0,
+                    is_favorite BOOLEAN DEFAULT 0,
+                    color TEXT DEFAULT '#2196F3'
+                );
+            """)
+            
+            # Tabla de relación playlist-tracks
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS playlist_tracks (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    playlist_id INTEGER NOT NULL,
+                    track_id INTEGER NOT NULL,
+                    position INTEGER NOT NULL,
+                    added_date TEXT NOT NULL,
+                    FOREIGN KEY (playlist_id) REFERENCES playlists (id) ON DELETE CASCADE,
+                    FOREIGN KEY (track_id) REFERENCES tracks (id) ON DELETE CASCADE,
+                    UNIQUE (playlist_id, track_id)
+                );
+            """)
+            
+            # Índices para mejor rendimiento
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_playlists_name ON playlists (name);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_playlist_tracks_playlist ON playlist_tracks (playlist_id);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_playlist_tracks_position ON playlist_tracks (playlist_id, position);")
+            
             # Añadir nuevas columnas si no existen (manejo simple de migración)
             _add_column_if_not_exists(cursor, "tracks", "file_type", "TEXT") # Ya estaba, pero mantenemos la lógica
             _add_column_if_not_exists(cursor, "tracks", "album_art_url", "TEXT")
@@ -102,9 +186,44 @@ def init_db(conn=None):
             _add_column_if_not_exists(cursor, "tracks", "beat_count", "INTEGER")
             _add_column_if_not_exists(cursor, "tracks", "rhythm_stability", "REAL")
             _add_column_if_not_exists(cursor, "tracks", "bpm_analyzed_date", "TEXT")
+            
+            # Campos para características musicales avanzadas (AudioAnalyzer)
+            _add_column_if_not_exists(cursor, "tracks", "energy", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "danceability", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "valence", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "acousticness", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "instrumentalness", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "liveness", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "speechiness", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "loudness", "REAL")
+            
+            # Características espectrales
+            _add_column_if_not_exists(cursor, "tracks", "spectral_centroid", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "spectral_rolloff", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "zero_crossing_rate", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "mfcc_features", "TEXT")  # JSON string
+            
+            # Análisis de estructura
+            _add_column_if_not_exists(cursor, "tracks", "beat_strength", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "rhythm_consistency", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "dynamic_range", "REAL")
+            
+            # Análisis DJ-específico
+            _add_column_if_not_exists(cursor, "tracks", "intro_length", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "outro_length", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "mix_in_point", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "mix_out_point", "REAL")
+            
+            # Metadatos de análisis
+            _add_column_if_not_exists(cursor, "tracks", "audio_analysis_confidence", "REAL")
+            _add_column_if_not_exists(cursor, "tracks", "audio_features_version", "TEXT")
+            _add_column_if_not_exists(cursor, "tracks", "audio_analyzed_date", "TEXT")
 
             # Crear las tablas de las listas inteligentes
             create_smart_playlist_tables(cursor)
+            
+            # Crear triggers para actualizar estadísticas automáticamente
+            create_playlist_triggers(cursor)
 
             conn.commit()
             print("Tabla 'tracks' inicializada/actualizada correctamente.")
@@ -134,7 +253,14 @@ def add_track(track_data, conn=None):
         'file_type', 'album_art_url', 
         'musicbrainz_recording_id', 'musicbrainz_artist_id', 'musicbrainz_release_id',
         'spotify_track_id', 'spotify_artist_id', 'spotify_album_id',
-        'discogs_release_id', 'bpm_confidence', 'beat_count', 'rhythm_stability', 'bpm_analyzed_date'
+        'discogs_release_id', 'bpm_confidence', 'beat_count', 'rhythm_stability', 'bpm_analyzed_date',
+        # Campos de análisis de audio
+        'energy', 'danceability', 'valence', 'acousticness', 'instrumentalness', 
+        'liveness', 'speechiness', 'loudness',
+        'spectral_centroid', 'spectral_rolloff', 'zero_crossing_rate', 'mfcc_features',
+        'beat_strength', 'rhythm_consistency', 'dynamic_range',
+        'intro_length', 'outro_length', 'mix_in_point', 'mix_out_point',
+        'audio_analysis_confidence', 'audio_features_version', 'audio_analyzed_date'
     ]
     
     # Crear la lista de placeholders (?, ?, ...)

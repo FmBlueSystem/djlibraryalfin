@@ -1,15 +1,15 @@
 import sys
 import os
 import sentry_sdk
-from PyQt5.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication
 from ui.main_window import MainWindow
-from config.config import AppConfig
+from config.secure_config import secure_config
 from ui.stylesheet import get_stylesheet
+from core.logging_config import DJLogger, log_info, log_error
 
 def setup_sentry():
-    config = AppConfig()
-    dsn = config.get_sentry_dsn()
-    if dsn:
+    dsn = secure_config.get_sentry_dsn()
+    if dsn and secure_config.is_sentry_enabled():
         sentry_sdk.init(
             dsn=dsn,
             traces_sample_rate=1.0,
@@ -19,25 +19,42 @@ def setup_sentry():
 
 def main():
     """Función principal para iniciar la aplicación."""
-    setup_sentry()
+    # Inicializar sistema de logging
+    logger = DJLogger()
+    log_info("🚀 Iniciando aplicación DjAlfin...")
     
-    app = QApplication(sys.argv)
+    try:
+        setup_sentry()
+        log_info("✅ Sentry configurado correctamente")
+    except Exception as e:
+        log_error("❌ Error configurando Sentry", exception=e)
     
-    # Aplicar el stylesheet global
-    app.setStyleSheet(get_stylesheet())
-
-    # Añadir la ruta del proyecto al sys.path
-    project_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+    try:
+        app = QApplication(sys.argv)
+        
+        # Aplicar el stylesheet global
+        app.setStyleSheet(get_stylesheet())
+        log_info("✅ Stylesheet aplicado correctamente")
+        
+        # Añadir la ruta del proyecto al sys.path
+        project_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+        
+        # Inicializar base de datos
+        from core.database import init_db
+        init_db()
+        log_info("✅ Base de datos inicializada")
+        
+        # Crear y mostrar ventana principal
+        window = MainWindow()
+        window.show()
+        log_info("✅ MainWindow mostrada")
+        
+        log_info("🔄 Iniciando bucle de eventos...")
+        return app.exec()
     
-    print("🚀 Iniciando aplicación DjAlfin...")
-    init_db()
-    
-    window = MainWindow()
-    window.show()
-    print("✅ MainWindow mostrada")
-    
-    print("🔄 Iniciando bucle de eventos...")
-    sys.exit(app.exec())
+    except Exception as e:
+        log_error("❌ Error crítico en main()", exception=e)
+        return 1
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

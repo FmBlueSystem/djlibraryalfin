@@ -118,6 +118,22 @@ class LibraryScanner(threading.Thread):
                 # siempre tengan la máxima prioridad si existen y son válidos.
                 # Los campos específicos de API (ej. spotify_track_id, album_art_url de Spotify)
                 # se mantendrán si fueron añadidos por api_derived_data y no existen en track_info_local.
+                
+                # NUEVO: Normalizar género local antes de fusionar
+                if 'genre' in track_info_local and track_info_local['genre'] and track_info_local['genre'] != "N/A":
+                    try:
+                        from core.metadata_enricher import _curate_genres
+                        
+                        # Aplicar normalización al género local
+                        raw_genre = track_info_local['genre']
+                        normalized_genre = _curate_genres(raw_genre)
+                        
+                        if normalized_genre and normalized_genre.strip():
+                            track_info_local['genre'] = normalized_genre
+                            print(f"🎯 Género normalizado: '{raw_genre}' → '{track_info_local['genre']}'")
+                    except Exception as e:
+                        print(f"⚠️ Error normalizando género: {e}")
+                
                 final_data_for_db.update(track_info_local)
                 
                 # Asegurar que file_path y last_modified_date (de track_info_local) estén presentes.

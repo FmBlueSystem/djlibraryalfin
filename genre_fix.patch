@@ -1,0 +1,20 @@
+
+# En library_scanner.py, después de la línea 121:
+
+# NUEVO: Normalizar género local antes de fusionar
+if 'genre' in track_info_local and track_info_local['genre'] and track_info_local['genre'] != "N/A":
+    from core.metadata_enricher import MetadataEnricher
+    
+    # Crear instancia temporal del enricher para usar _curate_genres
+    enricher = MetadataEnricher()
+    
+    # Aplicar normalización al género local
+    raw_genre = track_info_local['genre']
+    normalized_genres = enricher._curate_genres([raw_genre])
+    
+    if normalized_genres:
+        track_info_local['genre'] = '; '.join(normalized_genres)
+        print(f"🎯 Género normalizado: '{raw_genre}' → '{track_info_local['genre']}'")
+
+# Continuar con la fusión original
+final_data_for_db.update(track_info_local)

@@ -39,18 +39,19 @@ class ColumnManager(QObject):
         self._load_settings()
     
     def _setup_default_columns(self):
-        """Define las columnas por defecto del TrackList optimizadas para DJ workflow."""
+        """Define las columnas por defecto del TrackList optimizadas para DJ workflow y pantalla completa."""
+        # Anchos optimizados para utilizar todo el espacio de pantalla (base: 1400px útiles)
         default_columns = [
             # Orden optimizado para DJs: información esencial primero
-            ColumnConfig('title', 'Título', visible=True, width=200, min_width=120, max_width=400),
-            ColumnConfig('artist', 'Artista', visible=True, width=160, min_width=100, max_width=300),
-            ColumnConfig('bpm', 'BPM', visible=True, width=70, min_width=50, max_width=100, 
+            ColumnConfig('title', 'Título', visible=True, width=280, min_width=150, max_width=450),
+            ColumnConfig('artist', 'Artista', visible=True, width=240, min_width=120, max_width=350),
+            ColumnConfig('bpm', 'BPM', visible=True, width=80, min_width=60, max_width=110, 
                         data_type='bpm', alignment='center', format_func=self._format_bpm),
-            ColumnConfig('key', 'Key', visible=True, width=50, min_width=40, max_width=80,
+            ColumnConfig('key', 'Key', visible=True, width=60, min_width=45, max_width=90,
                         data_type='key', alignment='center'),
-            ColumnConfig('genre', 'Género', visible=True, width=120, min_width=80, max_width=180),
-            ColumnConfig('album', 'Álbum', visible=True, width=150, min_width=100, max_width=300),
-            ColumnConfig('duration', 'Duración', visible=True, width=80, min_width=60, max_width=120,
+            ColumnConfig('genre', 'Género', visible=True, width=180, min_width=100, max_width=250),
+            ColumnConfig('album', 'Álbum', visible=True, width=220, min_width=120, max_width=350),
+            ColumnConfig('duration', 'Duración', visible=True, width=100, min_width=75, max_width=140,
                         data_type='time', alignment='center', format_func=self._format_duration),
             
             # Columnas adicionales (ocultas por defecto)
@@ -231,3 +232,51 @@ class ColumnManager(QObject):
             return col.format_func(value)
         
         return str(value) if value else ""
+    
+    def distribute_columns_to_width(self, available_width: int):
+        """Distribuye las columnas para utilizar todo el ancho disponible."""
+        visible_columns = self.get_visible_columns()
+        if not visible_columns:
+            return
+        
+        # Dejar espacio para scrollbars y márgenes
+        usable_width = max(available_width - 40, 800)  # Mínimo 800px
+        
+        # Calcular anchos proporcionales basados en importancia
+        # Pesos relativos para cada tipo de columna
+        column_weights = {
+            'title': 0.20,    # 20% - más importante
+            'artist': 0.17,   # 17% - segundo más importante  
+            'album': 0.16,    # 16% - información del álbum
+            'genre': 0.13,    # 13% - género musical
+            'duration': 0.07, # 7% - duración
+            'bpm': 0.06,      # 6% - BPM
+            'key': 0.04,      # 4% - clave musical
+            'year': 0.04,     # 4% - año
+            'comment': 0.13,  # 13% - comentarios si está visible
+        }
+        
+        # Calcular distribución
+        total_weight = sum(column_weights.get(col.key, 0.1) for col in visible_columns)
+        
+        for col in visible_columns:
+            weight = column_weights.get(col.key, 0.1)
+            proportional_width = int((weight / total_weight) * usable_width)
+            
+            # Aplicar límites min/max
+            final_width = max(col.min_width, min(proportional_width, col.max_width))
+            
+            # Actualizar ancho
+            col.width = final_width
+        
+        # Emitir señal de cambio
+        self.columnsChanged.emit()
+    
+    def auto_fit_to_viewport(self, viewport_width: int):
+        """Auto-ajusta las columnas al tamaño del viewport."""
+        self.distribute_columns_to_width(viewport_width)
+        self._save_settings()
+    
+    def get_total_width(self) -> int:
+        """Obtiene el ancho total de todas las columnas visibles."""
+        return sum(col.width for col in self.get_visible_columns())

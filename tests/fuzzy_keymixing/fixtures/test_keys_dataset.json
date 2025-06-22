@@ -1,0 +1,73 @@
+{
+  "camelot_keys": [
+    "1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", 
+    "5A", "5B", "6A", "6B", "7A", "7B", "8A", "8B",
+    "9A", "9B", "10A", "10B", "11A", "11B", "12A", "12B"
+  ],
+  "traditional_keys": [
+    "C Major", "A Minor", "G Major", "E Minor", "D Major", "B Minor",
+    "A Major", "F# Minor", "E Major", "C# Minor", "B Major", "G# Minor",
+    "F# Major", "D# Minor", "F Major", "D Minor", "Bb Major", "G Minor",
+    "Eb Major", "C Minor", "Ab Major", "F Minor", "Db Major", "Bb Minor"
+  ],
+  "simplified_keys": [
+    "C", "Am", "G", "Em", "D", "Bm", "A", "F#m", "E", "C#m", "B", "G#m",
+    "F#", "D#m", "F", "Dm", "Bb", "Gm", "Eb", "Cm", "Ab", "Fm", "Db", "Bbm"
+  ],
+  "open_keys": [
+    "8d", "8m", "9d", "9m", "10d", "10m", "11d", "11m", "12d", "12m", "1d", "1m",
+    "2d", "2m", "7d", "7m", "6d", "6m", "5d", "5m", "4d", "4m", "3d", "3m"
+  ],
+  "enharmonic_pairs": [
+    ["C# Major", "Db Major"],
+    ["F# Major", "Gb Major"],
+    ["C# Minor", "Db Minor"],
+    ["F# Minor", "Gb Minor"],
+    ["D# Minor", "Eb Minor"],
+    ["A# Minor", "Bb Minor"],
+    ["G# Minor", "Ab Minor"],
+    ["A# Major", "Bb Major"],
+    ["D# Major", "Eb Major"],
+    ["G# Major", "Ab Major"]
+  ],
+  "relative_pairs": [
+    ["C Major", "A Minor"],
+    ["G Major", "E Minor"],
+    ["D Major", "B Minor"],
+    ["A Major", "F# Minor"],
+    ["E Major", "C# Minor"],
+    ["B Major", "G# Minor"],
+    ["F# Major", "D# Minor"],
+    ["F Major", "D Minor"],
+    ["Bb Major", "G Minor"],
+    ["Eb Major", "C Minor"],
+    ["Ab Major", "F Minor"],
+    ["Db Major", "Bb Minor"]
+  ],
+  "circle_of_fifths_progression": [
+    "C Major", "G Major", "D Major", "A Major", "E Major", "B Major",
+    "F# Major", "C# Major", "Ab Major", "Eb Major", "Bb Major", "F Major"
+  ],
+  "test_scenarios": {
+    "perfect_compatibility": [
+      {"from": "C Major", "to": "A Minor", "expected_score": 1.0},
+      {"from": "8B", "to": "8A", "expected_score": 1.0},
+      {"from": "G Major", "to": "G Major", "expected_score": 1.0}
+    ],
+    "good_compatibility": [
+      {"from": "C Major", "to": "G Major", "expected_score": 0.9},
+      {"from": "A Minor", "to": "E Minor", "expected_score": 0.9},
+      {"from": "8B", "to": "9B", "expected_score": 0.9}
+    ],
+    "fuzzy_improvement_cases": [
+      {"from": "C Major", "to": "D Major", "traditional_low": true, "fuzzy_better": true},
+      {"from": "A Minor", "to": "B Minor", "traditional_low": true, "fuzzy_better": true},
+      {"from": "F Major", "to": "G Major", "traditional_low": true, "fuzzy_better": true}
+    ],
+    "pitch_shift_candidates": [
+      {"from": "C Major", "to": "Db Major", "shift_expected": -1},
+      {"from": "A Minor", "to": "Bb Minor", "shift_expected": 1},
+      {"from": "G Major", "to": "F# Major", "shift_expected": -1}
+    ]
+  }
+}

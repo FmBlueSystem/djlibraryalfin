@@ -9,7 +9,7 @@ class Theme:
     # Primary Colors
     PRIMARY = "#2196F3"
     PRIMARY_DARK = "#1976D2"
-    PRIMARY_LIGHT = "#BBDEFB"
+    PRIMARY_LIGHT = "#87CEEB"  # Azul cielo claro para excelente contraste
     PRIMARY_VARIANT = "#0D47A1"
     
     # Secondary Colors  
