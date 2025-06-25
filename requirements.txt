@@ -1,5 +1,6 @@
 PySide6
 mutagen
+pytaglib
 Pillow
 python-dotenv
 pydub
@@ -19,3 +20,11 @@ watchdog
 python-vlc
 yt-dlp
 sentry-sdk
+sqlmodel
+alembic
+asyncpg
+pyarrow
+polars
+scikit-learn
+matplotlib
+seaborn

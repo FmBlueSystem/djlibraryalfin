@@ -47,6 +47,9 @@ class MainWindow(QMainWindow):
         self.left_hover_area = EdgeHoverArea(edge='left', trigger_width=15, parent=self)
         self.right_hover_area = EdgeHoverArea(edge='right', trigger_width=15, parent=self)
         
+        # --- Analytics Dashboard ---
+        self.analytics_dashboard = None  # Lazy initialization
+        
         # --- Panel de Enriquecimiento eliminado - reemplazado por sliding panels ---
         # self.enrichment_panel = EnrichmentPanel()  # REMOVED
         
@@ -496,6 +499,14 @@ class MainWindow(QMainWindow):
         
         view_menu.addSeparator()
         
+        # Analytics Dashboard
+        analytics_action = QAction("📊 Analytics Dashboard", self)
+        analytics_action.setShortcut(QKeySequence("Ctrl+A"))
+        analytics_action.triggered.connect(self.show_analytics_dashboard)
+        view_menu.addAction(analytics_action)
+        
+        view_menu.addSeparator()
+        
         toggle_enrichment_action = QAction("Mostrar/Ocultar Panel de Metadatos", self)
         toggle_enrichment_action.setShortcut(QKeySequence("Ctrl+M"))
         toggle_enrichment_action.triggered.connect(self.toggle_enrichment_panel)
@@ -826,6 +837,52 @@ class MainWindow(QMainWindow):
             self.left_hover_area.set_parent_geometry(main_rect)
             self.right_hover_area.set_parent_geometry(main_rect)
     
+    def show_analytics_dashboard(self):
+        """Muestra el dashboard de analytics como ventana independiente."""
+        try:
+            if self.analytics_dashboard is None:
+                # Lazy initialization para evitar problemas de matplotlib al inicio
+                from .components.analytics_dashboard import AnalyticsDashboard
+                self.analytics_dashboard = AnalyticsDashboard(parent=self)
+                self.analytics_dashboard.setWindowTitle("📊 DjAlfin Analytics Dashboard")
+                self.analytics_dashboard.resize(1400, 900)
+                
+                # Apply dark theme styling
+                self.analytics_dashboard.setStyleSheet("""
+                    QWidget {
+                        background-color: #2b2b2b;
+                        color: white;
+                    }
+                    QGroupBox {
+                        font-weight: bold;
+                        border: 2px solid #555;
+                        border-radius: 8px;
+                        margin-top: 10px;
+                        padding-top: 10px;
+                    }
+                    QGroupBox::title {
+                        subcontrol-origin: margin;
+                        left: 20px;
+                        padding: 0 10px 0 10px;
+                    }
+                """)
+            
+            # Show the dashboard
+            self.analytics_dashboard.show()
+            self.analytics_dashboard.raise_()
+            self.analytics_dashboard.activateWindow()
+            
+            self.status_bar.showMessage("📊 Analytics Dashboard abierto", 3000)
+            
+        except Exception as e:
+            QMessageBox.warning(
+                self,
+                "Error Analytics",
+                f"No se pudo abrir el Analytics Dashboard:\n{str(e)}\n\n"
+                "Asegúrate de que matplotlib esté instalado correctamente."
+            )
+            print(f"Error opening analytics dashboard: {e}")
+
     def closeEvent(self, event):
         """Maneja el evento de cierre de la ventana."""
         self.audio_service.stop()

@@ -1,12 +1,17 @@
 import os
 import threading
-from mutagen.flac import FLAC
-from mutagen.mp3 import EasyMP3
-from mutagen.mp4 import MP4
-from mutagen import MutagenError
-from . import database as db
+from .sqlmodel_adapter import sqlmodel_adapter as db  # Use SQLModel adapter
 from .metadata_enricher import enrich_metadata # Ahora consulta múltiples fuentes
-from .metadata_reader import read_metadata
+
+# Import TagLib reader as primary, with mutagen fallback
+try:
+    from .taglib_metadata_reader import TagLibMetadataReader
+    USE_TAGLIB = True
+    print("📚 LibraryScanner: Using TagLib + SQLModel for metadata reading")
+except ImportError:
+    print("⚠️ TagLib not available, using mutagen fallback")
+    from .metadata_reader import read_metadata
+    USE_TAGLIB = False
 
 # Mapeo de claves de EasyMP3/Mutagen a las claves de nuestra DB
 TAG_TO_DB_MAP = {
@@ -153,7 +158,12 @@ class LibraryScanner(threading.Thread):
             print(f"❌ Error procesando {os.path.basename(file_path)}: {e}")
 
     def _read_tags_from_file(self, file_path):
-        raw_metadata = read_metadata(file_path)
+        # Use TagLib if available, fallback to mutagen
+        if USE_TAGLIB:
+            raw_metadata = TagLibMetadataReader.read_metadata(file_path)
+        else:
+            raw_metadata = read_metadata(file_path)
+            
         # Asegurar que track_info siempre tenga 'file_path'
         track_info = {'file_path': file_path}
         if not raw_metadata:
